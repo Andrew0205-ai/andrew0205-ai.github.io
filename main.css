@@ -1,0 +1,149 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: #4CAF50;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Container */
+.container {
+  padding: 20px;
+  padding-top: 70px;
+  flex: 1;
+  max-width: 90%;
+  margin: auto;
+}
+
+.spacer {
+  height: 50px;
+}
+
+/* Typewriter effect */
+.typewriter-container {
+  display: block;
+  font-size: 1.2em;
+  color: #333;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.cursor {
+  width: 2.5px;
+  height: 1.25em;
+  background-color: #666666;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Footer */
+footer {
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: auto;
+  width: 100%;
+}
+
+.last-updated {
+  text-align: center;
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+/* Images */
+.image-center {
+  display: block;
+  margin: 20px auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Sections */
+section {
+  margin-bottom: 30px;
+}
+
+/* Forms */
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+button {
+  padding: 10px 20px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+/* Messages */
+#messages {
+  margin-top: 20px;
+}
+
+#messages small {
+  color: #555;
+}
+
+/* Comment section */
+#comment-section {
+  text-align: left;
+  margin-left: 0;
+  max-width: 400px;
+}
+
+.comment-card {
+  background: lightgreen;
+  border: 1px solid #dddddd72;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.comment-card b {
+  color: #333;
+  font-size: 1.05em;
+}
+
+.comment-card small {
+  color: #666;
+  font-size: 0.8em;
+}
