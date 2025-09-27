@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>星宏的部落格 | 學習音樂與電腦的分享網站</title>
+  <meta name="description" content="你好，我是星宏，一名對環境、交通與電腦科學有興趣的小學生。這裡是我的筆記、作品分享與留言板。">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="favicon180.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N0D6F5HQRR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-N0D6F5HQRR');
+</script>
+
+<body>
+  <header>
+    <h1>星宏的部落格</h1>
+  </header>
+
+  <div class="container">
+    <div class="spacer"></div>
+
+    <!-- 關於我 -->
+    <section>
+      <h2>關於我</h2>
+      <div class="typewriter-container">
+        <span id="typing-text"></span><span class="cursor" id="cursor"></span>
+      </div>
+      <img id="avatar" src="andrew.png" alt="小宏" style="cursor:pointer;">
+    </section>
+    
+<!-- 任務區塊，預設隱藏 -->
+<section id="task-section" style="display:none;margin-top:20px;">
+  <h2>小宏任務挑戰</h2>
+  <p>完成任務可獲得徽章，回首頁即可查看！</p>
+  <button onclick="goTask()">開始任務</button>
+
+  <div id="badges">
+    <h3>你已獲得的徽章：</h3>
+    <div id="badgeList"></div>
+  </div>
+</section>
+
+<script>
+  // 彈跳徽章動畫
+  function showBadges() {
+    let badges = JSON.parse(localStorage.getItem("badges") || "[]");
+    let container = document.getElementById("badgeList");
+    container.innerHTML = "";
+    if (badges.length === 0) {
+      container.innerHTML = "<p>你還沒有徽章，快去完成任務吧！</p>";
+    } else {
+      badges.forEach((b,i)=>{
+        let div = document.createElement("div");
+        div.className="badge"; div.innerText=b;
+        div.style.animationDelay = `${i*0.2}s`;
+        container.appendChild(div);
+        div.animate([{transform:'translateY(0px)'},{transform:'translateY(-10px)'},{transform:'translateY(0px)'}],
+          {duration:800,iterations:Infinity,delay:i*200});
+      });
+    }
+  }
+  showBadges();
+
+  // 隱藏入口：點三下開任務區
+  let avatar = document.getElementById("avatar");
+  let clickCount = 0;
+  let timer = null;
+  avatar.addEventListener("click", ()=>{
+    clickCount++;
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(()=>{clickCount=0;},800); // 0.8秒內三下
+    if(clickCount===3){
+      document.getElementById("task-section").style.display="block";
+      clickCount=0;
+    }
+  });
+
+  // 點「開始任務」生成臨時驗證碼
+  function goTask(){
+    let token = Math.random().toString(36).substring(2,10);
+    sessionStorage.setItem("taskToken", token);
+    location.href = "task.html?key="+token;
+  }
+</script>
+
+<style>
+  .badge {display:inline-block;margin:5px;padding:8px 12px;background:#ffcc00;color:#333;border-radius:6px;font-weight:bold;font-size:16px;}
+  #task-section button{padding:12px 24px;background:#8a2be2;color:white;border:none;border-radius:8px;cursor:pointer;}
+  #task-section button:hover{background:#6a1fbf;}
+</style>
+
+
+    <!-- 用途 -->
+    <section>
+      <h2>用途</h2>
+      <p>提供留言功能，讓使用者可以在我的網站上分享想法與心得。所有留言都會安全儲存在資料庫中。</p>
+    </section>
+
+    <!-- 聯絡我 -->
+    <section>
+      <h2>聯絡我</h2>
+      <p>你可以通過以下方式聯絡我：</p>
+      <p><strong>📧 電子郵件：</strong><a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a></p>
+      <h2>其他連結</h2>
+      <p><strong>🌐 電子名片：</strong><a href="https://andrew.000.pe/name" target="_blank">andrew.000.pe/name</a></p>
+      <p><strong>📝 我的日記：</strong><a href="https://andrew0205blog.blogspot.com/" target="_blank">andrew0205blog.blogspot.com/</a></p>
+
+      <!-- 語言切換 -->
+      <h2>切換語言 Switch Language</h2>
+      <button onclick="go()">English</button>
+    </section>
+
+   <!-- 留言板 -->
+<h2>留言板</h2>
+<p>
+  歡迎大家在這裡自由交流、分享生活點滴或想法！<br>
+  為了讓大家都有愉快的使用體驗，留言時請遵守
+  <a href="commentrules.html" target="_blank">留言板規則</a>。
+</p>
+<p>這裡是讓大家輕鬆聊天的地方，希望你能在遵守規則的同時，享受自在分享的樂趣！</p>
+
+<section id="comment-section">
+  <div id="comment-box">
+    <input type="text" id="name" placeholder="名字" />
+    <textarea id="message" placeholder="留言內容"></textarea>
+    <button onclick="addComment()">送出留言</button>
+    <div id="messages"></div>
+  </div>
+</section>
+
+
+    <p class="last-updated">📅 最後更新:2025 年 9 月 15 日</p>
+  </div>
+
+  <footer>
+    © 2025 星宏工作室<br>
+     <a href="https://andrew.000.pe/privacy.html" target="_blank">隱私權政策</a>|<a href="terms.html" target="_blank">服務條款</a>
+  </footer>
+
+ 
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
+
+<script>
+  // Firebase 設定
+  const firebaseConfig = {
+    apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
+    authDomain: "mycomment-ad1ba.firebaseapp.com",
+    projectId: "mycomment-ad1ba",
+    storageBucket: "mycomment-ad1ba.appspot.com",
+    messagingSenderId: "1076313273646",
+    appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
+    measurementId: "G-3NGHCWH7TP"
+  };
+
+  // 初始化
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // 簡單的 XSS 防護：過濾輸入
+  function sanitize(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // 新增留言
+  function addComment() {
+    const name = document.getElementById("name").value.trim();
+    const message = document.getElementById("message").value.trim();
+    if (!name || !message) { 
+      alert("請輸入名字和留言！");
+      return;
+    }
+    db.collection("comment").add({
+      name: sanitize(name),
+      message: sanitize(message),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById("message").value = "";
+  }
+
+ const messagesDiv = document.getElementById("messages");
+
+db.collection("comment").orderBy("timestamp", "desc")
+  .onSnapshot(snapshot => {
+    messagesDiv.innerHTML = "";
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const time = data.timestamp ? data.timestamp.toDate().toLocaleString() : "（時間未知）";
+      messagesDiv.innerHTML += `
+        <div class="comment-card">
+          <b>${data.name}</b>
+          <p>${data.message}</p>
+          <small>${time}</small>
+        </div>
+      `;
+    });
+  });
+
+
+</script>
+
+
+  
+
+  <!-- 打字效果 -->
+  <script>
+    const text = `大家好，我是星宏，也可以叫我小宏，是一位充滿好奇心的小學生！
+我對生活中很多事物都感到興趣，尤其是跟交通有關的，例如捷運、火車和輕軌系統，這些都是我最喜歡研究的主題。
+除了對交通有熱情，我也喜歡自己動手做網站、畫畫，還會彈鋼琴。
+有時候我會用電腦寫一些簡單的網頁程式，把我的興趣做成小作品分享在網路上。
+這個網站是我親手建立的，裡面記錄了我對各種主題的想法和創意。
+如果你也是喜歡交通、音樂、或做網站的人，歡迎來和我交流！
+也可以看看[ 我的日記](https://andrew0205blog.blogspot.com/)，了解我的日常生活。
+我會繼續努力學習，讓自己的作品越來越豐富，說不定有一天，我真的能設計出一條屬於自己的捷運線喔！`;
+
+    const output = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
+
+    let i = 0;
+    const totalTypingTime = 17000; // 17秒
+    const interval = totalTypingTime / text.length;
+
+    function typeEffect() {
+      if (i >= text.length) return;
+
+      if (text[i] === '[') {
+        const endBracket = text.indexOf(']', i);
+        const linkText = text.slice(i + 1, endBracket);
+        const startParen = text.indexOf('(', endBracket);
+        const endParen = text.indexOf(')', startParen);
+        const url = text.slice(startParen + 1, endParen);
+
+        const linkEl = document.createElement("a");
+        linkEl.href = url;
+        linkEl.target = "_blank";
+        linkEl.style.color = "#4CAF50";
+        linkEl.style.textDecoration = "underline";
+        output.appendChild(linkEl);
+
+        let j = 0;
+        function typeLink() {
+          if (j < linkText.length) {
+            linkEl.innerHTML += linkText[j];
+            j++;
+            setTimeout(typeLink, interval);
+          } else {
+            i = endParen + 1;
+            setTimeout(typeEffect, interval);
+          }
+        }
+        typeLink();
+        return;
+      }
+
+      if (text[i] === '\n') {
+        output.innerHTML += "<br>";
+      } else {
+        output.innerHTML += text[i];
+      }
+
+      i++;
+      setTimeout(typeEffect, interval);
+    }
+
+    // 啟動打字機效果
+    typeEffect();
+
+    // 游標閃爍
+    setInterval(() => {
+      cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
+    }, 500);
+  </script>
+
+  <!-- 語言切換 -->
+  <script>
+    function go() {
+      const btn = document.querySelector("section button");
+      if (btn.innerHTML === "English") {
+        const answer = confirm("你要切換成英文嗎？ Do you want to switch to English?");
+        if (answer) {
+          window.location.href = "https://andrew.000.pe/english.html";
+        } else {
+          btn.innerHTML = "中文";
+        }
+      } else {
+        const answer = confirm("要切回中文嗎？ Switch back to Chinese?");
+        if (answer) {
+          btn.innerHTML = "English";
+        } else {
+          alert("你選擇留在中文模式！");
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
