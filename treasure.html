@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>尋寶任務</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6dzVr4YbIIOIgKrHS3J-hr_d_6dLLGag0Uw&s") no-repeat center center;
+      background-size: cover;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    #treasure-room img {
+      width: 100px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #treasure-room img:hover {
+      transform: scale(1.1);
+    }
+    #treasure-success {
+      display: none;
+      position: absolute;
+      top: 350px;
+      left: 300px;
+      font-size: 20px;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 寶藏室圖片 -->
+  <div id="treasure-room" style="position: absolute; bottom:145px;left:670px; font-size:100px; ">
+    <p>🎁</p>
+  </div>
+
+  <!-- 任務完成提示 -->
+  <div id="treasure-success">
+    🎉 恭喜你找到寶藏！你獲得了「尋寶徽章」
+  </div>
+
+  <script>
+    const treasureRoom = document.getElementById("treasure-room");
+    const treasureSuccess = document.getElementById("treasure-success");
+
+    treasureRoom.addEventListener("click", () => {
+      // 顯示任務完成提示
+      treasureSuccess.style.display = "block";
+
+      // 存徽章到 localStorage
+      let badges = JSON.parse(localStorage.getItem("badges") || "[]");
+      if (!badges.includes("尋寶徽章")) {
+        badges.push("尋寶徽章");
+        localStorage.setItem("badges", JSON.stringify(badges));
+      }
+
+      // 5 秒後自動隱藏提示
+      setTimeout(() => {
+        treasureSuccess.style.display = "none";
+      }, 5000); // 5000 毫秒 = 5 秒
+    });
+  </script>
+
+</body>
+</html>
