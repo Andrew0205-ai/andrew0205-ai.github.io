@@ -6,6 +6,5 @@ ErrorDocument 500 /500.html
 ErrorDocument 403 /403.html
 ErrorDocument 503 /503.html
 ErrorDocument 429 /429.html
-Redirect 301 / https://andrew0205-ai.github.io/
 
 
