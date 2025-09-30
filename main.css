@@ -84,6 +84,7 @@ footer {
   margin: 20px auto;
   max-width: 100%;
   height: auto;
+  left:200px
 }
 
 /* Sections */
@@ -147,3 +148,4 @@ button:hover {
   color: #666;
   font-size: 0.8em;
 }
+
