@@ -13,6 +13,7 @@
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; color: #333; }
           h1 { color: #444; }
+          p { font-size: 14px; color: #666; }
           table { border-collapse: collapse; width: 100%; margin-top: 20px; }
           th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
           th { background: #eee; }
@@ -21,6 +22,7 @@
       </head>
       <body>
         <h1>Sitemap 頁面清單</h1>
+        <p>📊 總共有 <xsl:value-of select="count(s:urlset/s:url)"/> 個頁面</p>
         <table>
           <tr>
             <th>網址 (loc)</th>
@@ -29,6 +31,8 @@
             <th>優先權 (priority)</th>
           </tr>
           <xsl:for-each select="s:urlset/s:url">
+            <!-- 依 lastmod 由新到舊排序 -->
+            <xsl:sort select="s:lastmod" data-type="text" order="descending"/>
             <tr>
               <td><a href="{s:loc}" target="_blank"><xsl:value-of select="s:loc"/></a></td>
               <td><xsl:value-of select="s:lastmod"/></td>
