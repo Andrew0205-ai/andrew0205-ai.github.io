@@ -147,163 +147,17 @@
   <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
-
-<script>
-  // Firebase 設定
-  const firebaseConfig = {
-    apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
-    authDomain: "mycomment-ad1ba.firebaseapp.com",
-    projectId: "mycomment-ad1ba",
-    storageBucket: "mycomment-ad1ba.appspot.com",
-    messagingSenderId: "1076313273646",
-    appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
-    measurementId: "G-3NGHCWH7TP"
-  };
-
-  // 初始化
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // 簡單的 XSS 防護：過濾輸入
-  function sanitize(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  // 新增留言
-  function addComment() {
-    const name = document.getElementById("name").value.trim();
-    const message = document.getElementById("message").value.trim();
-    if (!name || !message) { 
-      alert("請輸入名字和留言！");
-      return;
-    }
-    db.collection("comment").add({
-      name: sanitize(name),
-      message: sanitize(message),
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    document.getElementById("message").value = "";
-  }
-
- const messagesDiv = document.getElementById("messages");
-
-db.collection("comment").orderBy("timestamp", "desc")
-  .onSnapshot(snapshot => {
-    messagesDiv.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const time = data.timestamp ? data.timestamp.toDate().toLocaleString() : "（時間未知）";
-      messagesDiv.innerHTML += `
-        <div class="comment-card">
-          <b>${data.name}</b>
-          <p>${data.message}</p>
-          <small>${time}</small>
-        </div>
-      `;
-    });
-  });
-
-
-</script>
-
+<script src="firebase.js"></script>
 
   
 
   <!-- 打字效果 -->
-  <script>
-    const text = `大家好，我是小宏，是一位充滿好奇心的小學生！
-我對生活中很多事物都感到興趣，尤其是跟交通有關的，例如捷運、火車和輕軌系統，這些都是我最喜歡研究的主題。
-除了對交通有熱情，我也喜歡自己動手做網站、畫畫，還會彈鋼琴。
-有時候我會用電腦寫一些簡單的網頁程式，把我的興趣做成小作品分享在網路上。
-這個網站是我親手建立的，裡面記錄了我對各種主題的想法和創意。
-如果你也是喜歡交通、音樂、或做網站的人，歡迎來和我交流！
-也可以看看[ 我的日記](https://andrew0205blog.blogspot.com/)，了解我的日常生活。
-我會繼續努力學習，讓自己的作品越來越豐富，說不定有一天，我真的能設計出一條屬於自己的捷運線喔！`;
+ <script src="type.js"></script>
 
-    const output = document.getElementById("typing-text");
-    const cursor = document.getElementById("cursor");
-
-    let i = 0;
-    const totalTypingTime = 17000; // 17秒
-    const interval = totalTypingTime / text.length;
-
-    function typeEffect() {
-      if (i >= text.length) return;
-
-      if (text[i] === '[') {
-        const endBracket = text.indexOf(']', i);
-        const linkText = text.slice(i + 1, endBracket);
-        const startParen = text.indexOf('(', endBracket);
-        const endParen = text.indexOf(')', startParen);
-        const url = text.slice(startParen + 1, endParen);
-
-        const linkEl = document.createElement("a");
-        linkEl.href = url;
-        linkEl.target = "_blank";
-        linkEl.style.color = "#4CAF50";
-        linkEl.style.textDecoration = "underline";
-        output.appendChild(linkEl);
-
-        let j = 0;
-        function typeLink() {
-          if (j < linkText.length) {
-            linkEl.innerHTML += linkText[j];
-            j++;
-            setTimeout(typeLink, interval);
-          } else {
-            i = endParen + 1;
-            setTimeout(typeEffect, interval);
-          }
-        }
-        typeLink();
-        return;
-      }
-
-      if (text[i] === '\n') {
-        output.innerHTML += "<br>";
-      } else {
-        output.innerHTML += text[i];
-      }
-
-      i++;
-      setTimeout(typeEffect, interval);
-    }
-
-    // 啟動打字機效果
-    typeEffect();
-
-    // 游標閃爍
-    setInterval(() => {
-      cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
-    }, 500);
-  </script>
 
   <!-- 語言切換 -->
-  <script>
-    function go() {
-      const btn = document.querySelector("section button");
-      if (btn.innerHTML === "English") {
-        const answer = confirm("你要切換成英文嗎？ Do you want to switch to English?");
-        if (answer) {
-          window.location.href = "https://andrew.000.pe/english.html";
-        } else {
-          btn.innerHTML = "中文";
-        }
-      } else {
-        const answer = confirm("要切回中文嗎？ Switch back to Chinese?");
-        if (answer) {
-          btn.innerHTML = "English";
-        } else {
-          alert("你選擇留在中文模式！");
-        }
-      }
-    }
-  </script>
+  <script src="lan.js"></script>
+
 
 </body>
 </html>
