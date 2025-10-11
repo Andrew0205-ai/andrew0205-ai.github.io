@@ -172,5 +172,78 @@ button:hover {
 #task-section button:hover {
   background: #6a1fbf;
 }
+/*  深／淺色主題樣式設定 */
+:root {
+  --bg-light: #ffffff;
+  --text-light: #000000;
+  --header-light: #4CAF50;
+  --btn-light: #4CAF50;
+  --btn-hover-light: #45a049;
+
+  --bg-dark: #121212;
+  --text-dark: #ffffff;
+  --header-dark: #2e7d32;
+  --btn-dark: #2e7d32;
+  --btn-hover-dark: #1b5e20;
+
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* 淺色模式 */
+[data-theme="light"] {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+[data-theme="light"] header {
+  background-color: var(--header-light);
+}
+
+[data-theme="light"] button {
+  background-color: var(--btn-light);
+  color: white;
+}
+
+[data-theme="light"] button:hover {
+  background-color: var(--btn-hover-light);
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+[data-theme="dark"] header {
+  background-color: var(--header-dark);
+}
+
+[data-theme="dark"] button {
+  background-color: var(--btn-dark);
+  color: white;
+}
+
+[data-theme="dark"] button:hover {
+  background-color: var(--btn-hover-dark);
+}
+
+/* 按鈕特效 */
+#themeToggle:hover {
+  transform: rotate(20deg);
+}
+
+/* 留言板與卡片跟隨主題變化 */
+#comment-section {
+  background-color: inherit;
+  color: inherit;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.comment-card {
+  background-color: rgba(76,175,80,0.1);
+  border: 1px solid rgba(0,0,0,0.15);
+  color: inherit;
+  transition: background-color 0.4s, color 0.4s;
+}
 
 
