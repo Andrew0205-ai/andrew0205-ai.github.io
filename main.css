@@ -244,4 +244,6 @@ button:hover {
   transition: background-color 0.4s, color 0.4s;
 }
 
-
+#themeToggle {
+  z-index: 2001;
+}
