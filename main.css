@@ -80,11 +80,9 @@ footer {
 
 /* Images */
 .image-center {
-  display: block;
-  margin: 20px auto;
+  display: block;
   max-width: 100%;
   height: auto;
-  left:500px;
 }
 
 /* Sections */
