@@ -1,3 +1,4 @@
+/* 基本結構 */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -80,7 +81,7 @@ footer {
 
 /* Images */
 .image-center {
-  display: block;
+  display: block;
   max-width: 100%;
   height: auto;
 }
@@ -146,6 +147,7 @@ button:hover {
   color: #666;
   font-size: 0.8em;
 }
+
 /* 額外樣式 */
 .badge {
   display: inline-block;
@@ -169,8 +171,7 @@ button:hover {
 
 #task-section button:hover {
   background: #6a1fbf;
-}
-/*  深／淺色主題樣式設定 */
+}/* 深／淺色主題樣式設定 */
 :root {
   --bg-light: #ffffff;
   --text-light: #000000;
@@ -242,6 +243,11 @@ button:hover {
   border: 1px solid rgba(0,0,0,0.15);
   color: inherit;
   transition: background-color 0.4s, color 0.4s;
+}
+
+[data-theme="dark"] .comment-card {
+  background-color: rgba(76,175,80,0.2);
+  border-color: rgba(255,255,255,0.15);
 }
 
 #themeToggle {
