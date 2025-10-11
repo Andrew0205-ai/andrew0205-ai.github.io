@@ -1,5 +1,4 @@
 <!--  主題切換邏輯 -->
-<script>
 const savedTheme = localStorage.getItem('theme');
 const userPrefDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const theme = savedTheme || (userPrefDark ? 'dark' : 'light');
@@ -18,4 +17,3 @@ function updateIcon(theme) {
   const btn = document.getElementById('themeToggle');
   btn.textContent = theme === 'light' ? '🌞' : '🌙';
 }
-</script>
