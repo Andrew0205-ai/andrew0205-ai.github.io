@@ -1,11 +1,10 @@
+/* 網頁主體 */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
   color: #333;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -20,19 +19,15 @@ header {
   top: 0;
   left: 0;
   z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 /* Container */
 .container {
   padding: 20px;
-  padding-top: 70px;
-  flex: 1;
+  padding-top: 80px;
   max-width: 90%;
   margin: auto;
-}
-
-.spacer {
-  height: 50px;
 }
 
 /* Typewriter effect */
@@ -53,6 +48,7 @@ header {
   background-color: #666666;
   display: inline-block;
   vertical-align: middle;
+  animation: blink 0.8s infinite;
 }
 
 @keyframes blink {
@@ -67,18 +63,19 @@ footer {
   color: white;
   text-align: center;
   padding: 10px 0;
-  margin-top: auto;
+  margin-top: 40px;
   width: 100%;
 }
 
+/* 最後更新日期 */
 .last-updated {
   text-align: center;
   font-size: 0.9em;
   color: #888;
-  margin-bottom: 20px;
+  margin-top: 30px;
 }
 
-/* Images */
+/* 圖片置中 */
 .image-center {
   display: block;
   margin: 20px auto;
@@ -86,17 +83,21 @@ footer {
   height: auto;
 }
 
-/* Sections */
+/* 各段落 */
 section {
   margin-bottom: 30px;
 }
 
-/* Forms */
+/* 表單樣式 */
 input,
 textarea {
   width: 100%;
   padding: 10px;
   margin: 5px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 1em;
 }
 
 button {
@@ -113,25 +114,25 @@ button:hover {
   background: #45a049;
 }
 
-/* Messages */
+/* 留言板 */
+#comment-section {
+  text-align: left;
+  margin: 0 auto;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
 #messages {
   margin-top: 20px;
 }
 
-#messages small {
-  color: #555;
-}
-
-/* Comment section */
-#comment-section {
-  text-align: left;
-  margin-left: 0;
-  max-width: 400px;
-}
-
+/* 單一留言卡 */
 .comment-card {
-  background: lightgreen;
-  border: 1px solid #dddddd72;
+  background: #e8f5e9;
+  border: 1px solid #d0e6d3;
   border-radius: 8px;
   padding: 10px 15px;
   margin-bottom: 12px;
@@ -146,4 +147,29 @@ button:hover {
 .comment-card small {
   color: #666;
   font-size: 0.8em;
+}
+
+/* 任務徽章 */
+.badge {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  background: #ffcc00;
+  color: #333;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#task-section button {
+  padding: 12px 24px;
+  background: #8a2be2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#task-section button:hover {
+  background: #6a1fbf;
 }
