@@ -79,8 +79,7 @@ footer {
 .image-center {
   display: block;
   margin: 20px auto;
-  max-width: 100%;
-  height: auto;
+ 
 }
 
 /* 各段落 */
@@ -173,3 +172,4 @@ button:hover {
 #task-section button:hover {
   background: #6a1fbf;
 }
+
