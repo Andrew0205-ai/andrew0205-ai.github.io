@@ -53,7 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const token = Math.random().toString(36).substring(2, 10);
         sessionStorage.setItem("taskToken", token);
         alert("🎯 成功啟動任務模式！");
-        window.location.href = "task-select.html?key=" + token;
+        window.location.href = "ship.html?key=" + token;
         clickCount = 0;
       }
     });
