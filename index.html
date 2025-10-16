@@ -42,17 +42,17 @@
       <img id="avatar" src="andrew.png" alt="小宏"  style="cursor:pointer;">
     </section>
 
-    <!-- 任務區塊（預設隱藏） -->
-    <section id="task-section" style="display:none;margin-top:20px;">
-      <h2>小宏任務挑戰</h2>
-      <p>完成任務可獲得徽章，回首頁即可查看！</p>
-      <button onclick="goTask()">開始任務</button>
+    <section id="task-section" class="hidden">
+  <h2>小宏任務挑戰</h2>
+  <p>完成任務可獲得徽章，回首頁即可查看！</p>
+  <button onclick="goTask()">開始任務</button>
+  <button onclick="closeTask()">返回</button>
 
-      <div id="badges">
-        <h3>你已獲得的徽章：</h3>
-        <div id="badgeList"></div>
-      </div>
-    </section>
+  <div id="badges">
+    <h3>你已獲得的徽章：</h3>
+    <div id="badgeList"></div>
+  </div>
+</section>
 
     <!-- 用途 -->
     <section>
