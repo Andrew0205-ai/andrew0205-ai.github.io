@@ -166,4 +166,14 @@ button:hover {
 #task-section button:hover {
   background: #6a1fbf;
 }
+.hidden {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.show {
+  display: block;
+  opacity: 1;
+}
 
