@@ -85,7 +85,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const messages = [
       "💪 加油，小宏一定能完成任務！",
       "🌈 不急，慢慢來也沒關係喔～",
-      "⭐ 下次再挑戰吧，小宏最棒了！",
+      "⭐ 下次再挑戰吧，你最棒了！",
       "🚀 我相信你一定能成功！"
     ];
     const msg = messages[Math.floor(Math.random() * messages.length)];
