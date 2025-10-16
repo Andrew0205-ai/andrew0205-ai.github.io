@@ -50,9 +50,9 @@ window.addEventListener("DOMContentLoaded", () => {
       lastClickTime = now;
 
       if (clickCount === 3) {
-        // ✅ 成功三下 → 顯示任務區塊
         alert("🎯 成功啟動任務模式！");
-        taskSection.style.display = "block";
+        taskSection.classList.remove("hidden");
+        taskSection.classList.add("show");
 
         // 🔆 小動畫提示任務已啟動
         secretImg.animate(
@@ -74,5 +74,21 @@ window.addEventListener("DOMContentLoaded", () => {
     const token = Math.random().toString(36).substring(2, 10);
     sessionStorage.setItem("taskToken", token);
     window.location.href = "ship.html?key=" + token;
+  };
+
+  // 「返回」按鈕功能
+  window.closeTask = function () {
+    taskSection.classList.remove("show");
+    taskSection.classList.add("hidden");
+
+    // 🌟 小彩蛋：隨機鼓勵語
+    const messages = [
+      "💪 加油，小宏一定能完成任務！",
+      "🌈 不急，慢慢來也沒關係喔～",
+      "⭐ 下次再挑戰吧，小宏最棒了！",
+      "🚀 我相信你一定能成功！"
+    ];
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    alert(msg);
   };
 });
