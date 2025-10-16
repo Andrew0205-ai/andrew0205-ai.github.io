@@ -2,7 +2,7 @@
 
 window.addEventListener("DOMContentLoaded", () => {
   const badgeContainer = document.getElementById("badgeList");
-  const secretImg = document.getElementById("小宏"); // 你的圖片 ID
+  const secretImg = document.getElementById("avatar"); // 圖片 ID
   let clickCount = 0;
   let lastClickTime = 0;
 
