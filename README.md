@@ -17,7 +17,7 @@
 
 ## 網站預覽
 
-![網站預覽](https://i.imgur.com/你的圖片連結.png)  
+![網站預覽](https://i.meee.com.tw/JYVlKzJ.png.png)  
 > 可以將上面連結換成你網站的截圖或展示圖
 
 ## 使用方式
