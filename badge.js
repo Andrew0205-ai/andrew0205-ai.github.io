@@ -3,6 +3,7 @@
 window.addEventListener("DOMContentLoaded", () => {
   const badgeContainer = document.getElementById("badgeList");
   const secretImg = document.getElementById("avatar"); // 圖片 ID
+  const taskSection = document.getElementById("task-section");
   let clickCount = 0;
   let lastClickTime = 0;
 
@@ -37,25 +38,41 @@ window.addEventListener("DOMContentLoaded", () => {
 
   showBadges();
 
-  // ⚙️ 點三下圖片觸發任務
+  // ⚙️ 點三下圖片觸發任務區塊
   if (secretImg) {
     secretImg.addEventListener("click", () => {
       const now = Date.now();
-      // 如果兩次點擊間隔太久 (>1.2秒)，就重算
-      if (now - lastClickTime > 1200) {
-        clickCount = 0;
-      }
+
+      // 點擊間隔太久則重算
+      if (now - lastClickTime > 1200) clickCount = 0;
+
       clickCount++;
       lastClickTime = now;
 
       if (clickCount === 3) {
-        // ✅ 成功三下，生成 token 並導向任務頁
-        const token = Math.random().toString(36).substring(2, 10);
-        sessionStorage.setItem("taskToken", token);
+        // ✅ 成功三下 → 顯示任務區塊
         alert("🎯 成功啟動任務模式！");
-        window.location.href = "ship.html?key=" + token;
+        taskSection.style.display = "block";
+
+        // 🔆 小動畫提示任務已啟動
+        secretImg.animate(
+          [
+            { transform: "scale(1)" },
+            { transform: "scale(1.2)" },
+            { transform: "scale(1)" }
+          ],
+          { duration: 500 }
+        );
+
         clickCount = 0;
       }
     });
   }
+
+  // 「開始任務」按鈕功能
+  window.goTask = function () {
+    const token = Math.random().toString(36).substring(2, 10);
+    sessionStorage.setItem("taskToken", token);
+    window.location.href = "ship.html?key=" + token;
+  };
 });
