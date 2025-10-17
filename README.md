@@ -17,8 +17,7 @@
 
 ## 網站預覽
 
-![網站預覽](https://i.meee.com.tw/JYVlKzJ.png)  
-
+<img src="https://i.meee.com.tw/JYVlKzJ.png" alt="網站預覽" width="600">
 
 ## 使用方式
 
