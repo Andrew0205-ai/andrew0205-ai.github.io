@@ -21,7 +21,7 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 // 登入
-export function login() {
+function login() {
   signInWithPopup(auth, provider)
     .then(result => {
       console.log("登入成功：", result.user.displayName);
@@ -32,7 +32,7 @@ export function login() {
 }
 
 // 登出
-export function logout() {
+function logout() {
   signOut(auth);
 }
 
