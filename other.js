@@ -3,7 +3,7 @@
 
     // 留言防呆與清空
     function addComment() {
-      const name = document.getElementById('name').value.trim();
+    
       const message = document.getElementById('message').value.trim();
       const messagesDiv = document.getElementById('messages');
 
