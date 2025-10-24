@@ -76,22 +76,38 @@
     </section>
 
     <!-- 留言板 -->
-    <section id="comment-section">
-      <h2>留言板</h2>
-      <p>
-        歡迎大家在這裡自由交流、分享生活點滴或想法！<br>
-        為了讓大家都有愉快的使用體驗，留言時請遵守
-        <a href="commentrules.html" target="_blank">留言板規則</a>。
-      </p>
-      <p>這裡是讓大家輕鬆聊天的地方，希望你能在遵守規則的同時，享受自在分享的樂趣！</p>
+<section id="comment-section">
+  <h2>留言板</h2>
+  <p>
+    歡迎大家在這裡自由交流、分享生活點滴或想法！<br>
+    為了讓大家都有愉快的使用體驗，留言時請遵守
+    <a href="commentrules.html" target="_blank">留言板規則</a>。
+  </p>
 
-      <div id="comment-box">
-        <input type="text" id="name" placeholder="名字" />
-        <textarea id="message" placeholder="留言內容"></textarea>
-        <button onclick="addComment()">送出留言</button>
-        <div id="messages"></div>
-      </div>
-    </section>
+  <div id="user-info" style="display:none; align-items:center; gap:10px; margin-bottom:10px;">
+    <img id="user-photo" src="" alt="使用者頭像" style="width:40px;height:40px;border-radius:50%;">
+    <span id="user-name"></span>
+    <button onclick="logout()">登出</button>
+  </div>
+
+  <div id="login-box">
+    <button onclick="login()">使用 Google 登入</button>
+  </div>
+
+  <div id="comment-box" style="display:none;">
+    <textarea id="message" placeholder="留言內容"></textarea>
+    <button onclick="addComment()">送出留言</button>
+  </div>
+
+  <div id="messages"></div>
+</section>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+
 
     <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
   </main>
