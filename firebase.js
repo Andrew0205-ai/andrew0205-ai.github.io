@@ -1,24 +1,28 @@
-// 初始化 Firebase（僅載入一次）
-if (!firebase.apps.length) {
-  const firebaseConfig = {
-    apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
-    authDomain: "mycomment-ad1ba.firebaseapp.com",
-    projectId: "mycomment-ad1ba",
-    storageBucket: "mycomment-ad1ba.appspot.com",
-    messagingSenderId: "1076313273646",
-    appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
-    measurementId: "G-3NGHCWH7TP"
-  };
-  firebase.initializeApp(firebaseConfig);
-}
+// 匯入 Firebase 套件（v10 模組化語法）
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const db = firebase.firestore();
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
+// 🔧 Firebase 設定
+const firebaseConfig = {
+  apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
+  authDomain: "mycomment-ad1ba.firebaseapp.com",
+  projectId: "mycomment-ad1ba",
+  storageBucket: "mycomment-ad1ba.appspot.com",
+  messagingSenderId: "1076313273646",
+  appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
+  measurementId: "G-3NGHCWH7TP"
+};
+
+// 初始化 Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 // 登入
-function login() {
-  auth.signInWithPopup(provider)
+export function login() {
+  signInWithPopup(auth, provider)
     .then(result => {
       console.log("登入成功：", result.user.displayName);
     })
@@ -28,12 +32,12 @@ function login() {
 }
 
 // 登出
-function logout() {
-  auth.signOut();
+export function logout() {
+  signOut(auth);
 }
 
 // 監聽登入狀態
-auth.onAuthStateChanged(user => {
+onAuthStateChanged(auth, user => {
   const userInfo = document.getElementById("user-info");
   const loginBox = document.getElementById("login-box");
   const commentBox = document.getElementById("comment-box");
@@ -50,3 +54,4 @@ auth.onAuthStateChanged(user => {
     commentBox.style.display = "none";
   }
 });
+
