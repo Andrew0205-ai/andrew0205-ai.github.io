@@ -54,4 +54,22 @@ onAuthStateChanged(auth, user => {
     commentBox.style.display = "none";
   }
 });
+window.addComment = async function() {
+  const name = sanitize(nameInput.value.trim());
+  const message = sanitize(messageInput.value.trim());
+
+  if (!name || !message) {
+    alert("請輸入名字和留言！");
+    return;
+  }
+
+  await addDoc(collection(db, "comment"), {
+    name,
+    message,
+    timestamp: serverTimestamp()
+  });
+
+  messageInput.value = "";
+};
+
 
