@@ -35,6 +35,15 @@ function login() {
 function logout() {
   signOut(auth);
 }
+// 簡單過濾輸入
+function sanitize(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 // 監聽登入狀態
 onAuthStateChanged(auth, user => {
