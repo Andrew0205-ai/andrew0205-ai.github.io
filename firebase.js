@@ -19,7 +19,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 const db = getFirestore(app);
+
 
 // DOM 元素（確保你的 HTML 有相對應 id）
 const loginBtn = document.getElementById("login-btn");
