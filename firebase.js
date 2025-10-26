@@ -1,10 +1,15 @@
-// firebase.js (v10 module)
+// ====================== Firebase.js (v10 模組化版本) ======================
+
 // 匯入 Firebase 套件
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { 
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+  getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Firebase 設定（請保留）
+// 🔧 Firebase 設定
 const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
   authDomain: "mycomment-ad1ba.firebaseapp.com",
@@ -15,28 +20,13 @@ const firebaseConfig = {
   measurementId: "G-3NGHCWH7TP"
 };
 
-// 初始化
+// 初始化 Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-const db = getFirestore(app);
 
-
-// DOM 元素（確保你的 HTML 有相對應 id）
-const loginBtn = document.getElementById("login-btn");
-const logoutBtn = document.getElementById("logout-btn");
-const userInfo = document.getElementById("user-info");
-const userPhoto = document.getElementById("user-photo");
-const userName = document.getElementById("user-name");
-const loginBox = document.getElementById("login-box");
-const commentBox = document.getElementById("comment-box");
-const sendBtn = document.getElementById("send-btn");
-const messagesDiv = document.getElementById("messages");
-const nameInput = document.getElementById("name");
-const messageInput = document.getElementById("message");
-
-// --- sanitize 防 XSS（一定要先定義） ---
+// --- 防止 XSS 攻擊 ---
 function sanitize(str) {
   if (typeof str !== "string") return "";
   return str
@@ -47,22 +37,27 @@ function sanitize(str) {
     .replace(/'/g, "&#039;");
 }
 
-// --- 登入 / 登出 ---
-if (loginBtn) {
-  loginBtn.addEventListener("click", () => {
-    signInWithPopup(auth, provider).catch(err => console.error("登入錯誤：", err));
-  });
-}
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => signOut(auth).catch(err => console.error("登出錯誤：", err)));
-}
+// === 登入 ===
+window.login = function() {
+  signInWithPopup(auth, provider)
+    .then(result => {
+      console.log("登入成功：", result.user.displayName);
+    })
+    .catch(error => {
+      console.error("登入錯誤：", error);
+    });
+};
 
-// --- 將 addComment 放到全域，對應 HTML 的 onclick（避免 ReferenceError） ---
-// 送出留言
-window.addComment = function() {
+// === 登出 ===
+window.logout = function() {
+  signOut(auth).catch(error => console.error("登出錯誤：", error));
+};
+
+// === 新增留言 ===
+window.addComment = async function() {
   const messageInput = document.getElementById("message");
   if (!messageInput) {
-    console.error("找不到輸入欄位（message）。請確認 HTML id 正確。");
+    console.error("❌ 找不到輸入欄位（message）。請確認 HTML id 正確。");
     return;
   }
 
@@ -78,48 +73,44 @@ window.addComment = function() {
     return;
   }
 
-  const comment = {
-    name: user.displayName,
-    photo: user.photoURL,
-    message: message,
-    uid: user.uid,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  };
-
-  db.collection("comments").add(comment)
-    .then(() => {
-      console.log("留言已送出！");
-      messageInput.value = "";
-    })
-    .catch(error => {
-      console.error("留言失敗：", error);
+  try {
+    await addDoc(collection(db, "comment"), {
+      name: user.displayName,
+      photo: user.photoURL,
+      message: message,
+      uid: user.uid,
+      timestamp: serverTimestamp()
     });
+    console.log("留言已送出！");
+    messageInput.value = "";
+  } catch (error) {
+    console.error("留言失敗：", error);
+  }
 };
 
-// 同時也綁 sendBtn（若你使用 id 綁定）
-if (sendBtn) {
-  sendBtn.addEventListener("click", () => {
-    // 若 HTML 同時有 onclick 和這裡，會呼叫兩次 => 建議僅保留一種
-    window.addComment();
-  });
-}
-
-// --- 刪除留言（若你要） ---
+// === 刪除留言 ===
 window.deleteComment = async function(docId) {
   if (!confirm("確定要刪除這則留言？")) return;
   try {
     await deleteDoc(doc(db, "comment", docId));
+    console.log("留言已刪除：", docId);
   } catch (e) {
     console.error("刪除失敗：", e);
-    alert("刪除失敗");
+    alert("刪除留言時發生錯誤！");
   }
 };
 
-// --- 監聽登入狀態，並切換 UI ---
+// === 監聽登入狀態並更新畫面 ===
 onAuthStateChanged(auth, user => {
+  const userInfo = document.getElementById("user-info");
+  const userPhoto = document.getElementById("user-photo");
+  const userName = document.getElementById("user-name");
+  const loginBox = document.getElementById("login-box");
+  const commentBox = document.getElementById("comment-box");
+
   if (user) {
     if (userPhoto) userPhoto.src = user.photoURL || "";
-    if (userName) userName.innerText = `👋 歡迎，${user.displayName || ""}`;
+    if (userName) userName.innerText = `👋 歡迎，${user.displayName}`;
     if (userInfo) userInfo.style.display = "flex";
     if (loginBox) loginBox.style.display = "none";
     if (commentBox) commentBox.style.display = "block";
@@ -130,37 +121,42 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-// --- 顯示留言（即時） ---
+// === 即時顯示留言 ===
+const messagesDiv = document.getElementById("messages");
 const q = query(collection(db, "comment"), orderBy("timestamp", "desc"));
+
 onSnapshot(q, snapshot => {
-  messagesDiv && (messagesDiv.innerHTML = "");
+  if (!messagesDiv) return;
+  messagesDiv.innerHTML = "";
+
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const id = docSnap.id;
-    const time = data.timestamp ? data.timestamp.toDate().toLocaleString() : "（時間未知）";
+    const time = data.timestamp
+      ? data.timestamp.toDate().toLocaleString()
+      : "（時間未知）";
 
     // 建立留言卡片
     const div = document.createElement("div");
     div.className = "comment-card";
     div.innerHTML = `
       <div style="display:flex;align-items:center;gap:8px;">
-        <img src="${data.photoURL || ''}" style="width:32px;height:32px;border-radius:50%;" alt="">
-        <b>${sanitize(data.name || (data.authorName || "訪客"))}</b>
+        <img src="${data.photo || ""}" style="width:32px;height:32px;border-radius:50%;" alt="">
+        <b>${sanitize(data.name || "訪客")}</b>
       </div>
       <p>${sanitize(data.message || "")}</p>
       <small>${time}</small>
     `;
 
-    // 若使用者已登入且為作者，顯示刪除按鈕（前端檢查，真正安全要靠 rules）
+    // 若為留言者本人則顯示刪除按鈕
     const currentUser = auth.currentUser;
-    if (currentUser && data.uid && currentUser.uid === data.uid) {
+    if (currentUser && data.uid === currentUser.uid) {
       const delBtn = document.createElement("button");
       delBtn.textContent = "🗑 刪除";
-      delBtn.style.marginLeft = "8px";
       delBtn.onclick = () => window.deleteComment(id);
       div.appendChild(delBtn);
     }
 
-    messagesDiv && messagesDiv.appendChild(div);
+    messagesDiv.appendChild(div);
   });
 });
