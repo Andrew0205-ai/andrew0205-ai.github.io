@@ -56,42 +56,42 @@ if (logoutBtn) {
 }
 
 // --- 將 addComment 放到全域，對應 HTML 的 onclick（避免 ReferenceError） ---
-window.addComment = async function() {
-  const nameEl = nameInput;
-  const msgEl = messageInput;
-  if (!nameEl || !msgEl) {
-    alert("找不到輸入欄位（name 或 message）。請確認 HTML id 正確。");
+// 送出留言
+window.addComment = function() {
+  const messageInput = document.getElementById("message");
+  if (!messageInput) {
+    console.error("找不到輸入欄位（message）。請確認 HTML id 正確。");
     return;
   }
 
-  const name = sanitize(nameEl.value.trim());
-  const message = sanitize(msgEl.value.trim());
-
-  if (!name || !message) {
-    alert("請輸入名字和留言！");
+  const message = sanitize(messageInput.value.trim());
+  if (!message) {
+    alert("請輸入留言內容！");
     return;
   }
 
-  try {
-    // 如果希望只有登入者可以留言，可改成檢查 auth.currentUser
-    const user = auth.currentUser;
-    const payload = {
-      name,
-      message,
-      timestamp: serverTimestamp()
-    };
-    if (user) {
-      payload.uid = user.uid;
-      payload.photoURL = user.photoURL || null;
-      payload.authorName = user.displayName || name;
-    }
-
-    await addDoc(collection(db, "comment"), payload);
-    msgEl.value = "";
-  } catch (e) {
-    console.error("新增留言失敗：", e);
-    alert("新增留言失敗，請稍後再試。");
+  const user = auth.currentUser;
+  if (!user) {
+    alert("請先登入再留言！");
+    return;
   }
+
+  const comment = {
+    name: user.displayName,
+    photo: user.photoURL,
+    message: message,
+    uid: user.uid,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  db.collection("comments").add(comment)
+    .then(() => {
+      console.log("留言已送出！");
+      messageInput.value = "";
+    })
+    .catch(error => {
+      console.error("留言失敗：", error);
+    });
 };
 
 // 同時也綁 sendBtn（若你使用 id 綁定）
