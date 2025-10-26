@@ -1,4 +1,7 @@
 // ====================== Firebase.js (v10 模組化版本) ======================
+// 修正 global 未定義錯誤（只需在前端執行時使用）
+window.global = window;
+
 
 // 匯入 Firebase 套件
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
