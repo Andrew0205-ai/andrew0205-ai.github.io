@@ -75,7 +75,7 @@
       <button onclick="go()">English</button>
     </section>
 
-    <!-- 留言板 -->
+   <!-- 留言板 -->
 <section id="comment-section">
   <h2>留言板</h2>
   <p>
@@ -95,12 +95,24 @@
   </div>
 
   <div id="comment-box" style="display:none;">
-    <textarea id="message" placeholder="留言內容"></textarea>
+    <input type="text" id="custom-name" placeholder="暱稱（可留空使用登入名稱）"><br>
+
+    <label>自訂頭像（選擇圖片）：
+      <input type="file" id="custom-photo" accept="image/*">
+    </label><br>
+
+    <textarea id="message" placeholder="留言內容"></textarea><br>
+
+    <label>
+      <input type="checkbox" id="anonymous"> 匿名留言
+    </label><br>
+
     <button onclick="addComment()">送出留言</button>
   </div>
 
   <div id="messages"></div>
 </section>
+
 
 
     <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
