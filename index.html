@@ -44,17 +44,12 @@
 
     <!-- 關於我 -->
     <section>
-<br>
-<br>
-<br>
-<br>
-<br>
       <h2>關於我與我的興趣</h2>
       <div class="typewriter-container">
         <span id="typing-text"></span><span class="cursor" id="cursor"></span>
       </div>
-      <img id="avatar" src="andrew.png" alt="星宏的個人頭像" style="cursor:pointer;">
-      
+      <img id="avatar" src="andrew.png" alt="星宏的個人頭像">
+      <p>你好，我是星宏，小學生，喜歡學習音樂、練習鋼琴，也熱衷於程式設計。這裡是我的個人部落格，分享學習筆記、程式專案與生活點滴，讓你一起探索學習與創作的樂趣。</p>
     </section>
 
     <!-- 任務挑戰 -->
@@ -91,8 +86,8 @@
       <h2>留言板與交流</h2>
       <p>歡迎在小宏的部落格留言板分享你的想法、學習經驗或生活點滴！這裡是一個安全的交流平台，讓大家互相學習與互動，提升留言板的活躍度。</p>
       
-      <div id="user-info" style="display:none; align-items:center; gap:10px; margin-bottom:10px;">
-        <img id="user-photo" src="" alt="使用者頭像" style="width:40px;height:40px;border-radius:50%;"> 
+      <div id="user-info">
+        <img id="user-photo" src="" alt="使用者頭像"> 
         <span id="user-name"></span>
         <button onclick="logout()">登出</button>
       </div>
@@ -104,7 +99,7 @@
       <div id="comment-box" style="display:none;">
         <input type="text" id="custom-name" placeholder="暱稱（可留空使用登入名稱）"><br>
         <input type="text" id="custom-photo-url" placeholder="自訂頭像 URL（可留空使用登入頭像）"><br>
-        <p class="com" style="color:gray;">註:如果是本地圖片，可到 <a class="com" href="https://meee.com.tw/" target="_blank" style="text-decoration:none;">這裡</a> 上傳</p>
+        <p class="com" style="color:gray;">註:如果是本地圖片，可到 <a class="com" href="https://meee.com.tw/" target="_blank">這裡</a> 上傳</p>
         <textarea id="message" placeholder="留言內容"></textarea><br>
         <label><input type="checkbox" id="anonymous"> 匿名留言 </label><br>
         <button onclick="addComment()">送出留言</button>
