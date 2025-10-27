@@ -1,4 +1,4 @@
-/* 網頁主體 */
+/* === 網頁主體 === */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -8,7 +8,7 @@ body {
   min-height: 100vh;
 }
 
-/* Header */
+/* === Header === */
 header {
   background-color: #4CAF50;
   color: white;
@@ -22,7 +22,7 @@ header {
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Container */
+/* === 主容器 === */
 .container {
   padding: 20px;
   padding-top: 80px;
@@ -30,7 +30,12 @@ header {
   margin: auto;
 }
 
-/* Typewriter effect */
+/* === spacer 區隔 === */
+.spacer {
+  height: 40px;
+}
+
+/* === 打字機效果 === */
 .typewriter-container {
   display: block;
   font-size: 1.2em;
@@ -57,7 +62,17 @@ header {
   }
 }
 
-/* Footer */
+/* === 頭像圖片 === */
+#avatar {
+  cursor: pointer;
+  display: block;
+  margin: 15px auto;
+  max-width: 180px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* === Footer === */
 footer {
   background-color: #4CAF50;
   color: white;
@@ -67,7 +82,7 @@ footer {
   width: 100%;
 }
 
-/* 最後更新日期 */
+/* === 最後更新日期 === */
 .last-updated {
   text-align: center;
   font-size: 0.9em;
@@ -75,13 +90,12 @@ footer {
   margin-top: 30px;
 }
 
-
-/* 各段落 */
+/* === 各段落 === */
 section {
   margin-bottom: 30px;
 }
 
-/* 表單樣式 */
+/* === 表單樣式 === */
 input,
 textarea {
   width: 100%;
@@ -107,7 +121,7 @@ button:hover {
   background: #45a049;
 }
 
-/* 留言板 */
+/* === 留言板 === */
 #comment-section {
   text-align: left;
   margin: 0 auto;
@@ -122,7 +136,7 @@ button:hover {
   margin-top: 20px;
 }
 
-/* 單一留言卡 */
+/* === 單一留言卡 === */
 .comment-card {
   background: #e8f5e9;
   border: 1px solid #d0e6d3;
@@ -142,7 +156,21 @@ button:hover {
   font-size: 0.8em;
 }
 
-/* 任務徽章 */
+/* === 使用者資訊區塊 === */
+#user-info {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#user-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* === 任務徽章 === */
 .badge {
   display: inline-block;
   margin: 5px;
@@ -166,6 +194,8 @@ button:hover {
 #task-section button:hover {
   background: #6a1fbf;
 }
+
+/* === 其他共用樣式 === */
 .hidden {
   display: none;
   opacity: 0;
@@ -177,3 +207,30 @@ button:hover {
   opacity: 1;
 }
 
+/* === 外部連結提示 === */
+a.com {
+  text-decoration: none;
+  color: gray;
+}
+
+a.com:hover {
+  text-decoration: underline;
+}
+
+/* === 回頂部按鈕（可選）=== */
+#back-to-top {
+  position: fixed;
+  right: 15px;
+  bottom: 20px;
+  background: #4CAF50;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: none;
+  transition: 0.3s;
+}
+
+#back-to-top:hover {
+  background: #45a049;
+}
