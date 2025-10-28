@@ -2,29 +2,54 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email 登入</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
+  <script src="firebase.js"></script> <!-- 你的 firebase 設定 -->
 </head>
 <body>
-  <h2>Email 登入</h2>
-  <input id="email" type="email" placeholder="輸入 Email"><br>
-  <input id="password" type="password" placeholder="輸入密碼"><br>
-  <button onclick="login()">登入</button>
-  <button onclick="logout()">登出</button>
+  <h2>Email 登入 / 註冊</h2>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="firebase.js"></script>
+  <div id="emlogin-box">
+    <input type="email" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="密碼"><br><br>
+
+    <button onclick="loginEmail()">登入</button>
+    <button onclick="registerEmail()">註冊</button>
+  </div>
+
+  <p id="status" style="color:red;"></p>
+
   <script>
-    async function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        await loginEmail(email, password);
-        alert("登入成功！");
-        window.location.href = "index.html";
-      } catch (e) {
-        alert("登入失敗：" + e.message);
-      }
+    // 登入
+    function loginEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // 登入成功
+          window.location.href = 'testxoner.html'; // 導回留言板
+        })
+        .catch((error) => {
+          document.getElementById('status').innerText = error.message;
+        });
+    }
+
+    // 註冊
+    function registerEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // 註冊成功
+          window.location.href = 'testxoner.html'; // 導回留言板
+        })
+        .catch((error) => {
+          document.getElementById('status').innerText = error.message;
+        });
     }
   </script>
 </body>
