@@ -55,7 +55,7 @@ async function loadComments() {
   });
 }
 
-// 登入、登出
+//  登入、登出
 function loginEmail(email, password) {
   return auth.signInWithEmailAndPassword(email, password);
 }
