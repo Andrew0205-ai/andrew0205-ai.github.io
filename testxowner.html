@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>留言測試頁面</title>
+</head>
+<body>
+  <h1>留言測試區</h1>
+  <textarea id="msg"></textarea>
+  <button onclick="testSend()">測試送出</button>
+  <div id="out"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="firebase.js"></script>
+  <script>
+    async function testSend() {
+      const text = document.getElementById("msg").value;
+      await addComment("[測試]" + text);
+      document.getElementById("out").textContent = "送出成功！";
+    }
+  </script>
+</body>
+</html>
