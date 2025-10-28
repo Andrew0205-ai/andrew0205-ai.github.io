@@ -3,7 +3,7 @@ name: Auto Deploy Website
 on:
   push:
     branches:
-      - main   # 當 main 分支有更新時自動觸發
+      - main
 
 jobs:
   deploy:
@@ -19,12 +19,10 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      
+      run: echo "No dependencies to install"
 
     - name: Build project
-      run: |
-        echo "Build step if needed"
-      # 如果你有建置步驟 (如 React 或打包 JS/CSS), 寫在這裡
+      run: echo "No build needed for static site"
 
     - name: Commit and push changes
       env:
