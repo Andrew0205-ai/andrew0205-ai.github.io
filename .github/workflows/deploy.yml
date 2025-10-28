@@ -1,9 +1,9 @@
-name: Auto Deploy Website
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # 當 main 分支有更新時觸發
 
 jobs:
   deploy:
@@ -24,12 +24,8 @@ jobs:
     - name: Build project
       run: echo "No build needed for static site"
 
-    - name: Commit and push changes
-      env:
-        GH_TOKEN: ${{ secrets.GIT1 }}
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git add .
-        git commit -m "Auto deploy from GitHub Actions" || echo "No changes to commit"
-        git push https://$GH_TOKEN@github.com/Andrew0205-ai/andrew0205-ai.github.io.git
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v6
+      with:
+        github_token: ${{ secrets.GIT1 }}  # 你的 PAT
+        publish_dir: ./  # 如果是靜態 HTML/CSS/JS，根目錄即可
