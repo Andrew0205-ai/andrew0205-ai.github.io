@@ -1,0 +1,37 @@
+name: Auto Deploy Website
+
+on:
+  push:
+    branches:
+      - main   # 當 main 分支有更新時自動觸發
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      
+
+    - name: Build project
+      run: |
+        echo "Build step if needed"
+      # 如果你有建置步驟 (如 React 或打包 JS/CSS), 寫在這裡
+
+    - name: Commit and push changes
+      env:
+        GH_TOKEN: ${{ secrets.git }}
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Auto deploy from GitHub Actions" || echo "No changes to commit"
+        git push https://$GH_TOKEN@github.com/Andrew0205-ai/andrew0205-ai.github.io.git
