@@ -28,7 +28,7 @@ jobs:
 
     - name: Commit and push changes
       env:
-        GH_TOKEN: ${{ secrets.git }}
+        GH_TOKEN: ${{ secrets.GIT1 }}
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
