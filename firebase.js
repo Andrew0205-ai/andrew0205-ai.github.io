@@ -20,17 +20,30 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // ---------------------------
-// 👀 登入狀態監聽
+// 👀 登入狀態監聽（修正版）
 // ---------------------------
 auth.onAuthStateChanged(user => {
+  const userStatus = document.getElementById("user-status");
+  const loginBtn = document.getElementById("login-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+  const commentBox = document.getElementById("comment-box");
+
+  if (!userStatus || !loginBtn || !logoutBtn) return;
+
   if (user) {
     console.log("✅ 已登入：", user.email);
-    const userInfo = document.getElementById("user-info");
-    if (userInfo) userInfo.textContent = `登入中：${user.email}`;
+    userStatus.textContent = `✅ 已登入：${user.email}`;
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+    if (commentBox) commentBox.style.display = "block";
+    loadComments();
   } else {
     console.log("🚫 未登入");
-    const userInfo = document.getElementById("user-info");
-    if (userInfo) userInfo.textContent = "未登入";
+    userStatus.textContent = "🚫 尚未登入";
+    loginBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+    if (commentBox) commentBox.style.display = "none";
+    loadComments();
   }
 });
 
@@ -84,7 +97,7 @@ async function loadComments() {
 }
 
 // ---------------------------
-// 🔑 登入 / 登出功能
+// 🔑 登入 / 註冊 / 登出功能
 // ---------------------------
 function loginEmail(email, password) {
   return auth.signInWithEmailAndPassword(email, password)
@@ -102,4 +115,3 @@ function logout() {
   auth.signOut();
   alert("已登出");
 }
-
