@@ -81,32 +81,29 @@
       <button onclick="go()">English</button>
     </section>
 
-    <!-- 留言板 -->
-    <section id="comment-section">
-      <h2>留言板與交流</h2>
+    <section id="comment-section" class="comment-area">
+   <h2>留言板與交流</h2>
       <p>歡迎在小宏的部落格留言板分享你的想法、學習經驗或生活點滴！這裡是一個安全的交流平台，讓大家互相學習與互動，提升留言板的活躍度。</p>
-      
-      <div id="user-info">
-        <img id="user-photo" src="" alt="使用者頭像"> 
-        <span id="user-name"></span>
-        <button onclick="logout()">登出</button>
-      </div>
 
-      <div id="login-box">
-        <button onclick="login()">使用 Google 登入</button>
-      </div>
+  <!-- 登入狀態顯示 -->
+  <div id="user-info">
+    <p id="user-status">尚未登入</p>
+    <button id="login-btn" onclick="location.href='login.html'">登入</button>
+    <button id="logout-btn" style="display:none;" onclick="logout()">登出</button>
+  </div>
 
-      <div id="comment-box" style="display:none;">
-        <input type="text" id="custom-name" placeholder="暱稱（可留空使用登入名稱）"><br>
-        <input type="text" id="custom-photo-url" placeholder="自訂頭像 URL（可留空使用登入頭像）"><br>
-        <p class="com" style="color:gray;">註:如果是本地圖片，可到 <a class="com" href="https://meee.com.tw/" target="_blank">這裡</a> 上傳</p>
-        <textarea id="message" placeholder="留言內容"></textarea><br>
-        <label><input type="checkbox" id="anonymous"> 匿名留言 </label><br>
-        <button onclick="addComment()">送出留言</button>
-      </div>
+  <!-- 留言輸入區 -->
+  <div id="comment-box" style="display:none;">
+    <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+    <button id="send-btn" onclick="sendComment()">送出留言</button>
+  </div>
 
-      <div id="messages"></div>
-    </section>
+  <!-- 留言清單 -->
+  <div id="comment-list" class="comment-list">
+    <p>正在載入留言...</p>
+  </div>
+</section>
+
 
     <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
   </main>
@@ -120,10 +117,49 @@
   </footer>
 
   <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
+<script type="module" src="firebase.js"></script>
+<script>
+  // 檢查登入狀態
+  auth.onAuthStateChanged(user => {
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const commentBox = document.getElementById("comment-box");
+    const userStatus = document.getElementById("user-status");
+
+    if (user) {
+      userStatus.textContent = "已登入：" + user.email;
+      loginBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+      commentBox.style.display = "block";
+      loadComments();
+    } else {
+      userStatus.textContent = "尚未登入";
+      loginBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+      commentBox.style.display = "none";
+      loadComments();
+    }
+  });
+
+  // 送出留言
+  async function sendComment() {
+    const content = document.getElementById("comment-input").value.trim();
+    if (!content) {
+      alert("請輸入留言內容！");
+      return;
+    }
+    await addComment(content);
+    document.getElementById("comment-input").value = "";
+    loadComments();
+  }
+</script>
 
   <!-- JS -->
   <script src="theme.js"></script>
-  <script type="module" src="firebase.js"></script>
+  
   <script src="badge.js"></script>
   <script src="type.js"></script>
   <script src="lan.js"></script>
