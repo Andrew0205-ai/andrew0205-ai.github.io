@@ -6,89 +6,25 @@
   <title>Email 登入</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
-  <script src="firebase.js"></script> <!-- 你的 Firebase 設定 -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(120deg, yellow, green);
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
-    h2 {
-      margin-bottom: 20px;
-      color: black;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      background-color: green;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background-color: olivegreen;
-    }
-  </style>
+  <script type="module" src="firebase.js"></script>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
   <div class="container">
-    <h2>Email 登入 / 註冊</h2>
-    <input type="email" id="email" placeholder="輸入 Email">
-    <input type="password" id="password" placeholder="輸入密碼">
-    <button onclick="emailRegister()">註冊</button>
-    <button onclick="emailLogin()">登入</button>
-    <button onclick="resetPassword()">忘記密碼？</button>
+    <h2>使用 Email 登入</h2>
+    <input type="email" id="email" placeholder="輸入電子郵件">
+    
+    <div class="password-box">
+      <input type="password" id="password" placeholder="輸入密碼">
+      <button type="button" id="togglePassword" class="eye-btn">👁️</button>
+    </div>
+
+    <button onclick="loginEmailUser()">登入</button>
+    <button onclick="logout()">登出</button>
+    <p id="status"></p>
   </div>
 
-  <script>
-    function emailRegister() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => { alert("註冊成功！"); window.location.href = "index.html"; })
-        .catch((error) => { alert("註冊失敗：" + error.message); });
-    }
-
-    function emailLogin() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => { alert("登入成功！"); window.location.href = "index.html"; })
-        .catch((error) => { alert("登入失敗：" + error.message); });
-    }
-
-    function resetPassword() {
-      const email = document.getElementById("email").value;
-      if (!email) { alert("請先輸入 Email"); return; }
-      firebase.auth().sendPasswordResetEmail(email)
-        .then(() => { alert("已寄出重設密碼信件，請去收信重設。"); })
-        .catch((error) => { alert("重設密碼失敗：" + error.message); });
-    }
-  </script>
+  <!-- 外部腳本 -->
+  <script src="emlogin.js"></script>
 </body>
 </html>
