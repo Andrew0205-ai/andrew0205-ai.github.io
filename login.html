@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google 登入</title>
+  <title>登入</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
   <script type="module"src="firebase.js"></script> <!-- 你的 Firebase 設定 -->
@@ -14,7 +14,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(120deg, #f093fb, #f5576c);
+      background: linear-gradient(120deg, yellow, green);
       margin: 0;
     }
     .container {
@@ -26,9 +26,9 @@
       width: 90%;
       max-width: 400px;
     }
-    h2 {
+    h2,p {
       margin-bottom: 30px;
-      color: #d500f9;
+      color: black;
     }
     button {
       width: 100%;
@@ -36,20 +36,21 @@
       margin: 10px 0;
       border: none;
       border-radius: 10px;
-      background-color: #4285F4;
+      background-color: green;
       color: white;
       font-size: 18px;
       cursor: pointer;
       transition: 0.3s;
     }
     button:hover {
-      background-color: #3367d6;
+      background-color: olivegreen;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>使用 Google 登入</h2>
+    <h2>登入</h2>
+    <p>請選擇登入方式:</p>
     <button onclick="googleLogin()">登入 Google</button>
     <button onclick="javascript:window.location.href='emlogin.html';">Email 登入</button>
 
