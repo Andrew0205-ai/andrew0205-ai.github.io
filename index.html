@@ -122,40 +122,109 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
 <script  src="firebase.js"></script>
 <script>
-  // 檢查登入狀態
-  auth.onAuthStateChanged(user => {
+
+  // 確保 Firebase 已載入
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // 當頁面載入時，檢查元件是否存在
+  window.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById("login-btn");
     const logoutBtn = document.getElementById("logout-btn");
     const commentBox = document.getElementById("comment-box");
     const userStatus = document.getElementById("user-status");
 
-    if (user) {
-      userStatus.textContent = "已登入：" + user.email;
-      loginBtn.style.display = "none";
-      logoutBtn.style.display = "inline-block";
-      commentBox.style.display = "block";
-      loadComments();
-    } else {
-      userStatus.textContent = "尚未登入";
-      loginBtn.style.display = "inline-block";
-      logoutBtn.style.display = "none";
-      commentBox.style.display = "none";
-      loadComments();
+    if (!loginBtn || !logoutBtn || !userStatus) {
+      console.error("⚠️ 登入相關元素未載入。");
+      return;
     }
+
+    // 監聽登入狀態
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        userStatus.textContent = `✅ 已登入：${user.email}`;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        commentBox.style.display = "block";
+        loadComments(); // 載入留言
+      } else {
+        userStatus.textContent = "尚未登入";
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        commentBox.style.display = "none";
+        loadComments(); // 顯示訪客留言
+      }
+    });
   });
+
+  // 登出功能
+  function logout() {
+    auth.signOut()
+      .then(() => {
+        alert("已登出！");
+        location.reload();
+      })
+      .catch(err => {
+        console.error("登出錯誤：", err);
+      });
+  }
 
   // 送出留言
   async function sendComment() {
     const content = document.getElementById("comment-input").value.trim();
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("請先登入再留言！");
+      return;
+    }
     if (!content) {
       alert("請輸入留言內容！");
       return;
     }
-    await addComment(content);
-    document.getElementById("comment-input").value = "";
-    loadComments();
+
+    try {
+      await db.collection("comments").add({
+        text: content,
+        user: user.email,
+        time: new Date().toISOString()
+      });
+      document.getElementById("comment-input").value = "";
+      loadComments();
+    } catch (err) {
+      console.error("留言發送失敗：", err);
+    }
+  }
+
+  // 載入留言
+  async function loadComments() {
+    const commentList = document.getElementById("comment-list");
+    commentList.innerHTML = "<p>正在載入留言...</p>";
+
+    try {
+      const snapshot = await db.collection("comments").orderBy("time", "desc").get();
+      if (snapshot.empty) {
+        commentList.innerHTML = "<p>目前沒有留言。</p>";
+        return;
+      }
+
+      commentList.innerHTML = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const item = document.createElement("div");
+        item.classList.add("comment-item");
+        item.innerHTML = `<strong>${data.user}</strong><p>${data.text}</p><small>${new Date(data.time).toLocaleString()}</small>`;
+        commentList.appendChild(item);
+      });
+    } catch (err) {
+      console.error("留言載入失敗：", err);
+      commentList.innerHTML = "<p>留言載入失敗。</p>";
+    }
   }
 </script>
+
+
 
   <!-- JS -->
   <script src="theme.js"></script>
