@@ -11,28 +11,6 @@
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="theme.css">
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-N0D6F5HQRR"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-N0D6F5HQRR');
-  </script>
-
-  <!-- 結構化數據 -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "星宏",
-    "url": "https://andrew0205-ai.github.io/",
-    "sameAs": [
-      "https://andrew0205blogs.blogspot.com/"
-    ]
-  }
-  </script>
 </head>
 <body>
   <header>
@@ -63,7 +41,7 @@
       </div>
     </section>
 
-    <!-- 用途 -->
+    <!-- 網站用途 -->
     <section>
       <h2>網站用途</h2>
       <p>這個部落格提供留言板功能，讓訪客可以自由交流、分享學習心得與生活點滴。所有留言都會安全儲存在資料庫中，確保互動順暢又安全。</p>
@@ -83,12 +61,10 @@
     <!-- 留言板 -->
     <section id="comment-section" class="comment-area">
       <h2>留言板與交流</h2>
-      <p>歡迎在小宏的部落格留言板分享你的想法、學習經驗或生活點滴！這裡是一個安全的交流平台，讓大家互相學習與互動，提升留言板的活躍度。</p>
+      <p>歡迎在小宏的部落格留言板分享你的想法、學習經驗或生活點滴！這裡是一個安全的交流平台，讓大家互相學習與互動。</p>
 
-      <!-- 登入區 -->
       <div id="auth-section">
         <button id="login-btn" onclick="window.location.href='login.html'">登入</button>
-
         <div id="user-info" class="hidden">
           <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
           <span id="user-name"></span>
@@ -96,13 +72,11 @@
         </div>
       </div>
 
-      <!-- 留言輸入區 -->
       <div id="comment-box" style="display:none;">
         <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
-        <button id="send-btn" onclick="sendComment()">送出留言</button>
+        <button id="send-btn">送出留言</button>
       </div>
 
-      <!-- 留言清單 -->
       <div id="comment-list" class="comment-list">
         <p>正在載入留言...</p>
       </div>
@@ -111,7 +85,6 @@
     <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
   </main>
 
-  <!-- 回到頂部按鈕 -->
   <button id="backToTop" title="回到頂部">⬆</button>
 
   <footer>
@@ -122,8 +95,7 @@
 
   <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
 
-  <!-- Firebase Module -->
-  <script src="firebase.js"></script>
+  <!-- Firebase 與留言板功能 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -134,82 +106,105 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const loginBtn = document.getElementById("login-btn");
-    const logoutBtn = document.getElementById("logout-btn");
-    const userInfo = document.getElementById("user-info");
-    const userPhoto = document.getElementById("user-photo");
-    const userName = document.getElementById("user-name");
-    const commentBox = document.getElementById("comment-box");
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userInfo = document.getElementById('user-info');
+    const userPhoto = document.getElementById('user-photo');
+    const userName = document.getElementById('user-name');
+    const commentBox = document.getElementById('comment-box');
+    const commentInput = document.getElementById('comment-input');
+    const commentList = document.getElementById('comment-list');
 
-    // 監聽登入狀態
-    onAuthStateChanged(auth, async (user) => {
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        signOut(auth).then(() => location.reload()).catch(console.error);
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
       if (user) {
-        loginBtn.style.display = "none";
-        userInfo.classList.remove("hidden");
+        loginBtn.style.display = 'none';
+        userInfo.classList.remove('hidden');
         userName.textContent = user.displayName || user.email;
-        userPhoto.src = user.photoURL || "default-avatar.png";
-        commentBox.style.display = "block";
-        await loadComments();
+        userPhoto.src = user.photoURL || 'default-avatar.png';
+        commentBox.style.display = 'block';
+        loadComments();
       } else {
-        loginBtn.style.display = "inline-block";
-        userInfo.classList.add("hidden");
-        commentBox.style.display = "none";
-        await loadComments();
+        loginBtn.style.display = 'inline-block';
+        userInfo.classList.add('hidden');
+        commentBox.style.display = 'none';
+        loadComments();
       }
     });
 
-    // 登出功能
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      alert("👋 已登出！");
-      location.reload();
-    });
-
-    // 發送留言
     async function sendComment() {
+      const content = commentInput.value.trim();
       const user = auth.currentUser;
-      const content = document.getElementById("comment-input").value.trim();
-      if (!user) return alert("請先登入再留言！");
-      if (!content) return alert("請輸入留言內容！");
+      if (!user) { alert("請先登入再留言！"); return; }
+      if (!content) { alert("請輸入留言內容！"); return; }
 
-      await addDoc(collection(db, "comments"), {
-        text: content,
-        user: user.displayName || user.email,
-        time: new Date().toISOString()
-      });
-      document.getElementById("comment-input").value = "";
-      loadComments();
+      try {
+        await addDoc(collection(db, "comments"), {
+          text: content,
+          user: user.email,
+          time: new Date().toISOString()
+        });
+        commentInput.value = "";
+        loadComments();
+      } catch (err) {
+        console.error("留言發送失敗：", err);
+      }
     }
 
-    // 載入留言
-    async function loadComments() {
-      const commentList = document.getElementById("comment-list");
-      commentList.innerHTML = "<p>正在載入留言...</p>";
+async function loadComments() {
+  commentList.innerHTML = "<p>正在載入留言...</p>";
+  const user = auth.currentUser;
 
-      const q = query(collection(db, "comments"), orderBy("time", "desc"));
-      const snapshot = await getDocs(q);
+  try {
+    const q = query(collection(db, "comments"), orderBy("time", "desc"));
+    const snapshot = await getDocs(q);
 
-      if (snapshot.empty) {
-        commentList.innerHTML = "<p>目前沒有留言。</p>";
-        return;
+    if (snapshot.empty) { 
+      commentList.innerHTML = "<p>目前沒有留言。</p>"; 
+      return; 
+    }
+
+    commentList.innerHTML = "";
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const item = document.createElement("div");
+      item.classList.add("comment-item");
+
+      // 留言文字與使用者
+      item.innerHTML = `<strong>${data.user}</strong><p>${data.text}</p><small>${new Date(data.time).toLocaleString()}</small>`;
+
+      // 如果是留言作者，顯示刪除按鈕
+      if (user && user.email === data.user) {
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "刪除";
+        deleteBtn.addEventListener("click", async () => {
+          try {
+            await db.collection("comments").doc(doc.id).delete();
+            loadComments();
+          } catch (err) {
+            console.error("刪除留言失敗：", err);
+          }
+        });
+        item.appendChild(deleteBtn);
       }
 
-      commentList.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const item = document.createElement("div");
-        item.classList.add("comment-item");
-        item.innerHTML = `
-          <strong>${data.user}</strong>
-          <p>${data.text}</p>
-          <small>${new Date(data.time).toLocaleString()}</small>
-        `;
-        commentList.appendChild(item);
-      });
-    }
+      commentList.appendChild(item);
+    });
+  } catch (err) {
+    console.error("留言載入失敗：", err);
+    commentList.innerHTML = "<p>留言載入失敗。</p>";
+  }
+}
+
+    
   </script>
 
-  <!-- JS -->
+  <!-- 其他 JS -->
   <script src="theme.js"></script>
   <script src="badge.js"></script>
   <script src="type.js"></script>
@@ -218,3 +213,4 @@
   <script src="er.js"></script>
 </body>
 </html>
+
