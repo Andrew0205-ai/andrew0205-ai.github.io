@@ -125,8 +125,7 @@
 
   // 確保 Firebase 已載入
   const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
+ 
   // 當頁面載入時，檢查元件是否存在
   window.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById("login-btn");
