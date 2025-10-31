@@ -49,7 +49,6 @@
         <span id="typing-text"></span><span class="cursor" id="cursor"></span>
       </div>
       <img id="avatar" src="andrew.png" alt="星宏的個人頭像">
-      
     </section>
 
     <!-- 任務挑戰 -->
@@ -81,40 +80,39 @@
       <button onclick="go()">English</button>
     </section>
 
+    <!-- 留言板 -->
     <section id="comment-section" class="comment-area">
-   <h2>留言板與交流</h2>
+      <h2>留言板與交流</h2>
       <p>歡迎在小宏的部落格留言板分享你的想法、學習經驗或生活點滴！這裡是一個安全的交流平台，讓大家互相學習與互動，提升留言板的活躍度。</p>
 
-  <!-- 登入狀態顯示 -->
- <!-- 登入區塊 -->
-<div id="auth-section">
-  <button id="login-btn" onclick="window.location.href='login.html'">登入</button>
+      <!-- 登入區 -->
+      <div id="auth-section">
+        <button id="login-btn" onclick="window.location.href='login.html'">登入</button>
 
-  <div id="user-info" class="hidden">
-    <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
-    <span id="user-name"></span>
-    <button id="logout-btn">登出</button>
-  </div>
-</div>
+        <div id="user-info" class="hidden">
+          <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
+          <span id="user-name"></span>
+          <button id="logout-btn">登出</button>
+        </div>
+      </div>
 
+      <!-- 留言輸入區 -->
+      <div id="comment-box" style="display:none;">
+        <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+        <button id="send-btn" onclick="sendComment()">送出留言</button>
+      </div>
 
-  <!-- 留言輸入區 -->
-  <div id="comment-box" style="display:none;">
-    <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
-    <button id="send-btn" onclick="sendComment()">送出留言</button>
-  </div>
-
-  <!-- 留言清單 -->
-  <div id="comment-list" class="comment-list">
-    <p>正在載入留言...</p>
-  </div>
-</section>
-
+      <!-- 留言清單 -->
+      <div id="comment-list" class="comment-list">
+        <p>正在載入留言...</p>
+      </div>
+    </section>
 
     <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
   </main>
-<!-- 回到頂部按鈕 -->
-<button id="backToTop" title="回到頂部">⬆</button>
+
+  <!-- 回到頂部按鈕 -->
+  <button id="backToTop" title="回到頂部">⬆</button>
 
   <footer>
     © 2025 小宏工作室<br>
@@ -123,91 +121,74 @@
   </footer>
 
   <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
-  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
-<script  src="firebase.js"></script>
-<script  type="module" >
 
-  // 確保 Firebase 已載入
-  const app = firebase.initializeApp(firebaseConfig);
- 
-  // 當頁面載入時，檢查元件是否存在
-  window.addEventListener("DOMContentLoaded", () => {
+  <!-- Firebase Module -->
+  <script src="firebase.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     const loginBtn = document.getElementById("login-btn");
     const logoutBtn = document.getElementById("logout-btn");
+    const userInfo = document.getElementById("user-info");
+    const userPhoto = document.getElementById("user-photo");
+    const userName = document.getElementById("user-name");
     const commentBox = document.getElementById("comment-box");
-    const userStatus = document.getElementById("user-status");
-
-    if (!loginBtn || !logoutBtn || !userStatus) {
-      console.error("⚠️ 登入相關元素未載入。");
-      return;
-    }
 
     // 監聽登入狀態
-    auth.onAuthStateChanged(user => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        userStatus.textContent = `✅ 已登入：${user.email}`;
         loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
+        userInfo.classList.remove("hidden");
+        userName.textContent = user.displayName || user.email;
+        userPhoto.src = user.photoURL || "default-avatar.png";
         commentBox.style.display = "block";
-        loadComments(); // 載入留言
+        await loadComments();
       } else {
-        userStatus.textContent = "尚未登入";
         loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
+        userInfo.classList.add("hidden");
         commentBox.style.display = "none";
-        loadComments(); // 顯示訪客留言
+        await loadComments();
       }
     });
-  });
 
-  // 登出功能
-  function logout() {
-    auth.signOut()
-      .then(() => {
-        alert("已登出！");
-        location.reload();
-      })
-      .catch(err => {
-        console.error("登出錯誤：", err);
-      });
-  }
+    // 登出功能
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      alert("👋 已登出！");
+      location.reload();
+    });
 
-  // 送出留言
-  async function sendComment() {
-    const content = document.getElementById("comment-input").value.trim();
-    const user = auth.currentUser;
+    // 發送留言
+    async function sendComment() {
+      const user = auth.currentUser;
+      const content = document.getElementById("comment-input").value.trim();
+      if (!user) return alert("請先登入再留言！");
+      if (!content) return alert("請輸入留言內容！");
 
-    if (!user) {
-      alert("請先登入再留言！");
-      return;
-    }
-    if (!content) {
-      alert("請輸入留言內容！");
-      return;
-    }
-
-    try {
-      await db.collection("comments").add({
+      await addDoc(collection(db, "comments"), {
         text: content,
-        user: user.email,
+        user: user.displayName || user.email,
         time: new Date().toISOString()
       });
       document.getElementById("comment-input").value = "";
       loadComments();
-    } catch (err) {
-      console.error("留言發送失敗：", err);
     }
-  }
 
-  // 載入留言
-  async function loadComments() {
-    const commentList = document.getElementById("comment-list");
-    commentList.innerHTML = "<p>正在載入留言...</p>";
+    // 載入留言
+    async function loadComments() {
+      const commentList = document.getElementById("comment-list");
+      commentList.innerHTML = "<p>正在載入留言...</p>";
 
-    try {
-      const snapshot = await db.collection("comments").orderBy("time", "desc").get();
+      const q = query(collection(db, "comments"), orderBy("time", "desc"));
+      const snapshot = await getDocs(q);
+
       if (snapshot.empty) {
         commentList.innerHTML = "<p>目前沒有留言。</p>";
         return;
@@ -218,57 +199,18 @@
         const data = doc.data();
         const item = document.createElement("div");
         item.classList.add("comment-item");
-        item.innerHTML = `<strong>${data.user}</strong><p>${data.text}</p><small>${new Date(data.time).toLocaleString()}</small>`;
+        item.innerHTML = `
+          <strong>${data.user}</strong>
+          <p>${data.text}</p>
+          <small>${new Date(data.time).toLocaleString()}</small>
+        `;
         commentList.appendChild(item);
       });
-    } catch (err) {
-      console.error("留言載入失敗：", err);
-      commentList.innerHTML = "<p>留言載入失敗。</p>";
     }
-  }
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-const auth = getAuth();
-
-// 登出按鈕事件
-const logoutBtn = document.getElementById('logout-btn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-      console.log('已登出');
-    }).catch((error) => {
-      console.error('登出錯誤:', error);
-    });
-  });
-}
-
-// 監聽登入狀態
-onAuthStateChanged(auth, (user) => {
-  const loginBtn = document.getElementById('login-btn');
-  const userInfo = document.getElementById('user-info');
-  const userPhoto = document.getElementById('user-photo');
-  const userName = document.getElementById('user-name');
-
-  if (user) {
-    // 登入時顯示使用者資訊
-    loginBtn.style.display = 'none';
-    userInfo.classList.remove('hidden');
-    userName.textContent = user.displayName || user.email;
-    userPhoto.src = user.photoURL || 'default-avatar.png';
-  } else {
-    // 未登入時顯示登入按鈕
-    loginBtn.style.display = 'inline-block';
-    userInfo.classList.add('hidden');
-  }
-});
-
-</script>
-
-
+  </script>
 
   <!-- JS -->
   <script src="theme.js"></script>
-  
   <script src="badge.js"></script>
   <script src="type.js"></script>
   <script src="lan.js"></script>
