@@ -239,7 +239,7 @@ a.com:hover {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: #6a5acd; /* 紫色，小宏最喜歡的顏色💜 */
+  background-color: green; /* 綠色，最喜歡的顏色 */
   color: white;
   border: none;
   border-radius: 50%;
@@ -253,4 +253,26 @@ a.com:hover {
 
 #backToTop:hover {
   background-color: #7b68ee;
+}
+#auth-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hidden {
+  display: none;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
