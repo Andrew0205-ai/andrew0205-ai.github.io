@@ -58,29 +58,33 @@
       <button onclick="go()">English</button>
     </section>
 
-    <!-- 留言板 -->
-    <section id="comment-section" class="comment-area">
-      <h2>留言板與交流</h2>
-      <p>歡迎在小宏的部落格留言板分享你的想法、學習經驗或生活點滴！這裡是一個安全的交流平台，讓大家互相學習與互動。</p>
-
-      <div id="auth-section">
-        <button id="login-btn" onclick="window.location.href='login.html'">登入</button>
-        <div id="user-info" class="hidden">
-          <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
-          <span id="user-name"></span>
-          <button id="logout-btn">登出</button>
-        </div>
+    
       </div>
 
-      <div id="comment-box" style="display:none;">
-        <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
-        <button id="send-btn">送出留言</button>
-      </div>
+      <section id="comment-section" class="comment-area">
+  <h2>留言板與交流</h2>
+  <div id="auth-section">
+    <button id="login-btn">登入 Google</button>
+    <div id="user-info" class="hidden">
+      <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
+      <span id="user-name"></span>
+      <input type="text" id="nickname-input" placeholder="自訂暱稱">
+      <button id="update-profile-btn">更新</button>
+      <button id="logout-btn">登出</button>
+    </div>
+  </div>
 
-      <div id="comment-list" class="comment-list">
-        <p>正在載入留言...</p>
-      </div>
-    </section>
+  <div id="comment-box" style="display:none;">
+    <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+    <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
+    <button id="send-btn">送出留言</button>
+  </div>
+
+  <div id="comment-list" class="comment-list">
+    <p>正在載入留言...</p>
+  </div>
+</section>
+        
 
     <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
   </main>
