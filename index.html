@@ -106,7 +106,7 @@
 
   document.getElementById("logout-btn").addEventListener("click", logout);
 
-  document.getElementById("comment-submit").addEventListener("click", () => {
+  document.getElementById("send-btn").addEventListener("click", () => {
     const content = document.getElementById("comment-input").value.trim();
     if (content) addComment(content);
   });
