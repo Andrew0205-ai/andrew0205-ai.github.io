@@ -95,114 +95,23 @@
 
   <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
 
-  <!-- Firebase 與留言板功能 -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-    import { firebaseConfig } from "./firebase.js";
+ <script type="module">
+  import { addComment, loginEmail, registerEmail, logout } from "./firebase.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  document.getElementById("login-btn").addEventListener("click", () => {
+    const email = prompt("輸入電子郵件：");
+    const password = prompt("輸入密碼：");
+    loginEmail(email, password);
+  });
 
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userInfo = document.getElementById('user-info');
-    const userPhoto = document.getElementById('user-photo');
-    const userName = document.getElementById('user-name');
-    const commentBox = document.getElementById('comment-box');
-    const commentInput = document.getElementById('comment-input');
-    const commentList = document.getElementById('comment-list');
+  document.getElementById("logout-btn").addEventListener("click", logout);
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => location.reload()).catch(console.error);
-      });
-    }
+  document.getElementById("comment-submit").addEventListener("click", () => {
+    const content = document.getElementById("comment-input").value.trim();
+    if (content) addComment(content);
+  });
+</script>
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginBtn.style.display = 'none';
-        userInfo.classList.remove('hidden');
-        userName.textContent = user.displayName || user.email;
-        userPhoto.src = user.photoURL || 'default-avatar.png';
-        commentBox.style.display = 'block';
-        loadComments();
-      } else {
-        loginBtn.style.display = 'inline-block';
-        userInfo.classList.add('hidden');
-        commentBox.style.display = 'none';
-        loadComments();
-      }
-    });
-
-    async function sendComment() {
-      const content = commentInput.value.trim();
-      const user = auth.currentUser;
-      if (!user) { alert("請先登入再留言！"); return; }
-      if (!content) { alert("請輸入留言內容！"); return; }
-
-      try {
-        await addDoc(collection(db, "comments"), {
-          text: content,
-          user: user.email,
-          time: new Date().toISOString()
-        });
-        commentInput.value = "";
-        loadComments();
-      } catch (err) {
-        console.error("留言發送失敗：", err);
-      }
-    }
-
-async function loadComments() {
-  commentList.innerHTML = "<p>正在載入留言...</p>";
-  const user = auth.currentUser;
-
-  try {
-    const q = query(collection(db, "comments"), orderBy("time", "desc"));
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) { 
-      commentList.innerHTML = "<p>目前沒有留言。</p>"; 
-      return; 
-    }
-
-    commentList.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const item = document.createElement("div");
-      item.classList.add("comment-item");
-
-      // 留言文字與使用者
-      item.innerHTML = `<strong>${data.user}</strong><p>${data.text}</p><small>${new Date(data.time).toLocaleString()}</small>`;
-
-      // 如果是留言作者，顯示刪除按鈕
-      if (user && user.email === data.user) {
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "刪除";
-        deleteBtn.addEventListener("click", async () => {
-          try {
-            await db.collection("comments").doc(doc.id).delete();
-            loadComments();
-          } catch (err) {
-            console.error("刪除留言失敗：", err);
-          }
-        });
-        item.appendChild(deleteBtn);
-      }
-
-      commentList.appendChild(item);
-    });
-  } catch (err) {
-    console.error("留言載入失敗：", err);
-    commentList.innerHTML = "<p>留言載入失敗。</p>";
-  }
-}
-
-    
-  </script>
 
   <!-- 其他 JS -->
   <script src="theme.js"></script>
