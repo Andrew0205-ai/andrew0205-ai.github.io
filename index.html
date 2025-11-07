@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -6,62 +7,33 @@
   <title>小宏的部落格 | 音樂、程式與生活探索</title>
   <meta name="description" content="星宏的小部落格，分享音樂學習、程式專案與生活點滴，讓你一起探索學習與創作的樂趣。">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" href="favicon192.png" type="image/png" sizes="192x192">
-  <link rel="apple-touch-icon" href="favicon180.png">
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="theme.css">
 </head>
 <body>
   <header>
     <h1>小宏的部落格</h1>
-  </header>
-
-  <main class="container">
-    <div class="spacer"></div>
-
-    <!-- 關於我 -->
+  </header>  <main class="container">
     <section>
       <h2>關於我與我的興趣</h2>
       <div class="typewriter-container">
         <span id="typing-text"></span><span class="cursor" id="cursor"></span>
       </div>
       <img id="avatar" src="andrew.png" alt="星宏的個人頭像">
-    </section>
+    </section><section>
+  <h2>網站用途</h2>
+  <p>這個部落格提供留言板功能，讓訪客可以自由交流、分享學習心得與生活點滴。所有留言都會安全儲存在資料庫中，確保互動順暢又安全。</p>
+</section>
 
-    <!-- 任務挑戰 -->
-    <section id="task-section" class="hidden">
-      <h2>任務與徽章</h2>
-      <p>在小宏任務挑戰中完成任務即可獲得徽章，透過遊戲化方式提升學習樂趣。完成挑戰後可在首頁查看你的成就，增加互動與參與感。</p>
-      <button onclick="goTask()">開始任務</button>
-      <button onclick="closeTask()">返回</button>
-      <div id="badges">
-        <h3>你已獲得的徽章：</h3>
-        <div id="badgeList"></div>
-      </div>
-    </section>
+<section>
+  <h2>聯絡我與其他連結</h2>
+  <p><strong>📧 電子郵件：</strong><a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a></p>
+  <p><strong>🌐 電子名片：</strong><a href="https://andrew0205-ai.github.io/name" target="_blank">電子名片</a></p>
+  <p><strong>📝 我的日記：</strong><a href="https://andrew0205blogs.blogspot.com/" target="_blank">andrew0205blogs.blogspot.com</a></p>
+</section>
 
-    <!-- 網站用途 -->
-    <section>
-      <h2>網站用途</h2>
-      <p>這個部落格提供留言板功能，讓訪客可以自由交流、分享學習心得與生活點滴。所有留言都會安全儲存在資料庫中，確保互動順暢又安全。</p>
-    </section>
-
-    <!-- 聯絡我 -->
-    <section>
-      <h2>聯絡我與其他連結</h2>
-      <p>想要聯絡小宏或分享學習心得嗎？你可以透過以下方式聯絡我：</p>
-      <p><strong>📧 電子郵件：</strong><a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a></p>
-      <p><strong>🌐 電子名片：</strong><a href="https://andrew0205-ai.github.io/name" target="_blank">電子名片</a></p>
-      <p><strong>📝 我的日記：</strong><a href="https://andrew0205blogs.blogspot.com/" target="_blank">andrew0205blogs.blogspot.com</a></p>
-      <h2>切換語言 Switch Language</h2>
-      <button onclick="go()">English</button>
-    </section>
-
-    
-      </div>
-
-      <section id="comment-section" class="comment-area">
+<!-- 留言板 -->
+<section id="comment-section" class="comment-area">
   <h2>留言板與交流</h2>
   <div id="auth-section">
     <button id="login-btn">登入 Google</button>
@@ -84,46 +56,14 @@
     <p>正在載入留言...</p>
   </div>
 </section>
-        
 
-    <p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
-  </main>
+<p class="last-updated">📅 最後更新：<span id="update-date"></span></p>
 
-  <button id="backToTop" title="回到頂部">⬆</button>
-
-  <footer>
+  </main>  <footer>
     © 2025 小宏工作室<br>
-    <a href="https://andrew.000.pe/privacy.html" target="_blank">隱私權政策</a> | 
+    <a href="privacy.html" target="_blank">隱私權政策</a> | 
     <a href="terms.html" target="_blank">服務條款</a>
-  </footer>
+  </footer><noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
 
-  <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
-
- <script type="module">
-  import { addComment, loginEmail, registerEmail, logout } from "./firebase.js";
-
-  document.getElementById("login-btn").addEventListener("click", () => {
-    const email = prompt("輸入電子郵件：");
-    const password = prompt("輸入密碼：");
-    loginEmail(email, password);
-  });
-
-  document.getElementById("logout-btn").addEventListener("click", logout);
-
-  document.getElementById("send-btn").addEventListener("click", () => {
-    const content = document.getElementById("comment-input").value.trim();
-    if (content) addComment(content);
-  });
-</script>
-
-
-  <!-- 其他 JS -->
-  <script src="theme.js"></script>
-  <script src="badge.js"></script>
-  <script src="type.js"></script>
-  <script src="lan.js"></script>
-  <script src="other.js"></script>
-  <script src="er.js"></script>
-</body>
+  <!-- 留言板 JS 外連 -->  <script type="module" src="firebase.js"></script>  <!-- 其他 JS -->  <script src="theme.js"></script>  <script src="badge.js"></script>  <script src="type.js"></script>  <script src="lan.js"></script>  <script src="other.js"></script>  <script src="er.js"></script></body>
 </html>
-
