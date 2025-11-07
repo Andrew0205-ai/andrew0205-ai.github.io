@@ -2,7 +2,7 @@
 // ---------------------------
 // 🔧 Firebase 設定
 // ---------------------------
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
   authDomain: "mycomment-ad1ba.firebaseapp.com",
   projectId: "mycomment-ad1ba",
