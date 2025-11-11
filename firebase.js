@@ -60,7 +60,7 @@ onAuthStateChanged(auth, user => {
     loginBtn.style.display = "none";
     userInfo.classList.remove("hidden");
     commentBox.style.display = "block";
-    userPhotoEl.src = user.photoURL || "default-avatar.png";
+    userPhotoEl.src = user.photoURL || "images/default-avatar.png";
     userNameEl.textContent = "📢 歡迎，" + (user.displayName || user.email) + "！";
   } else {
     loginBtn.style.display = "block";
