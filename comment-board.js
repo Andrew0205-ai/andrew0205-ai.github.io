@@ -20,6 +20,7 @@ const anonymousCheckbox = document.getElementById("anonymous-checkbox");
 const sendBtn = document.getElementById("send-btn");
 const commentList = document.getElementById("comment-list");
 const avatarUpload = document.getElementById("avatar-upload");
+const uploadBtn = document.getElementById("upload-btn");
 
 // Google 登入
 loginBtn.addEventListener("click", async () => {
@@ -148,3 +149,18 @@ async function loadComments() {
     commentList.innerHTML = "<p>無法載入留言。</p>";
   }
 }
+uploadBtn.addEventListener("click", () => {
+  avatarUpload.click(); // 觸發檔案選擇器
+});
+
+avatarUpload.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // 預覽圖片
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    userPhotoEl.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
