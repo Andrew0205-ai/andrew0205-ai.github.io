@@ -19,32 +19,45 @@
       <img id="avatar" src="images/andrew.png" alt="星宏頭像">
     </section>
 
-    <section id="comment-section">
-      <h2>留言板與交流</h2>
-      <div id="auth-section">
-        <button id="login-btn">登入 Google</button>
-        <div id="user-info" class="hidden" >
-          <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
-          <span id="user-name" width="24px"></span>
-<br><br>
-          <input type="text" id="nickname-input" placeholder="自訂暱稱">
-          <input type="file" id="avatar-upload" accept="image/*">
-<br><br>
-          <button id="update-profile-btn" width="24px">更新資料</button>
-          <button id="logout-btn">登出</button>
-        </div>
-      </div>
+  <section id="comment-section">
+  <h2>留言板與交流</h2>
 
-      <div id="comment-box" style="display:none;">
-        <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
-        <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
-        <button id="send-btn">送出留言</button>
-      </div>
+  <!-- 登入區 -->
+  <div id="auth-section">
+    <button id="login-btn">登入 Google</button>
+    <div id="user-info" class="hidden">
+      <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
+      <span id="user-name"></span>
+      <input type="text" id="nickname-input" placeholder="自訂暱稱">
+      <input type="file" id="avatar-upload" accept="image/*">
+      <button id="update-profile-btn">更新資料</button>
+      <button id="logout-btn">登出</button>
+    </div>
+  </div>
 
-      <div id="comment-list" class="comment-list">
-        <p>正在載入留言...</p>
-      </div>
-    </section>
+  <!-- 留言框 -->
+  <div id="comment-box" style="display:none;">
+    <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+
+    <!-- 上傳圖片 -->
+    <div class="upload-wrapper">
+      <input type="file" id="image-upload" accept="image/*" style="display:none;">
+      <button id="upload-btn" title="上傳圖片">
+        <img src="images/imgupload.png" alt="上傳圖片" class="upload-icon">
+      </button>
+      <img id="preview-image" class="hidden" alt="預覽圖片">
+    </div>
+
+    <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
+    <button id="send-btn">送出留言</button>
+  </div>
+
+  <!-- 留言列表 -->
+  <div id="comment-list" class="comment-list">
+    <p>正在載入留言...</p>
+  </div>
+</section>
+
   </main>
 
   <footer>
