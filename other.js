@@ -15,3 +15,10 @@ window.onscroll = function() {
 backToTopButton.addEventListener("click", function() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });   
+
+function copyGameID() {
+  const idText = document.getElementById("gameID").textContent;
+  navigator.clipboard.writeText(idText).then(() => {
+    alert("已複製遊戲 ID：" + idText);
+  });
+}
