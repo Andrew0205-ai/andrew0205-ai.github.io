@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS 顏色查詢器</title>
+<style>
+  body {
+    font-family: "Noto Sans TC", Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  h2 {
+    color: #444;
+  }
+  input {
+    width: 260px;
+    padding: 8px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  .color-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 6px;
+  }
+  .color-box {
+    width: 50px;
+    height: 30px;
+    margin-right: 12px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  .color-box:hover {
+    transform: scale(1.1);
+  }
+  .copied {
+    margin-left: 8px;
+    color: green;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .copied.show {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+<h2>🎨 CSS 顏色查詢器</h2>
+<p>輸入英文或中文顏色名稱（例如：<b>藍色</b> 或 <b>blue</b>）<br>💡 點顏色方塊可複製英文名稱！</p>
+<input type="text" id="search" placeholder="輸入顏色...">
+<div id="results"></div>
+
+<script>
+const colors = [
+  {en:'black',zh:'黑色'}, {en:'dimgray',zh:'暗灰色'}, {en:'gray',zh:'灰色'}, {en:'darkgray',zh:'深灰色'},
+  {en:'silver',zh:'銀色'}, {en:'lightgray',zh:'淺灰色'}, {en:'gainsboro',zh:'庚斯博羅灰'}, {en:'whitesmoke',zh:'白煙色'},
+  {en:'white',zh:'白色'}, {en:'indianred',zh:'印第安紅'}, {en:'lightcoral',zh:'淡珊瑚色'},
+  {en:'salmon',zh:'鮭紅色'}, {en:'darksalmon',zh:'深鮭紅'}, {en:'lightsalmon',zh:'淺鮭紅'},
+  {en:'crimson',zh:'緋紅'}, {en:'red',zh:'紅色'}, {en:'firebrick',zh:'耐火磚紅'},
+  {en:'darkred',zh:'深紅'}, {en:'pink',zh:'粉紅'}, {en:'lightpink',zh:'淺粉紅'},
+  {en:'hotpink',zh:'亮粉紅'}, {en:'deeppink',zh:'深粉紅'}, {en:'mediumvioletred',zh:'中紫紅'},
+  {en:'palevioletred',zh:'淡紫紅'}, {en:'coral',zh:'珊瑚橙'}, {en:'tomato',zh:'番茄紅'},
+  {en:'orangered',zh:'橙紅'}, {en:'orange',zh:'橙色'}, {en:'darkorange',zh:'深橙'},
+  {en:'gold',zh:'金色'}, {en:'yellow',zh:'黃色'}, {en:'lightyellow',zh:'淺黃'},
+  {en:'lemonchiffon',zh:'檸檬雪紡'}, {en:'lightgoldenrodyellow',zh:'亮金麥色'},
+  {en:'papayawhip',zh:'木瓜色'}, {en:'moccasin',zh:'鹿皮色'}, {en:'peachpuff',zh:'桃色'},
+  {en:'palegoldenrod',zh:'淡金麥色'}, {en:'khaki',zh:'卡其色'}, {en:'darkkhaki',zh:'深卡其'},
+  {en:'burlywood',zh:'原木色'}, {en:'tan',zh:'棕褐色'}, {en:'rosybrown',zh:'玫瑰棕'},
+  {en:'sandybrown',zh:'沙棕'}, {en:'peru',zh:'祕魯色'}, {en:'chocolate',zh:'巧克力色'},
+  {en:'saddlebrown',zh:'馬鞍棕'}, {en:'sienna',zh:'赭色'}, {en:'brown',zh:'棕色'},
+  {en:'maroon',zh:'栗色'}, {en:'lavender',zh:'薰衣草'}, {en:'thistle',zh:'薊色'},
+  {en:'plum',zh:'梅紫'}, {en:'violet',zh:'紫羅蘭'}, {en:'orchid',zh:'蘭紫'},
+  {en:'fuchsia',zh:'紫紅'}, {en:'magenta',zh:'洋紅'}, {en:'mediumorchid',zh:'中蘭紫'},
+  {en:'mediumpurple',zh:'中紫'}, {en:'blueviolet',zh:'藍紫'}, {en:'darkviolet',zh:'深紫'},
+  {en:'darkorchid',zh:'深蘭紫'}, {en:'darkmagenta',zh:'深洋紅'}, {en:'purple',zh:'紫色'},
+  {en:'indigo',zh:'靛藍'}, {en:'greenyellow',zh:'綠黃'}, {en:'chartreuse',zh:'查特酒綠'},
+  {en:'lawngreen',zh:'草綠'}, {en:'lime',zh:'萊姆綠'}, {en:'limegreen',zh:'亮綠'},
+  {en:'palegreen',zh:'淡綠'}, {en:'lightgreen',zh:'淺綠'}, {en:'mediumspringgreen',zh:'中春綠'},
+  {en:'springgreen',zh:'春綠'}, {en:'mediumseagreen',zh:'中海綠'}, {en:'seagreen',zh:'海綠'},
+  {en:'forestgreen',zh:'森林綠'}, {en:'green',zh:'綠色'}, {en:'darkgreen',zh:'深綠'},
+  {en:'yellowgreen',zh:'黃綠'}, {en:'olivedrab',zh:'橄欖軍綠'}, {en:'olive',zh:'橄欖色'},
+  {en:'darkolivegreen',zh:'深橄欖綠'}, {en:'mediumaquamarine',zh:'中碧綠'},
+  {en:'darkseagreen',zh:'深海綠'}, {en:'lightseagreen',zh:'淺海綠'}, {en:'darkcyan',zh:'深青'},
+  {en:'teal',zh:'水鴨色'}, {en:'aqua',zh:'水色'}, {en:'cyan',zh:'青色'},
+  {en:'lightcyan',zh:'淺青'}, {en:'paleturquoise',zh:'淡綠松石'}, {en:'aquamarine',zh:'海藍寶'},
+  {en:'turquoise',zh:'綠松石'}, {en:'mediumturquoise',zh:'中松石'}, {en:'darkturquoise',zh:'深松石'},
+  {en:'cadetblue',zh:'軍藍'}, {en:'steelblue',zh:'鋼藍'}, {en:'lightsteelblue',zh:'淡鋼藍'},
+  {en:'powderblue',zh:'粉藍'}, {en:'lightblue',zh:'淺藍'}, {en:'skyblue',zh:'天藍'},
+  {en:'lightskyblue',zh:'亮天藍'}, {en:'deepskyblue',zh:'深天藍'}, {en:'dodgerblue',zh:'道奇藍'},
+  {en:'cornflowerblue',zh:'矢車菊藍'}, {en:'mediumslateblue',zh:'中岩藍'}, {en:'royalblue',zh:'寶藍'},
+  {en:'blue',zh:'藍色'}, {en:'mediumblue',zh:'中藍'}, {en:'darkblue',zh:'深藍'},
+  {en:'navy',zh:'海軍藍'}, {en:'midnightblue',zh:'午夜藍'}
+];
+
+const search = document.getElementById('search');
+const results = document.getElementById('results');
+
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  results.innerHTML = '';
+  if (!q) return;
+
+  const exact = colors.filter(c => c.en === q || c.zh === q);
+  const related = colors.filter(c => (c.en.includes(q) || c.zh.includes(q)) && !exact.includes(c));
+  const all = [...exact, ...related];
+
+  if (all.length === 0) {
+    results.textContent = '查無此顏色。';
+    return;
+  }
+
+  all.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'color-item';
+    const box = document.createElement('div');
+    box.className = 'color-box';
+    box.style.backgroundColor = c.en;
+    box.title = `點擊複製 ${c.en}`;
+    const copied = document.createElement('span');
+    copied.className = 'copied';
+    copied.textContent = '✅ 已複製！';
+
+    box.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(c.en);
+      copied.classList.add('show');
+      setTimeout(() => copied.classList.remove('show'), 1200);
+    });
+
+    div.appendChild(box);
+    div.appendChild(document.createTextNode(`${c.zh} (${c.en})`));
+    div.appendChild(copied);
+    results.appendChild(div);
+  });
+});
+</script>
+</body>
+</html>
