@@ -215,7 +215,7 @@ a.com:hover {
   text-decoration: underline;
 }
 
-/* === 回頂部按鈕（可選）=== */
+/* === 回頂部按鈕=== */
 #back-to-top {
   position: fixed;
   right: 15px;
@@ -230,7 +230,7 @@ a.com:hover {
 }
 
 #back-to-top:hover {
-  background: #45a049;
+  background: olivegreen;
 }
 /* 回到頂部按鈕樣式 */
 #backToTop {
