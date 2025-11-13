@@ -1,12 +1,13 @@
 import { auth, db } from "./firebase.js";
-import { 
-  signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, updateProfile 
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { 
-  collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-// DOM 元素
+// Cloudinary 設定
+const cloudName = "df0hlwcrd";
+const uploadPreset = "guest-upload";
+const folderName = "comment-photos";
+
+// DOM
 const loginBtn = document.getElementById("login-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const userInfo = document.getElementById("user-info");
@@ -22,43 +23,7 @@ const commentList = document.getElementById("comment-list");
 const avatarUpload = document.getElementById("avatar-upload");
 const uploadBtn = document.getElementById("upload-btn");
 
-// Cloudinary 上傳
-async function uploadImage(file) {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "YOUR_UPLOAD_PRESET"); // Cloudinary設定
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
-    method: "POST",
-    body: formData
-  });
-  const data = await res.json();
-  return data.secure_url;
-}
-
-// 上傳按鈕觸發檔案選擇
-uploadBtn.addEventListener("click", () => avatarUpload.click());
-
-// 選擇檔案後上傳到 Cloudinary
-avatarUpload.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  try {
-    const url = await uploadImage(file);
-    userPhotoEl.src = url; // 即時預覽
-    // 更新 Firebase Auth 立即生效
-    if (auth.currentUser) {
-      await updateProfile(auth.currentUser, { photoURL: url });
-      userNameEl.textContent = "📢歡迎，" + (auth.currentUser.displayName || auth.currentUser.email) + "！";
-    }
-  } catch (err) {
-    console.error(err);
-    alert("頭像上傳失敗：" + err.message);
-  }
-});
-
-// Google 登入
+// 登入
 loginBtn.addEventListener("click", async () => {
   const provider = new GoogleAuthProvider();
   try { await signInWithPopup(auth, provider); } 
@@ -68,14 +33,33 @@ loginBtn.addEventListener("click", async () => {
 // 登出
 logoutBtn.addEventListener("click", () => signOut(auth));
 
-// 更新暱稱
+// 觸發檔案選擇
+uploadBtn.addEventListener("click", () => avatarUpload.click());
+
+// Cloudinary 上傳頭像
+avatarUpload.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
+  formData.append("folder", folderName);
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, { method: "POST", body: formData });
+    const data = await res.json();
+    if (data.secure_url) userPhotoEl.src = data.secure_url;
+    else alert("圖片上傳失敗");
+  } catch (err) { console.error(err); alert("圖片上傳失敗：" + err.message); }
+});
+
+// 更新暱稱與頭像
 updateProfileBtn.addEventListener("click", async () => {
   const nickname = nicknameInput.value.trim();
   if (!nickname) return alert("請輸入暱稱！");
   try {
-    await updateProfile(auth.currentUser, {
-      displayName: nickname
-    });
+    await updateProfile(auth.currentUser, { displayName: nickname, photoURL: userPhotoEl.src });
     userNameEl.textContent = "📢歡迎，" + nickname + "！";
     loadComments();
     alert("更新成功！");
@@ -88,6 +72,7 @@ sendBtn.addEventListener("click", async () => {
   if (!content) return alert("請輸入留言內容！");
   const user = auth.currentUser;
   if (!user) return alert("請先登入！");
+
   try {
     await addDoc(collection(db, "comments"), {
       uid: user.uid,
@@ -98,10 +83,7 @@ sendBtn.addEventListener("click", async () => {
     });
     commentInput.value = "";
     loadComments();
-  } catch (err) {
-    console.error(err);
-    alert("留言失敗：" + err.message);
-  }
+  } catch (err) { console.error(err); alert("留言失敗：" + err.message); }
 });
 
 // 監聽登入狀態
@@ -145,7 +127,6 @@ async function loadComments() {
         <p>${data.content}</p>
         <small>${data.timestamp?.toDate().toLocaleString() || ""}</small>
       `;
-
       if (currentUser && data.uid === currentUser.uid) {
         const delBtn = document.createElement("button");
         delBtn.textContent = "刪除";
@@ -158,7 +139,6 @@ async function loadComments() {
         });
         div.appendChild(delBtn);
       }
-
       commentList.appendChild(div);
     });
   } catch (err) {
