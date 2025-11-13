@@ -1,4 +1,4 @@
-   document.getElementById("update-date").textContent =
+   document.getElementById("lastUpdate").textContent =
       new Date().toLocaleDateString("zh-TW", { year: "numeric", month: "long", day: "numeric" });
 
  // 回到頂部按鈕控制
