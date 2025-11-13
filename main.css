@@ -1,10 +1,14 @@
 #user-name {
-  white-space: nowrap;    /* 不換行 */
-  overflow: hidden;       /* 超出部分隱藏 */
-  text-overflow: ellipsis; /* 超出部分顯示省略號（可選） */
-  display: inline-block;  /* 使樣式生效 */
-  max-width: 100%;        /* 適應父容器寬度 */
+  display: inline-block;      /* 保持在同一行或換行 */
+  max-width: 100%;            /* 不超出父容器 */
+  white-space: normal;        /* 允許換行 */
+  overflow: visible;          /* 不隱藏超出的文字 */
+  text-overflow: clip;        /* 不顯示省略號 */
+  word-break: break-word;     /* 必要時自動換行 */
+  font-size: 1em;             /* 可依需要調整 */
+  line-height: 1.3em;         /* 文字行距 */
 }
+
 
 /* === 網頁主體 === */
 body {
