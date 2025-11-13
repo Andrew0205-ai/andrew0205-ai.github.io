@@ -10,23 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ 先把 repo checkout 下來
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ 設定 Node.js 環境（如果沒有 build 可省略）
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
+      # 3️⃣ 安裝依賴（如果沒有可省略）
       - name: Install dependencies
         run: echo "No dependencies to install"
 
+      # 4️⃣ build 步驟（靜態網站可省略）
       - name: Build project
         run: echo "No build needed for static site"
 
+      # 5️⃣ 部署到 GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
-          github_token: ${{ secrets.GIT1 }}  # Personal Access Token
-          publish_dir: ./  # 若是靜態網站根目錄
+          github_token: ${{ secrets.GIT1 }}  # 你的 PAT
+          publish_dir: ./  # 靜態網站根目錄
 
