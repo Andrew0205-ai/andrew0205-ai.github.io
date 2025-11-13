@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星宏留言板</title>
+<style>
+  body { font-family: Arial; max-width:700px; margin:50px auto; padding:20px; }
+  h1 { color:#4CAF50; text-align:center; }
+  #comments { margin-top:20px; }
+  .comment { border-bottom:1px solid #ddd; padding:10px 0; }
+  .comment button { margin-left:10px; }
+  textarea { width:100%; }
+</style>
+</head>
+<body>
+
+<h1>星宏留言板</h1>
+
+<button id="googleSignIn">使用 Google 登入</button>
+<p id="userName"></p>
+
+<div>
+  <textarea id="message" placeholder="留言內容" rows="3"></textarea><br>
+  <button id="addComment" disabled>送出留言</button>
+</div>
+
+<div id="comments"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getFirestore, collection, addDoc, query, orderBy, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+// Firebase 設定
+const firebaseConfig = {
+  apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
+  authDomain: "mycomment-ad1ba.firebaseapp.com",
+  projectId: "mycomment-ad1ba",
+  storageBucket: "mycomment-ad1ba.firebasestorage.app",
+  messagingSenderId: "1076313273646",
+  appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+
+// Google 登入
+document.getElementById("googleSignIn").addEventListener("click", async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    currentUser = result.user;
+    document.getElementById("userName").textContent = `已登入：${currentUser.displayName}`;
+    document.getElementById("addComment").disabled = false;
+    loadComments();
+  } catch (error) {
+    console.error("登入失敗:", error);
+    alert("登入失敗，請檢查 OAuth 設定或網路連線");
+  }
+});
+
+// 新增留言
+document.getElementById("addComment").addEventListener("click", async () => {
+  const message = document.getElementById("message").value.trim();
+  if (!message || !currentUser) return;
+
+  await addDoc(collection(db, "comments"), {
+    name: currentUser.displayName,
+    uid: currentUser.uid,
+    message: message,
+    timestamp: serverTimestamp()
+  });
+  document.getElementById("message").value = "";
+  loadComments();
+});
+
+// 顯示留言
+async function loadComments() {
+  const commentsDiv = document.getElementById("comments");
+  commentsDiv.innerHTML = "";
+
+  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const div = document.createElement("div");
+    div.className = "comment";
+    div.textContent = `${data.name}: ${data.message}`;
+
+    // 只能刪自己的留言
+    if (currentUser && currentUser.uid === data.uid) {
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "刪除";
+      delBtn.onclick = async () => {
+        await deleteDoc(doc(db, "comments", docSnap.id));
+        loadComments();
+      };
+      div.appendChild(delBtn);
+    }
+    commentsDiv.appendChild(div);
+  });
+}
+
+// 每 5 秒自動刷新留言
+setInterval(() => {
+  if (currentUser) loadComments();
+}, 5000);
+
+</script>
+
+</body>
+</html>

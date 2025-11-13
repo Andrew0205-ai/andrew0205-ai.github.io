@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小宏的部落格 | 音樂、程式與生活探索</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <header>
+    <h1>小宏的部落格</h1>
+  </header>
+
+  <main class="container">
+    <!-- 👦 關於我 -->
+    <section>
+      <h2>關於我</h2>
+      <span id="typing-text"></span><span class="cursor" id="cursor"></span>
+      <img id="avatar" src="images/andrew.png" alt="星宏頭像">
+    </section>
+
+    <!-- 🏅 小宏的任務挑戰 -->
+    <section id="task-section" class="hidden">
+      <h2>🏅 小宏的任務挑戰</h2>
+      <div id="badgeList"></div>
+      <button onclick="goTask()">🚀 開始任務</button>
+      <button onclick="closeTask()">🔙 返回</button>
+    </section>
+
+    
+    <!-- 📬 聯絡我 -->
+    <section id="contact-section">
+      <h3>📬 聯絡我</h3>
+      <p>電子郵件：
+        <a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a>
+      </p>
+    </section>
+
+    <!-- 🔗 其他連結 -->
+    <section id="links-section">
+      <h3>🔗 其他連結</h3>
+      <ul>
+        <li><a href="name.html" target="_blank">🪪 電子名片</a></li>
+        <li><a href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a></li>
+      </ul>
+    </section>
+
+    <!-- 💬 留言板 -->
+    <section id="comment-section">
+      <h2>💬留言板</h2>
+      <p color="lightgray">因為留言板還在開發中，部分功能可能有錯誤或無法使用，造成不便，敬請見諒!</p>
+      <div id="auth-section">
+        <button id="login-btn">登入 Google</button>
+        <div id="user-info" class="hidden">
+          <img id="user-photo" src="images/default-avatar.png" alt="頭像" class="avatar">
+          <span id="user-name"></span>
+          <input type="text" id="nickname-input" placeholder="自訂暱稱">
+          <button id="update-profile-btn">更新資料</button>
+          <button id="logout-btn">登出</button>
+        </div>
+      </div>
+
+      <div id="comment-box" style="display:none;">
+        <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+        <label>
+          <input type="checkbox" id="anonymous-checkbox"> 匿名留言
+        </label>
+        <button id="upload-btn">
+          <img src="images/imgupload.png" alt="上傳圖片" class="upload-icon">
+          上傳圖片
+        </button>
+        <input type="file" id="image-upload" accept="image/*" style="display:none;">
+        <div id="preview-container"></div>
+        <button id="send-btn">送出留言</button>
+      </div>
+
+      <div id="comment-list" class="comment-list">
+        <p>正在載入留言...</p>
+      </div>
+    </section>
+
+
+    <!-- 🕓 更新日期 -->
+    <section id="update-section">
+      <p>🕓 最後更新日期：<span id="lastUpdate"></span></p>
+    </section>
+  </main>
+
+  <!-- ⚙️ 頁尾 -->
+  <footer>
+    <p>© 2025 小宏工作室</p>
+  </footer>
+
+  <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
+
+  <!-- 📦 模組 JS -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="comment-board.js"></script>
+
+  <!-- 🌈 其他功能 JS -->
+  <script src="theme.js"></script>
+  <script src="badge.js"></script>
+  <script src="type.js"></script>
+  <script src="lan.js"></script>
+  <script src="other.js"></script>
+</body>
+</html>

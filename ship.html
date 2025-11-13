@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>海中尋船任務</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: url("https://img.lovepik.com/free-png/20211201/lovepik-sea-png-image_401246355_wh1200.png") no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  /* 船 emoji */
+  #ship {
+    font-size: 60px;
+    position: absolute;
+    top: 200px;
+    left: 50px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    animation: float 2s ease-in-out infinite;
+  }
+  #ship:hover { transform: scale(1.3); }
+  @keyframes float {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  /* 成功訊息 */
+  #success {
+    display: none;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    z-index: 100;
+  }
+
+  /* 自訂彈窗 */
+  #custom-alert {
+    display: block;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.95);
+    border: 2px solid #333;
+    padding: 20px 30px;
+    border-radius: 12px;
+    text-align: center;
+    z-index: 999;
+    width: 300px;
+  }
+  #custom-alert img { width:50px; margin:10px 0; }
+  #custom-alert button {
+    padding: 8px 16px;
+    border:none;
+    background:#8a2be2;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  #custom-alert button:hover { background:#6a1fbf; }
+</style>
+</head>
+<body>
+
+<!-- 船 emoji -->
+<div id="ship">🚢</div>
+
+<!-- 成功訊息 -->
+<div id="success">✅ 恭喜你找到船！你獲得了「海中尋船徽章」</div>
+
+<!-- 自訂彈窗 -->
+<div id="custom-alert">
+  <p>任務說明：點擊海上的船就能獲得徽章！</p>
+  <p>🚢</p>
+  <button onclick="closeAlert()">知道了</button>
+</div>
+
+<script>
+  const ship = document.getElementById("ship");
+  const success = document.getElementById("success");
+  const alertBox = document.getElementById("custom-alert");
+
+  function closeAlert() {
+    alertBox.style.display = "none";
+  }
+
+  // 點擊船的事件
+  ship.addEventListener("click", () => {
+    success.style.display = "block";
+
+    // 存徽章到 localStorage
+    let badges = JSON.parse(localStorage.getItem("badges") || "[]");
+    if (!badges.includes("海中尋船徽章")) {
+      badges.push("海中尋船徽章");
+      localStorage.setItem("badges", JSON.stringify(badges));
+    }
+  });
+
+  // 船水平漂浮（左右移動）
+  let pos = 50;
+  let direction = 1;
+  setInterval(() => {
+    pos += direction * 2;
+    if (pos > window.innerWidth - 100 || pos < 20) direction *= -1;
+    ship.style.left = pos + "px";
+  }, 50);
+</script>
+
+</body>
+</html>

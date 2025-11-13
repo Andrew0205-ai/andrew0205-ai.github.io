@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email 登入</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
+  <script  src="firebase.js"></script>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="container">
+    <h2>使用 Email 登入</h2>
+    <input type="email" id="email" placeholder="輸入電子郵件">
+    
+    <div class="password-box">
+      <input type="password" id="password" placeholder="輸入密碼">
+      <button type="button" id="togglePassword" class="eye-btn">👁️</button>
+    </div>
+
+    <button onclick="loginEmailUser()">登入</button>
+    <button onclick="logout()">登出</button>
+    <p id="status"></p>
+  </div>
+
+  <!-- 外部腳本 -->
+  <script src="emlogin.js"></script>
+</body>
+</html>
