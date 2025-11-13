@@ -2,8 +2,7 @@
 .game-id {
   margin-top: 20px;
   padding: 12px 16px;
-  border-left: 4px solid #8a2be2; /* 左邊彩色條 */
-  background: #f9f5ff;             /* 淺紫底色 */
+  
   border-radius: 6px;
   font-family: system-ui;
 }
