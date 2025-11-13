@@ -10,22 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Install dependencies
-      run: echo "No dependencies to install"
+      - name: Install dependencies
+        run: echo "No dependencies to install"
 
-    - name: Build project
-      run: echo "No build needed for static site"
+      - name: Build project
+        run: echo "No build needed for static site"
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v6
-      with:
-        github_token: ${{ secrets.GIT1 }}  # 你的 PAT
-        publish_dir: ./  # 如果是靜態 HTML/CSS/JS，根目錄即可
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.9.3
+        with:
+          github_token: ${{ secrets.GIT1 }}  # Personal Access Token
+          publish_dir: ./  # 若是靜態網站根目錄
+
