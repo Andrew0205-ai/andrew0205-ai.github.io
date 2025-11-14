@@ -1,143 +1,126 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Developer Panel</title>
-
-<!-- ===== 內連 CSS ===== -->
-<style>
-body {
-  margin: 0;
-  font-family: "Noto Sans TC", sans-serif;
-  background-color: #f5f5f5;
-}
-
-header {
-  background-color: #333;
-  color: white;
-  padding: 12px;
-  font-size: 20px;
-  text-align: center;
-}
-
-.container {
-  display: flex;
-  height: calc(100vh - 50px);
-}
-
-/* 左側選單 */
-.sidebar {
-  width: 180px;
-  background: #444;
-  color: white;
-  padding: 15px 0;
-}
-
-.sidebar button {
-  width: 100%;
-  padding: 12px;
-  background: transparent;
-  border: none;
-  color: white;
-  text-align: left;
-  cursor: pointer;
-  font-size: 15px;
-  padding-left: 20px;
-}
-
-.sidebar button:hover {
-  background: #555;
-}
-
-/* 主內容 */
-.main {
-  flex: 1;
-  padding: 20px;
-  background: white;
-  overflow-y: auto;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>開發者面板</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    h1 { text-align:center; margin-bottom:20px; }
+    .panel-section { background:#fff; padding:16px; border-radius:8px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .panel-section h2 { margin-top:0; font-size:20px; margin-bottom:10px; }
+    button { padding:10px 14px; border:none; background:#6200ea; color:white; border-radius:6px; cursor:pointer; }
+    button:hover { background:#4b00b5; }
+    .info-item { margin:5px 0; padding-left:6px; border-left:4px solid #6200ea; }
+    #logoutBtn { background:#b00020; margin-top:10px; }
+    #logoutBtn:hover { background:#7a0015; }
+  </style>
 </head>
 
 <body>
-<header>開發者面板（最簡版）</header>
+  <h1>開發者控制面板</h1>
 
-<div class="container">
+  <div id="panel" style="display:none;">
+    <!-- 系統資訊 -->
+    <div class="panel-section">
+      <h2>系統資訊</h2>
+      <div class="info-item">網站版本：1.0.0</div>
+      <div class="info-item" id="firebase-status">Firebase：檢查中…</div>
+      <div class="info-item">最後更新：2025-11-14</div>
+    </div>
 
-  <!-- 左側選單 -->
-  <div class="sidebar">
-    <button onclick="openColor()">🎨 顏色查詢器</button>
-    <button onclick="openTest()">🧪 測試區</button>
-    <button onclick="showUser()">👤 顯示登入使用者</button>
+    <!-- GitHub Commit 假資訊 -->
+    <div class="panel-section">
+      <h2>GitHub 狀態</h2>
+      <div class="info-item">最後 Commit：2025-11-13 22:11</div>
+      <div class="info-item">分支：main</div>
+    </div>
+
+    <!-- Blogger 文章統計 -->
+    <div class="panel-section">
+      <h2>Blogger 文章統計</h2>
+      <div class="info-item">目前文章數： <span id="blog-count">（請手動輸入）</span></div>
+      <button onclick="setBlogCount()">更新文章數</button>
+    </div>
+
+    <!-- 更新紀錄 -->
+    <div class="panel-section">
+      <h2>更新紀錄</h2>
+      <textarea id="update-log" style="width:100%;height:80px;"></textarea>
+      <button onclick="saveUpdate()">儲存更新紀錄</button>
+      <p style="margin-top:10px;font-size:14px;color:#555;">
+        （手動紀錄文章新增或首頁推薦更新）
+      </p>
+    </div>
+
+    <!-- 工具區 -->
+    <div class="panel-section">
+      <h2>工具區</h2>
+      <button onclick="openColorTool()">開啟：顏色查詢器（color.html）</button>
+    </div>
+
+    <button id="logoutBtn" onclick="logout()">登出</button>
   </div>
 
-  <!-- 主內容 -->
-  <div class="main" id="content">
-    <h2>歡迎使用開發者面板</h2>
-    <p>左邊點選功能即可開始測試。</p>
-  </div>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <script src="firebase-config.js"></script>
 
-</div>
+  <script>
+    const auth = firebase.auth();
 
-<!-- ===== Firebase SDK ===== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+    // 登入保護
+    auth.onAuthStateChanged(user => {
+      if(user){
+        document.getElementById("panel").style.display = "block";
+        detectFirebase();
+      } else {
+        alert("請先登入！");
+        window.location.href = "/";
+      }
+    });
 
-<!-- ===== 你的 Firebase 設定（你已經有）===== -->
-<script src="firebase-config.js"></script>
+    function logout() {
+      auth.signOut().then(()=>{ window.location.href="/"; });
+    }
 
-<script>
-/* ===== 初始化 Firebase Auth ===== */
-const auth = firebase.auth();
+    // Firebase 載入偵測
+    function detectFirebase() {
+      if (window.firebase) {
+        document.getElementById("firebase-status").innerText = "Firebase：已載入 ✔";
+      } else {
+        document.getElementById("firebase-status").innerText = "Firebase：未載入 ✘";
+      }
+    }
 
-/* ===== 1. 開啟 color.html ===== */
-function openColor() {
-  const box = document.getElementById("content");
-  box.innerHTML = `
-    <h2>顏色查詢器</h2>
-    <p>點下面按鈕開啟 color.html：</p>
-    <a href="color.html" target="_blank">
-      <button style="padding:10px 15px;">開啟顏色查詢器</button>
-    </a>
-  `;
-}
+    // 開啟顏色查詢器
+    function openColorTool() {
+      window.location.href = "color.html";
+    }
 
-/* ===== 2. 測試區 ===== */
-function openTest() {
-  const box = document.getElementById("content");
-  box.innerHTML = `
-    <h2>測試區</h2>
-    <p>隨便輸入 → 下面會顯示：</p>
-    <input id="testInput" type="text" style="padding:8px; width: 250px;" placeholder="輸入點東西..." oninput="showTest()">
-    <p id="output" style="margin-top:10px; font-size:18px;"></p>
-  `;
-}
+    // 儲存更新紀錄
+    function saveUpdate() {
+      const text = document.getElementById("update-log").value;
+      localStorage.setItem("devUpdateLog", text);
+      alert("已儲存！");
+    }
 
-function showTest() {
-  const text = document.getElementById("testInput").value;
-  document.getElementById("output").innerText = text;
-}
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("devUpdateLog");
+      if(saved){ document.getElementById("update-log").value = saved; }
 
-/* ===== 3. 顯示目前登入使用者 ===== */
-function showUser() {
-  const user = auth.currentUser;
-  const box = document.getElementById("content");
+      const savedCount = localStorage.getItem("blogCount");
+      if(savedCount){ document.getElementById("blog-count").innerText = savedCount; }
+    });
 
-  if (user) {
-    box.innerHTML = `
-      <h2>目前登入的使用者</h2>
-      <p>Email：${user.email}</p>
-      <p>UID：${user.uid}</p>
-    `;
-  } else {
-    box.innerHTML = `
-      <h2>尚未登入</h2>
-      <p>請先登入 Firebase 才能使用開發者面板。</p>
-    `;
-  }
-}
-</script>
-
+    // Blogger 文章數
+    function setBlogCount() {
+      const num = prompt("請輸入目前文章數：");
+      if(num !== null){
+        document.getElementById("blog-count").innerText = num;
+        localStorage.setItem("blogCount", num);
+      }
+    }
+  </script>
 </body>
 </html>
