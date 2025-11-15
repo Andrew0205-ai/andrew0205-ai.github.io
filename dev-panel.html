@@ -1,126 +1,138 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>開發者面板</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
-    h1 { text-align:center; margin-bottom:20px; }
-    .panel-section { background:#fff; padding:16px; border-radius:8px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-    .panel-section h2 { margin-top:0; font-size:20px; margin-bottom:10px; }
-    button { padding:10px 14px; border:none; background:#6200ea; color:white; border-radius:6px; cursor:pointer; }
-    button:hover { background:#4b00b5; }
-    .info-item { margin:5px 0; padding-left:6px; border-left:4px solid #6200ea; }
-    #logoutBtn { background:#b00020; margin-top:10px; }
-    #logoutBtn:hover { background:#7a0015; }
-  </style>
+<meta charset="UTF-8">
+<title>開發者面板 v2</title>
+<style>
+:root { --main-color:#6200ea; --bg-color:#f3f3f3; --text-color:#222; }
+body { font-family: system-ui; background: var(--bg-color); color: var(--text-color); margin:0; padding:20px; }
+h1 { text-align:center; margin-bottom:20px; }
+.card { background:white; padding:16px; margin-bottom:20px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.15);}
+.card h2 { margin-top:0; }
+button { padding:8px 12px; border:none; border-radius:6px; cursor:pointer; background:var(--main-color); color:white; }
+button:hover { opacity:0.85; }
+#dev-panel { position:fixed; right:20px; bottom:20px; width:350px; max-height:90%; overflow:auto; background:rgba(0,0,0,0.7); color:white; padding:20px; border-radius:20px; display:none; z-index:9999; }
+#closeDev { background:#b00020; }
+textarea { width:100%; height:80px; }
+</style>
 </head>
-
 <body>
-  <h1>開發者控制面板</h1>
 
-  <div id="panel" style="display:none;">
-    <!-- 系統資訊 -->
-    <div class="panel-section">
-      <h2>系統資訊</h2>
-      <div class="info-item">網站版本：1.0.0</div>
-      <div class="info-item" id="firebase-status">Firebase：檢查中…</div>
-      <div class="info-item">最後更新：2025-11-14</div>
-    </div>
+<h1>開發者面板 v2</h1>
 
-    <!-- GitHub Commit 假資訊 -->
-    <div class="panel-section">
-      <h2>GitHub 狀態</h2>
-      <div class="info-item">最後 Commit：2025-11-13 22:11</div>
-      <div class="info-item">分支：main</div>
-    </div>
+<!-- Dev Panel -->
+<div id="dev-panel">
+  <button id="closeDev">關閉面板</button>
 
-    <!-- Blogger 文章統計 -->
-    <div class="panel-section">
-      <h2>Blogger 文章統計</h2>
-      <div class="info-item">目前文章數： <span id="blog-count">（請手動輸入）</span></div>
-      <button onclick="setBlogCount()">更新文章數</button>
-    </div>
-
-    <!-- 更新紀錄 -->
-    <div class="panel-section">
-      <h2>更新紀錄</h2>
-      <textarea id="update-log" style="width:100%;height:80px;"></textarea>
-      <button onclick="saveUpdate()">儲存更新紀錄</button>
-      <p style="margin-top:10px;font-size:14px;color:#555;">
-        （手動紀錄文章新增或首頁推薦更新）
-      </p>
-    </div>
-
-    <!-- 工具區 -->
-    <div class="panel-section">
-      <h2>工具區</h2>
-      <button onclick="openColorTool()">開啟：顏色查詢器（color.html）</button>
-    </div>
-
-    <button id="logoutBtn" onclick="logout()">登出</button>
+  <!-- 系統顏色 -->
+  <div class="card">
+    <h2>系統配色</h2>
+    <input type="color" id="colorPicker" value="#6200ea">
+    <button id="applyColor">套用顏色</button>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-  <script src="firebase-config.js"></script>
+  <!-- Blogger -->
+  <div class="card">
+    <h2>Blogger</h2>
+    <p>文章數：<span id="blog-count">抓取中...</span></p>
+    <div id="posts">載入中...</div>
+    <button id="reloadPosts">重新抓取</button>
+  </div>
 
-  <script>
-    const auth = firebase.auth();
+  <!-- Firebase 留言監控 -->
+  <div class="card">
+    <h2>留言板監控</h2>
+    <button id="loadComments">載入留言</button>
+    <pre id="commentOutput"></pre>
+  </div>
 
-    // 登入保護
-    auth.onAuthStateChanged(user => {
-      if(user){
-        document.getElementById("panel").style.display = "block";
-        detectFirebase();
-      } else {
-        alert("請先登入！");
-        window.location.href = "/";
-      }
-    });
+  <!-- 更新紀錄 -->
+  <div class="card">
+    <h2>更新紀錄</h2>
+    <textarea id="update-log"></textarea>
+    <button id="saveUpdate">儲存</button>
+  </div>
 
-    function logout() {
-      auth.signOut().then(()=>{ window.location.href="/"; });
-    }
+  <!-- 工具 -->
+  <div class="card">
+    <h2>工具區</h2>
+    <button id="openColorTool">開啟：顏色查詢器</button>
+  </div>
 
-    // Firebase 載入偵測
-    function detectFirebase() {
-      if (window.firebase) {
-        document.getElementById("firebase-status").innerText = "Firebase：已載入 ✔";
-      } else {
-        document.getElementById("firebase-status").innerText = "Firebase：未載入 ✘";
-      }
-    }
+  <!-- API Key -->
+  <div class="card">
+    <h2>API Key</h2>
+    <input type="password" id="apiKey" placeholder="輸入 API Key">
+    <button id="toggleApi">顯示 / 隱藏</button>
+  </div>
+</div>
 
-    // 開啟顏色查詢器
-    function openColorTool() {
-      window.location.href = "color.html";
-    }
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+<script src="firebase-config-1.js"></script>
+<script>
+// ===== Dev Panel 顯示 / 關閉 =====
+document.addEventListener("keydown", e => { if(e.key==="F12") document.getElementById("dev-panel").style.display="block"; });
+document.getElementById("closeDev").onclick = () => { document.getElementById("dev-panel").style.display="none"; };
 
-    // 儲存更新紀錄
-    function saveUpdate() {
-      const text = document.getElementById("update-log").value;
-      localStorage.setItem("devUpdateLog", text);
-      alert("已儲存！");
-    }
+// ===== 系統顏色 =====
+document.getElementById("applyColor").onclick = () => {
+  const color = document.getElementById("colorPicker").value;
+  document.documentElement.style.setProperty("--main-color", color);
+  alert("顏色已套用！");
+};
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("devUpdateLog");
-      if(saved){ document.getElementById("update-log").value = saved; }
+// ===== Blogger API =====
+const BLOG_ID = "8801793508864739730";
+const API_KEY = "AIzaSyBKmIaMltKWERD1-ZX47ed2IpsRGzc1HXU";
 
-      const savedCount = localStorage.getItem("blogCount");
-      if(savedCount){ document.getElementById("blog-count").innerText = savedCount; }
-    });
+async function loadPosts(max=5){
+  document.getElementById("posts").innerText="抓取中...";
+  document.getElementById("blog-count").innerText="抓取中...";
+  try {
+    let res = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=${max}`);
+    let data = await res.json();
+    const list = data.items.map(p=>`• ${p.title}`).join("\n");
+    document.getElementById("posts").innerText = list;
+    let countRes = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}?key=${API_KEY}`);
+    let countData = await countRes.json();
+    document.getElementById("blog-count").innerText = countData.posts.totalItems;
+  } catch(e){ console.error(e); document.getElementById("posts").innerText="抓取失敗"; document.getElementById("blog-count").innerText="錯誤"; }
+}
+loadPosts();
+document.getElementById("reloadPosts").onclick = () => loadPosts();
 
-    // Blogger 文章數
-    function setBlogCount() {
-      const num = prompt("請輸入目前文章數：");
-      if(num !== null){
-        document.getElementById("blog-count").innerText = num;
-        localStorage.setItem("blogCount", num);
-      }
-    }
-  </script>
+// ===== Firebase 留言監控 =====
+document.getElementById("loadComments").onclick = async () => {
+  const output=document.getElementById("commentOutput");
+  output.innerText="載入中...";
+  try {
+    const snapshot = await firebase.firestore().collection("comments").get();
+    let text="";
+    snapshot.forEach(doc=>{ text += JSON.stringify(doc.data(),null,2)+"\n\n"; });
+    output.innerText=text;
+  } catch(e){ output.innerText="抓取失敗"; console.error(e);}
+};
+
+// ===== 更新紀錄 =====
+document.getElementById("saveUpdate").onclick = () => {
+  const text=document.getElementById("update-log").value;
+  localStorage.setItem("devUpdateLog",text);
+  alert("已儲存！");
+};
+document.addEventListener("DOMContentLoaded",()=>{ const saved=localStorage.getItem("devUpdateLog"); if(saved) document.getElementById("update-log").value=saved; });
+
+// ===== 工具區 =====
+document.getElementById("openColorTool").onclick = () => window.location.href="color.html";
+
+// ===== API Key 隱藏切換 =====
+document.getElementById("toggleApi").onclick = () => {
+  const api=document.getElementById("apiKey");
+  api.type = api.type==="password"?"text":"password";
+};
+</script>
 </body>
 </html>
+
