@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>開發者面板 v2</title>
+<title>開發者面板 v2 完整版</title>
 <style>
 :root { --main-color:#6200ea; --bg-color:#f3f3f3; --text-color:#222; }
 body { font-family: system-ui; background: var(--bg-color); color: var(--text-color); margin:0; padding:20px; }
@@ -18,19 +18,17 @@ textarea { width:100%; height:80px; }
 </head>
 <body>
 
-<h1>開發者面板 v2</h1>
+<h1>開發者面板 v2 完整版</h1>
 
 <div id="dev-panel">
   <button id="closeDev">關閉面板</button>
 
-  <!-- 系統顏色 -->
   <div class="card">
     <h2>系統配色</h2>
     <input type="color" id="colorPicker" value="#6200ea">
     <button id="applyColor">套用顏色</button>
   </div>
 
-  <!-- Blogger -->
   <div class="card">
     <h2>Blogger</h2>
     <p>文章數：<span id="blog-count">抓取中...</span></p>
@@ -38,31 +36,29 @@ textarea { width:100%; height:80px; }
     <button id="reloadPosts">重新抓取</button>
   </div>
 
-  <!-- Firebase 留言監控 -->
   <div class="card">
     <h2>留言板監控</h2>
     <button id="loadComments">載入留言</button>
     <pre id="commentOutput"></pre>
   </div>
 
-  <!-- 更新紀錄 -->
   <div class="card">
     <h2>更新紀錄</h2>
     <textarea id="update-log"></textarea>
     <button id="saveUpdate">儲存</button>
   </div>
 
-  <!-- 工具 -->
   <div class="card">
     <h2>工具區</h2>
     <button id="openColorTool">開啟：顏色查詢器</button>
   </div>
 
-  <!-- API Key -->
   <div class="card">
     <h2>API Key</h2>
-    <input type="password" id="apiKey" placeholder="輸入 API Key">
-    <button id="toggleApi">顯示 / 隱藏</button>
+    <form onsubmit="return false;">
+      <input type="password" id="apiKey" placeholder="輸入 API Key">
+      <button id="toggleApi">顯示 / 隱藏</button>
+    </form>
   </div>
 </div>
 
@@ -72,77 +68,82 @@ textarea { width:100%; height:80px; }
 <script src="https://www.gstatic.com/firebasejs/8.16.0/firebase-firestore.js"></script>
 
 <script>
-// ===== Firebase 初始化（非模組版）=====
-const firebaseConfig = {
-  apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
-  authDomain: "mycomment-ad1ba.firebaseapp.com",
-  projectId: "mycomment-ad1ba",
-  storageBucket: "mycomment-ad1ba.appspot.com",
-  messagingSenderId: "1076313273646",
-  appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
-  measurementId: "G-3NGHCWH7TP"
-};
-firebase.initializeApp(firebaseConfig);
+document.addEventListener("DOMContentLoaded", () => {
 
-// ===== Dev Panel 顯示 / 關閉 =====
-document.addEventListener("keydown", e => { if(e.key==="F12") document.getElementById("dev-panel").style.display="block"; });
-document.getElementById("closeDev").onclick = () => { document.getElementById("dev-panel").style.display="none"; };
+  // ===== Firebase 初始化 =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
+    authDomain: "mycomment-ad1ba.firebaseapp.com",
+    projectId: "mycomment-ad1ba",
+    storageBucket: "mycomment-ad1ba.appspot.com",
+    messagingSenderId: "1076313273646",
+    appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
+    measurementId: "G-3NGHCWH7TP"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-// ===== 系統顏色 =====
-document.getElementById("applyColor").onclick = () => {
-  const color = document.getElementById("colorPicker").value;
-  document.documentElement.style.setProperty("--main-color", color);
-  alert("顏色已套用！");
-};
+  // ===== Dev Panel 顯示 / 關閉 =====
+  document.addEventListener("keydown", e => { if(e.key==="F12") document.getElementById("dev-panel").style.display="block"; });
+  document.getElementById("closeDev").onclick = () => { document.getElementById("dev-panel").style.display="none"; };
 
-// ===== Blogger API =====
-const BLOG_ID = "8801793508864739730";
-const API_KEY = "AIzaSyBKmIaMltKWERD1-ZX47ed2IpsRGzc1HXU";
+  // ===== 系統顏色 =====
+  document.getElementById("applyColor").onclick = () => {
+    const color = document.getElementById("colorPicker").value;
+    document.documentElement.style.setProperty("--main-color", color);
+    alert("顏色已套用！");
+  };
 
-async function loadPosts(max=5){
-  document.getElementById("posts").innerText="抓取中...";
-  document.getElementById("blog-count").innerText="抓取中...";
-  try {
-    let res = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=${max}`);
-    let data = await res.json();
-    const list = data.items.map(p=>`• ${p.title}`).join("\n");
-    document.getElementById("posts").innerText = list;
-    let countRes = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}?key=${API_KEY}`);
-    let countData = await countRes.json();
-    document.getElementById("blog-count").innerText = countData.posts.totalItems;
-  } catch(e){ console.error(e); document.getElementById("posts").innerText="抓取失敗"; document.getElementById("blog-count").innerText="錯誤"; }
-}
-loadPosts();
-document.getElementById("reloadPosts").onclick = () => loadPosts();
+  // ===== Blogger API =====
+  const BLOG_ID = "8801793508864739730";
+  const API_KEY = "AIzaSyBKmIaMltKWERD1-ZX47ed2IpsRGzc1HXU";
 
-// ===== Firebase 留言監控 =====
-document.getElementById("loadComments").onclick = async () => {
-  const output=document.getElementById("commentOutput");
-  output.innerText="載入中...";
-  try {
-    const snapshot = await firebase.firestore().collection("comments").get();
-    let text="";
-    snapshot.forEach(doc=>{ text += JSON.stringify(doc.data(),null,2)+"\n\n"; });
-    output.innerText=text;
-  } catch(e){ output.innerText="抓取失敗"; console.error(e);}
-};
+  async function loadPosts(max=5){
+    document.getElementById("posts").innerText="抓取中...";
+    document.getElementById("blog-count").innerText="抓取中...";
+    try {
+      let res = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=${max}`);
+      let data = await res.json();
+      const list = data.items.map(p=>`• ${p.title}`).join("\n");
+      document.getElementById("posts").innerText = list;
+      let countRes = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}?key=${API_KEY}`);
+      let countData = await countRes.json();
+      document.getElementById("blog-count").innerText = countData.posts.totalItems;
+    } catch(e){ console.error(e); document.getElementById("posts").innerText="抓取失敗"; document.getElementById("blog-count").innerText="錯誤"; }
+  }
+  loadPosts();
+  document.getElementById("reloadPosts").onclick = () => loadPosts();
 
-// ===== 更新紀錄 =====
-document.getElementById("saveUpdate").onclick = () => {
-  const text=document.getElementById("update-log").value;
-  localStorage.setItem("devUpdateLog",text);
-  alert("已儲存！");
-};
-document.addEventListener("DOMContentLoaded",()=>{ const saved=localStorage.getItem("devUpdateLog"); if(saved) document.getElementById("update-log").value=saved; });
+  // ===== Firebase 留言監控 =====
+  document.getElementById("loadComments").onclick = async () => {
+    const output=document.getElementById("commentOutput");
+    output.innerText="載入中...";
+    try {
+      const snapshot = await firebase.firestore().collection("comments").get();
+      let text="";
+      snapshot.forEach(doc=>{ text += JSON.stringify(doc.data(),null,2)+"\n\n"; });
+      output.innerText=text;
+    } catch(e){ output.innerText="抓取失敗"; console.error(e);}
+  };
 
-// ===== 工具區 =====
-document.getElementById("openColorTool").onclick = () => window.location.href="color.html";
+  // ===== 更新紀錄 =====
+  document.getElementById("saveUpdate").onclick = () => {
+    const text=document.getElementById("update-log").value;
+    localStorage.setItem("devUpdateLog",text);
+    alert("已儲存！");
+  };
+  const saved=localStorage.getItem("devUpdateLog");
+  if(saved) document.getElementById("update-log").value=saved;
 
-// ===== API Key 隱藏切換 =====
-document.getElementById("toggleApi").onclick = () => {
-  const api=document.getElementById("apiKey");
-  api.type = api.type==="password"?"text":"password";
-};
+  // ===== 工具區 =====
+  document.getElementById("openColorTool").onclick = () => window.location.href="color.html";
+
+  // ===== API Key 隱藏切換 =====
+  document.getElementById("toggleApi").onclick = () => {
+    const api=document.getElementById("apiKey");
+    api.type = api.type==="password"?"text":"password";
+  };
+
+});
 </script>
 
 </body>
