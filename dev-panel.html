@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>開發者面板 vFinal</title>
+<title>開發者面板 v.4.0</title>
 <style>
 :root { --main-color:#6200ea; --bg-color:#f3f3f3; --text-color:#222; }
 body { font-family: system-ui; background: var(--bg-color); color: var(--text-color); margin:0; padding:20px; }
@@ -13,14 +13,12 @@ button { padding:8px 12px; border:none; border-radius:6px; cursor:pointer; backg
 button:hover { opacity:0.85; }
 #dev-panel { position:fixed; right:20px; bottom:20px; width:350px; max-height:90%; overflow:auto; background:rgba(0,0,0,0.7); color:white; padding:20px; border-radius:20px; display:none; z-index:9999; }
 #closeDev { background:#b00020; }
-#stopComments { background:#e65100; margin-left:10px; } /* 新增停止監控按鈕的樣式 */
 textarea { width:100%; height:80px; }
-input[type="password"], input[type="text"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-right: 5px; }
 </style>
 </head>
 <body>
 
-<h1>開發者面板 vFinal</h1>
+<h1>開發者面板 v.4.0</h1>
 
 <div id="dev-panel">
   <button id="closeDev">關閉面板</button>
@@ -39,10 +37,9 @@ input[type="password"], input[type="text"] { padding: 8px; border: 1px solid #cc
   </div>
 
   <div class="card">
-    <h2>留言板監控 (即時)</h2>
-    <button id="startComments">啟動監控</button>
-    <button id="stopComments" style="display:none;">停止監控</button>
-    <pre id="commentOutput">點擊「啟動監控」按鈕以載入留言。</pre>
+    <h2>留言板監控</h2>
+    <button id="loadComments">載入留言</button>
+    <pre id="commentOutput"></pre>
   </div>
 
   <div class="card">
@@ -65,142 +62,90 @@ input[type="password"], input[type="text"] { padding: 8px; border: 1px solid #cc
   </div>
 </div>
 
+<!-- Firebase SDK (非模組版) -->
 <script src="https://www.gstatic.com/firebasejs/8.16.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.16.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.16.0/firebase-firestore.js"></script>
 
+<!-- Firebase 初始化 (一定要在 SDK 之後) -->
 <script>
-window.addEventListener("DOMContentLoaded", () => {
+const firebaseConfig = {
+  apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
+  authDomain: "mycomment-ad1ba.firebaseapp.com",
+  projectId: "mycomment-ad1ba",
+  storageBucket: "mycomment-ad1ba.appspot.com",
+  messagingSenderId: "1076313273646",
+  appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
+  measurementId: "G-3NGHCWH7TP"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
 
-  // ===== Firebase 初始化設定 =====
-  const firebaseConfig = {
-    apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
-    authDomain: "mycomment-ad1ba.firebaseapp.com",
-    projectId: "mycomment-ad1ba",
-    storageBucket: "mycomment-ad1ba.appspot.com",
-    messagingSenderId: "1076313273646",
-    appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
-    measurementId: "G-3NGHCWH7TP"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore(); // 取得 Firestore 實例
-
-  // ===== DOM 元素快取 =====
+<!-- 自訂功能程式碼 -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
   const devPanel = document.getElementById("dev-panel");
-  const closeDevBtn = document.getElementById("closeDev");
-  const colorPicker = document.getElementById("colorPicker");
-  const applyColorBtn = document.getElementById("applyColor");
-  const postsOutput = document.getElementById("posts");
-  const blogCountSpan = document.getElementById("blog-count");
-  const reloadPostsBtn = document.getElementById("reloadPosts");
-  const startCommentsBtn = document.getElementById("startComments");
-  const stopCommentsBtn = document.getElementById("stopComments");
-  const commentOutput = document.getElementById("commentOutput");
-  const updateLogTextarea = document.getElementById("update-log");
-  const saveUpdateBtn = document.getElementById("saveUpdate");
-  const openColorToolBtn = document.getElementById("openColorTool");
-  const apiKeyInput = document.getElementById("apiKey");
-  const toggleApiBtn = document.getElementById("toggleApi");
 
+  // 開/關 Dev Panel
+  document.addEventListener("keydown", e => { if(e.key==="F12") devPanel.style.display="block"; });
+  document.getElementById("closeDev").onclick = () => { devPanel.style.display="none"; };
 
-  // ===== Dev Panel 顯示 / 關閉 (F12) =====
-  document.addEventListener("keydown", e => { 
-    if(e.key==="F12") {
-      devPanel.style.display = devPanel.style.display === "block" ? "none" : "block";
-    }
-  });
-  closeDevBtn.onclick = () => { devPanel.style.display="none"; };
-
-  // ===== 系統顏色套用 =====
-  applyColorBtn.onclick = () => {
-    const color = colorPicker.value;
+  // 系統顏色
+  document.getElementById("applyColor").onclick = () => {
+    const color = document.getElementById("colorPicker").value;
     document.documentElement.style.setProperty("--main-color", color);
     alert("顏色已套用！");
   };
 
-  // ===== Blogger API 讀取文章 (單次) =====
+  // Blogger API
   const BLOG_ID = "8801793508864739730";
   const API_KEY = "AIzaSyBKmIaMltKWERD1-ZX47ed2IpsRGzc1HXU";
 
   async function loadPosts(max=5){
-    postsOutput.innerText="抓取中...";
-    blogCountSpan.innerText="抓取中...";
+    document.getElementById("posts").innerText="抓取中...";
+    document.getElementById("blog-count").innerText="抓取中...";
     try {
-      // 1. 抓取最新文章列表
       let res = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=${max}`);
       let data = await res.json();
-      const list = (data.items || []).map(p=>`• ${p.title}`).join("\n");
-      postsOutput.innerText = list || "目前無文章。";
-
-      // 2. 抓取總文章數
+      const list = data.items.map(p=>`• ${p.title}`).join("\n");
+      document.getElementById("posts").innerText = list;
       let countRes = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}?key=${API_KEY}`);
       let countData = await countRes.json();
-      blogCountSpan.innerText = countData.posts.totalItems;
-
-    } catch(e){ 
-      console.error(e); 
-      postsOutput.innerText="抓取失敗"; 
-      blogCountSpan.innerText="錯誤"; 
-    }
+      document.getElementById("blog-count").innerText = countData.posts.totalItems;
+    } catch(e){ console.error(e); document.getElementById("posts").innerText="抓取失敗"; document.getElementById("blog-count").innerText="錯誤"; }
   }
-  loadPosts(); // 頁面載入時先執行一次
-  reloadPostsBtn.onclick = () => loadPosts();
+  loadPosts();
+  document.getElementById("reloadPosts").onclick = () => loadPosts();
 
-  // ===== Firebase 留言監控 (即時) =====
-  let unsubscribeComments = null; // 用來儲存 onSnapshot 的取消監聽函數
+  // Firebase 留言板監控
+  document.getElementById("loadComments").onclick = async () => {
+    const output=document.getElementById("commentOutput");
+    output.innerText="載入中...";
+    try {
+      const snapshot = await firebase.firestore().collection("comments").get();
+      let text="";
+      snapshot.forEach(doc=>{ text += JSON.stringify(doc.data(),null,2)+"\n\n"; });
+      output.innerText=text;
+    } catch(e){ output.innerText="抓取失敗"; console.error(e);}
+  };
 
-  function startCommentMonitor() {
-    commentOutput.innerText = "正在監聽留言變動...";
-    startCommentsBtn.style.display = 'none';
-    stopCommentsBtn.style.display = 'inline';
-
-    // 使用 onSnapshot 建立即時監聽器
-    unsubscribeComments = db.collection("comments").onSnapshot(snapshot => {
-      let text = "即時資料更新：\n---\n";
-      snapshot.forEach(doc => { 
-        text += JSON.stringify(doc.data(), null, 2) + "\n---\n"; 
-      });
-      commentOutput.innerText = text.trim(); // 使用 trim 清理結尾多餘換行
-
-    }, error => {
-      commentOutput.innerText = "監聽失敗 (請檢查安全規則或網路連線)";
-      console.error("Firebase 監聽錯誤:", error);
-      // 監聽失敗時，重設按鈕狀態
-      startCommentsBtn.style.display = 'inline';
-      stopCommentsBtn.style.display = 'none';
-    });
-  }
-
-  function stopCommentMonitor() {
-    if (unsubscribeComments) {
-      unsubscribeComments(); // 呼叫取消監聽函數
-      unsubscribeComments = null;
-      commentOutput.innerText = "監控已停止。";
-      startCommentsBtn.style.display = 'inline';
-      stopCommentsBtn.style.display = 'none';
-    }
-  }
-
-  startCommentsBtn.onclick = startCommentMonitor;
-  stopCommentsBtn.onclick = stopCommentMonitor;
-
-  // ===== 更新紀錄 (Local Storage) =====
-  saveUpdateBtn.onclick = () => {
-    const text=updateLogTextarea.value;
+  // 更新紀錄
+  document.getElementById("saveUpdate").onclick = () => {
+    const text=document.getElementById("update-log").value;
     localStorage.setItem("devUpdateLog",text);
-    alert("已儲存到瀏覽器本地儲存！");
+    alert("已儲存！");
   };
   const saved=localStorage.getItem("devUpdateLog");
-  if(saved) updateLogTextarea.value=saved;
+  if(saved) document.getElementById("update-log").value=saved;
 
-  // ===== 工具區 =====
-  openColorToolBtn.onclick = () => window.location.href="color.html";
+  // 工具區
+  document.getElementById("openColorTool").onclick = () => window.location.href="color.html";
 
-  // ===== API Key 隱藏切換 =====
-  toggleApiBtn.onclick = () => {
-    apiKeyInput.type = apiKeyInput.type==="password"?"text":"password";
+  // API Key 隱藏/顯示
+  document.getElementById("toggleApi").onclick = () => {
+    const api=document.getElementById("apiKey");
+    api.type = api.type==="password"?"text":"password";
   };
-
 });
 </script>
 
