@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>我的網站</title>
+
+<style>
+/* ------------------------------ */
+/* 基本設定 */
+/* ------------------------------ */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f3f3;
+  line-height: 1.6;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* ------------------------------ */
+/* Header */
+/* ------------------------------ */
+header {
+  background-color: #1eb980;
+  color: white;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+header .nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ------------------------------ */
+/* 導覽列 */
+/* ------------------------------ */
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/* ------------------------------ */
+/* 漢堡按鈕 */
+/* ------------------------------ */
+.hamburger {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background: #1eb980;
+    padding: 10px 0;
+  }
+  .nav-links.active {
+    display: flex;
+  }
+  .hamburger {
+    display: block;
+  }
+}
+
+/* ------------------------------ */
+/* Hero 區 */
+/* ------------------------------ */
+.hero {
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 42px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #1eb980, #24c79b);
+  color: white;
+  text-align: center;
+}
+
+/* ------------------------------ */
+/* 區塊標題 */
+/* ------------------------------ */
+.section-title {
+  font-size: 28px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ------------------------------ */
+/* 卡片區（首頁內容） */
+/* ------------------------------ */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.feature-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.feature-box h3 {
+  margin-top: 0;
+  color: #1eb980;
+}
+
+/* ------------------------------ */
+/* 圖片區 */
+/* ------------------------------ */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.gallery img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* ------------------------------ */
+/* Footer */
+/* ------------------------------ */
+footer {
+  background-color: #1eb980;
+  color: white;
+  padding: 30px 0;
+  margin-top: 50px;
+  text-align: center;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ============================== -->
+<!-- Header -->
+<!-- ============================== -->
+<header>
+  <div class="container nav">
+    <div class="logo">我的網站</div>
+
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+
+    <div class="nav-links" id="menu">
+      <a href="#">首頁</a>
+      <a href="#">關於我</a>
+      <a href="#">相簿</a>
+      <a href="#">留言板</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== -->
+<!-- Hero 區 -->
+<!-- ============================== -->
+<div class="hero">歡迎來到我的網站！</div>
+
+<div class="container">
+
+  <!-- ============================== -->
+  <!-- 區塊：內容 -->
+  <!-- ============================== -->
+  <div class="section-title">網站內容</div>
+
+  <div class="features">
+    <div class="feature-box">
+      <h3>關於我</h3>
+      <p>這裡可以放你的簡介、學校生活、興趣、作品等等內容。</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>相簿</h3>
+      <p>放你的照片、活動紀錄、旅遊照或畫作。</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>留言板</h3>
+      <p>訪客可以留言，或你放外部連結。</p>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- 圖片區 -->
+  <!-- ============================== -->
+  <div class="section-title">圖片</div>
+
+  <div class="gallery">
+    <img src="https://picsum.photos/300?1">
+    <img src="https://picsum.photos/300?2">
+    <img src="https://picsum.photos/300?3">
+    <img src="https://picsum.photos/300?4">
+  </div>
+
+</div>
+
+<!-- ============================== -->
+<!-- Footer -->
+<!-- ============================== -->
+<footer>
+  © 2025 我的小網站
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById("menu").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>
