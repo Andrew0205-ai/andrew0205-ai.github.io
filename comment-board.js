@@ -77,7 +77,7 @@ sendBtn.addEventListener("click", async () => {
     await addDoc(collection(db, "comments"), {
       uid: user.uid,
       nickname: anonymousCheckbox.checked ? "匿名" : (user.displayName || user.email),
-      avatarUrl: anonymousCheckbox.checked ? "default-avatar.png" : (user.photoURL || "default-avatar.png"),
+      avatarUrl: anonymousCheckbox.checked ? "images/default-avatar.png" : (user.photoURL || "images/default-avatar.png"),
       content,
       timestamp: serverTimestamp()
     });
