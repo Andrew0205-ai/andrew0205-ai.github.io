@@ -22,3 +22,6 @@ function copyGameID() {
     alert("已複製遊戲 ID：" + idText);
   });
 }
+function toggleMenu() {
+  document.getElementById("menu").classList.toggle("active");
+}
