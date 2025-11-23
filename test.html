@@ -1,237 +1,125 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>我的網站</title>
-
-<style>
-/* ------------------------------ */
-/* 基本設定 */
-/* ------------------------------ */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f3f3f3;
-  line-height: 1.6;
-}
-
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: auto;
-}
-
-/* ------------------------------ */
-/* Header */
-/* ------------------------------ */
-header {
-  background-color: #1eb980;
-  color: white;
-  padding: 15px 0;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-header .nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-/* ------------------------------ */
-/* 導覽列 */
-/* ------------------------------ */
-.nav-links {
-  display: flex;
-  gap: 20px;
-}
-
-.nav-links a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-/* ------------------------------ */
-/* 漢堡按鈕 */
-/* ------------------------------ */
-.hamburger {
-  display: none;
-  font-size: 28px;
-  cursor: pointer;
-  user-select: none;
-}
-
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    background: #1eb980;
-    padding: 10px 0;
-  }
-  .nav-links.active {
-    display: flex;
-  }
-  .hamburger {
-    display: block;
-  }
-}
-
-/* ------------------------------ */
-/* Hero 區 */
-/* ------------------------------ */
-.hero {
-  height: 320px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 42px;
-  font-weight: bold;
-  background: linear-gradient(135deg, #1eb980, #24c79b);
-  color: white;
-  text-align: center;
-}
-
-/* ------------------------------ */
-/* 區塊標題 */
-/* ------------------------------ */
-.section-title {
-  font-size: 28px;
-  margin-top: 40px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* ------------------------------ */
-/* 卡片區（首頁內容） */
-/* ------------------------------ */
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.feature-box {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-
-.feature-box h3 {
-  margin-top: 0;
-  color: #1eb980;
-}
-
-/* ------------------------------ */
-/* 圖片區 */
-/* ------------------------------ */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-}
-
-.gallery img {
-  width: 100%;
-  border-radius: 8px;
-}
-
-/* ------------------------------ */
-/* Footer */
-/* ------------------------------ */
-footer {
-  background-color: #1eb980;
-  color: white;
-  padding: 30px 0;
-  margin-top: 50px;
-  text-align: center;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小宏的部落格 | 音樂、程式與生活探索</title>
+  <link rel="stylesheet" href="main.css">
 
 </head>
 <body>
+  <header>
+    <h1>小宏的部落格</h1> 
+    <div class="hamburger" onclick="toggleMenu()">☰</div> <div class="nav-links" id="menu">       <a href="name.html" target="_blank">🪪 電子名片</a>
+       <a href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a></div>
+  </header>
 
-<!-- ============================== -->
-<!-- Header -->
-<!-- ============================== -->
-<header>
-  <div class="container nav">
-    <div class="logo">我的網站</div>
+  <main class="container">
+    <!-- 👦 關於我 -->
+    <section>
+<br>
+<br>
+<br>
+      <h2>關於我</h2>
+      <span id="typing-text"></span><span class="cursor" id="cursor"></span>
+      <img id="avatar" src="images/andrew.png" alt="星宏頭像">
+    </section>
 
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <!-- 🏅 小宏的任務挑戰 -->
+    <section id="task-section" class="hidden">
+      <h2>🏅 小宏的任務挑戰</h2>
+      <div id="badgeList"></div>
+      <button onclick="goTask()">🚀 開始任務</button>
+      <button onclick="closeTask()">🔙 返回</button>
+    </section>
 
-    <div class="nav-links" id="menu">
-      <a href="#">首頁</a>
-      <a href="#">關於我</a>
-      <a href="#">相簿</a>
-      <a href="#">留言板</a>
-    </div>
-  </div>
-</header>
+    
+    <!-- 📬 聯絡我 -->
+    <section id="contact-section">
+      <h3>📬 聯絡我</h3>
+      <p>電子郵件：
+        <a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a>
+      </p>
+    </section>
 
-<!-- ============================== -->
-<!-- Hero 區 -->
-<!-- ============================== -->
-<div class="hero">歡迎來到我的網站！</div>
+    
 
-<div class="container">
-
-  <!-- ============================== -->
-  <!-- 區塊：內容 -->
-  <!-- ============================== -->
-  <div class="section-title">網站內容</div>
-
-  <div class="features">
-    <div class="feature-box">
-      <h3>關於我</h3>
-      <p>這裡可以放你的簡介、學校生活、興趣、作品等等內容。</p>
-    </div>
-
-    <div class="feature-box">
-      <h3>相簿</h3>
-      <p>放你的照片、活動紀錄、旅遊照或畫作。</p>
-    </div>
-
-    <div class="feature-box">
-      <h3>留言板</h3>
-      <p>訪客可以留言，或你放外部連結。</p>
-    </div>
-  </div>
-
-  <!-- ============================== -->
-  <!-- 圖片區 -->
-  <!-- ============================== -->
-  <div class="section-title">圖片</div>
-
-  <div class="gallery">
-    <img src="https://picsum.photos/300?1">
-    <img src="https://picsum.photos/300?2">
-    <img src="https://picsum.photos/300?3">
-    <img src="https://picsum.photos/300?4">
-  </div>
-
+      </ul>
+    </section>
+    <div class="game-id">
+  <h3>🎮 我的遊戲 ID</h3>
+  <p>遊戲名稱: <a href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a><br>
+     玩家名: 小宏鎮<br>
+     遊戲ID: <span id="gameID">K3Q92B</span>
+  </p>
+  <button onclick="copyGameID()">複製 ID</button>
 </div>
 
-<!-- ============================== -->
-<!-- Footer -->
-<!-- ============================== -->
-<footer>
-  © 2025 我的小網站
-</footer>
 
-<script>
-function toggleMenu() {
-  document.getElementById("menu").classList.toggle("active");
-}
-</script>
 
+    <section id="comment-section">
+  <h2>留言板與交流</h2>
+
+  <!-- 登入區 -->
+  <div id="auth-section">
+    <button id="login-btn">登入 Google</button>
+    <div id="user-info" class="hidden">
+      <img id="user-photo" src="default-avatar.png" alt="頭像" class="avatar">
+      <span id="user-name" width="200px"></span>
+      <input type="text" id="nickname-input" placeholder="自訂暱稱">
+      <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
+      <button id="upload-btn">
+        <img src="images/imgupload.png" class="upload-icon" alt="上傳圖片"> 上傳頭像
+      </button>
+      <button id="update-profile-btn">更新資料</button>
+      <button id="logout-btn">登出</button>
+    </div>
+  </div>
+
+  <!-- 留言輸入區 -->
+  <div id="comment-box" style="display:none;">
+    <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+    <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
+    <button id="send-btn">送出留言</button>
+  </div>
+
+  <!-- 留言列表 -->
+  <div id="comment-list" class="comment-list">
+    <p>正在載入留言...</p>
+  </div>
+</section>
+
+
+
+    <!-- 🕓 更新日期 -->
+    <section id="update-section">
+      <p>🕓 最後更新日期：<span id="lastUpdate"></span></p>
+    </section>
+<!-- 回到頂部按鈕 -->
+<button id="backToTop" style="display:none;" class="back-to-top">⬆️</button>
+  </main>
+
+  <!-- ⚙️ 頁尾 -->
+  <footer>
+    <p>© 2025 小宏工作室</p><br><br>
+      <h4>📬 聯絡我</h4>
+      <p>電子郵件：
+        <a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a>
+      </p>
+   
+  </footer>
+
+  <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
+
+  <!-- 📦 模組 JS -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="comment-board.js"></script>
+
+  <!-- 🌈 其他功能 JS  -->
+  <script src="badge.js"></script>
+  <script src="type.js"></script>
+  <script src="lan.js"></script>
+  <script src="other.js"></script>
 </body>
 </html>
