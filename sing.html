@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新加坡勇氣能量小遊戲</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background: linear-gradient(135deg, #6d9eeb, #f1c232);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    }
+
+    #energy {
+      font-size: 48px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 15px 30px;
+      border: none;
+      background: #fff;
+      color: #333;
+      border-radius: 12px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.08);
+    }
+
+    #msg {
+      margin-top: 25px;
+      font-size: 22px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌟 新加坡勇氣能量小遊戲 🌟</h1>
+  <p>每按一下，就離你的新加坡之旅更近一步！</p>
+
+  <div id="energy">0%</div>
+
+  <button onclick="addEnergy()">增加勇氣能量！</button>
+
+  <div id="msg"></div>
+
+  <script>
+    let energy = 0;
+    const messages = [
+      "加油！考試沒有你厲害！",
+      "星宏今天也很努力了！",
+      "你離新加坡更靠近一步啦 ✨",
+      "繼續保持，你一定可以完成所有挑戰！",
+      "太棒了！你正在往1月29日大步前進！",
+      "每一次努力都會讓未來更容易。"
+    ];
+
+    function addEnergy() {
+      if (energy < 100) {
+        energy += 5;
+        document.getElementById("energy").textContent = energy + "%";
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+        document.getElementById("msg").textContent = msg;
+
+        if (energy >= 100) {
+          document.getElementById("msg").textContent = "🎉 勇氣已滿！新加坡在等你！🎉";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
