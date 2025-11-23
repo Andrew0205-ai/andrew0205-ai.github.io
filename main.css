@@ -1,3 +1,22 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 讓右側的連結區塊靠右排列 */
+.nav-links {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* 漢堡選單與 nav-links 之間留距離 */
+.hamburger {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
 /* 遊戲 ID 區塊樣式 */
 .game-id {
   margin-top: 20px;
