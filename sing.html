@@ -8,51 +8,33 @@
     body {
       font-family: "Noto Sans TC", sans-serif;
       background: linear-gradient(135deg, #6d9eeb, #f1c232);
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      padding: 20px;
       color: #fff;
       text-align: center;
-      padding: 20px;
     }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    h1 { font-size: 32px; text-shadow: 2px 2px 6px rgba(0,0,0,0.3); }
+    .progress-container {
+      width: 80%; max-width: 400px; height: 28px;
+      background: rgba(255,255,255,0.3); border-radius: 20px;
+      margin: 20px auto; overflow: hidden;
     }
-
-    #energy {
-      font-size: 48px;
-      margin: 20px 0;
-      font-weight: bold;
+    .progress-bar {
+      height: 100%; width: 0%; background: #f1c232;
+      border-radius: 20px; transition: width 0.5s ease;
     }
-
-    button {
-      padding: 15px 30px;
-      border: none;
-      background: #fff;
-      color: #333;
-      border-radius: 12px;
-      font-size: 20px;
-      cursor: pointer;
+    button { padding: 12px 24px; margin: 10px; border: none;
+      border-radius: 12px; font-size: 18px; cursor: pointer; background: #fff; color: #333;
       transition: 0.2s;
-      margin-top: 10px;
     }
-
-    button:hover {
-      transform: scale(1.08);
-    }
-
-    #msg, #dateMsg, #countdown {
-      margin-top: 25px;
-      font-size: 22px;
-      min-height: 40px;
-      max-width: 90%;
-    }
+    button:hover { transform: scale(1.05); }
+    #msg, #dateMsg, #countdown { margin-top: 20px; font-size: 20px; min-height: 30px; }
+    #log { margin-top: 20px; max-height: 200px; overflow-y: auto; text-align: left; font-size: 16px; }
+    #calendar { margin-top: 20px; }
+    .day { display: inline-block; width: 32px; height: 32px; line-height: 32px; margin: 2px;
+      text-align: center; background: rgba(255,255,255,0.3); border-radius: 6px; }
+    .checked { background: #6d9eeb; }
   </style>
 </head>
 <body>
@@ -61,115 +43,157 @@
   <div id="countdown"></div>
   <div id="dateMsg"></div>
 
-  <div id="energy">0%</div>
+  <div>勇氣：<span id="energy">0</span> / 1000</div>
+  <div>等級：<span id="level">1</span></div>
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
 
-  <button onclick="addEnergy()">增加勇氣能量！</button>
-
-  <button id="checkinBtn" onclick="dailyCheckIn()">每日簽到 +5%</button>
+  <button onclick="addEnergy()">增加勇氣分數</button>
+  <button onclick="dailyCheckIn()">每日簽到 +5</button>
 
   <div id="msg"></div>
 
-  <script>
-    // --------------------
-    // ① 勇氣能量功能
-    // --------------------
-    let energy = 0;
+  <div id="calendar"></div>
 
-    const messages = [
-      "加油！考試沒有你厲害！",
-      "星宏今天也很努力了！",
-      "你離新加坡更靠近一步啦 ✨",
-      "繼續保持，你一定可以完成所有挑戰！",
-      "太棒了！你正在往1月29日大步前進！",
-      "每一次努力都會讓未來更容易。"
-    ];
+  <h3>紀錄列表：</h3>
+  <div id="log"></div>
 
-    function addEnergy() {
-      if (energy < 100) {
-        energy += 5;
-        updateEnergy();
-      }
+<script>
+  // -------------------- 初始化勇氣分數與等級 --------------------
+  let energy = parseInt(localStorage.getItem("energy")) || 0;
+  let level = parseInt(localStorage.getItem("level")) || 1;
+  let dailyCount = parseInt(localStorage.getItem("dailyCount")) || 0;
+  const messages = [
+    "加油！考試沒有你厲害！",
+    "星宏今天也很努力了！",
+    "你離新加坡更近一步啦 ✨",
+    "繼續保持，你一定可以完成所有挑戰！",
+    "太棒了！你正在往1月29日大步前進！",
+    "每一次努力都會讓未來更容易。"
+  ];
+
+  function saveEnergy() {
+    localStorage.setItem("energy", energy);
+    localStorage.setItem("level", level);
+    localStorage.setItem("dailyCount", dailyCount);
+  }
+
+  function updateEnergyBar() {
+    document.getElementById("energy").textContent = energy;
+    document.getElementById("level").textContent = level;
+    const percent = (energy/1000)*100;
+    document.getElementById("progressBar").style.width = percent + "%";
+  }
+
+  function addEnergy() {
+    const today = new Date().toDateString();
+    if (dailyCount >= 50) {
+      document.getElementById("msg").textContent = "今天勇氣分數已達 50 次上限！明天再加吧！";
+      return;
+    }
+    dailyCount++;
+    let add = prompt("輸入要增加的勇氣分數（1~20）：");
+    if (add === null) return;
+    add = parseInt(add);
+    if (isNaN(add) || add < 1) { alert("請輸入有效數字"); dailyCount--; return; }
+    if (add > 20) { alert("單次最多 20 分！"); dailyCount--; return; }
+
+    const record = confirm("你要紀錄這次加分事件嗎？");
+    energy += add;
+    if (energy >= 1000) {
+      energy -= 1000;
+      level++;
+      alert(`🎉 恭喜升級！你現在是 Lv. ${level} 🎉`);
+    }
+    saveEnergy();
+    updateEnergyBar();
+
+    if (record) {
+      let description = prompt("請輸入事件描述：");
+      if (description) addLog(description, add);
     }
 
-    function updateEnergy() {
-      if (energy > 100) energy = 100;
+    document.getElementById("msg").textContent = messages[Math.floor(Math.random()*messages.length)];
+  }
 
-      document.getElementById("energy").textContent = energy + "%";
+  // -------------------- 日誌紀錄 --------------------
+  let logData = JSON.parse(localStorage.getItem("logData")) || [];
+  function addLog(desc, score){
+    const now = new Date();
+    const time = now.toLocaleDateString() + " " + now.getHours() + ":" + now.getMinutes();
+    logData.unshift(`📘 ${time} ${desc} +${score}`);
+    localStorage.setItem("logData", JSON.stringify(logData));
+    renderLog();
+  }
+  function renderLog(){
+    document.getElementById("log").innerHTML = logData.join("<br>");
+  }
+  renderLog();
 
-      if (energy < 100) {
-        const msg = messages[Math.floor(Math.random() * messages.length)];
-        document.getElementById("msg").textContent = msg;
-      } else {
-        document.getElementById("msg").textContent = "🎉 勇氣已滿！新加坡在等你！🎉";
-      }
+  // -------------------- 每日簽到 --------------------
+  function dailyCheckIn(){
+    const today = new Date().toDateString();
+    const lastCheckIn = localStorage.getItem("checkinDate");
+    if (lastCheckIn === today){
+      document.getElementById("msg").textContent = "今天已簽到過囉！";
+      return;
     }
+    energy +=5;
+    saveEnergy();
+    updateEnergyBar();
+    localStorage.setItem("checkinDate", today);
+    document.getElementById("msg").textContent = "簽到成功 +5 勇氣！";
+    renderCalendar();
+  }
 
+  // -------------------- 辛苦日子百分比 --------------------
+  function calculateDateProgress(){
+    const start = new Date("2025-11-01");
+    const end = new Date("2026-01-29");
+    const now = new Date();
+    const total = end - start;
+    const passed = now - start;
+    let percent = (passed/total)*100;
+    if (percent<0) percent=0;
+    if (percent>100) percent=100;
+    const passedPercent = percent.toFixed(1);
+    const remainingPercent = (100-percent).toFixed(1);
+    document.getElementById("dateMsg").textContent = `你好厲害，已經過了 ${passedPercent}% 的辛苦日子，還有 ${remainingPercent}% 就能到新加坡了！`;
+  }
 
-    // --------------------
-    // ② 辛苦日子進度計算
-    // --------------------
-    function calculateDateProgress() {
-      const start = new Date("2025-11-01");
-      const end = new Date("2026-01-29");
-      const now = new Date();
+  // -------------------- 倒數天數 --------------------
+  function countdown(){
+    const today = new Date();
+    const target = new Date("2026-01-29");
+    let days = Math.ceil((target-today)/(1000*60*60*24));
+    if (days<0) days=0;
+    document.getElementById("countdown").textContent = `📅 距離新加坡之旅還有 ${days} 天！`;
+  }
 
-      const total = end - start;
-      const passed = now - start;
-
-      let percent = (passed / total) * 100;
-
-      if (percent < 0) percent = 0;
-      if (percent > 100) percent = 100;
-
-      const passedPercent = percent.toFixed(1);
-      const remainingPercent = (100 - percent).toFixed(1);
-
-      document.getElementById("dateMsg").textContent =
-        `你好厲害，已經過了 ${passedPercent}% 的辛苦日子，還有 ${remainingPercent}% 就能來到期待已久的新加坡了！`;
+  // -------------------- 日曆簽到 --------------------
+  function renderCalendar(){
+    const calendar = document.getElementById("calendar");
+    calendar.innerHTML = "<h3>簽到日曆：</h3>";
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const start = new Date(year, month, 1);
+    const end = new Date(year, month+1, 0);
+    let html = "";
+    for (let d=1; d<=end.getDate(); d++){
+      const dateStr = new Date(year, month, d).toDateString();
+      const checked = (localStorage.getItem("checkinDate") === dateStr) ? "checked" : "";
+      html += `<div class="day ${checked}">${d}</div>`;
     }
+    calendar.innerHTML += html;
+  }
 
-
-    // --------------------
-    // ③ 倒數天數
-    // --------------------
-    function countdown() {
-      const today = new Date();
-      const target = new Date("2026-01-29");
-
-      const diff = target - today;
-      let days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-      if (days < 0) days = 0;
-
-      document.getElementById("countdown").textContent =
-        `📅 距離新加坡之旅還有 ${days} 天！`;
-    }
-
-
-    // --------------------
-    // ④ 每日簽到功能
-    // --------------------
-    function dailyCheckIn() {
-      const today = new Date().toDateString();
-      const lastCheckIn = localStorage.getItem("checkinDate");
-
-      if (lastCheckIn === today) {
-        document.getElementById("msg").textContent = "今天已經簽到過囉！明天再來～";
-        return;
-      }
-
-      localStorage.setItem("checkinDate", today);
-      energy += 5;
-      updateEnergy();
-      document.getElementById("msg").textContent = "簽到成功！💪 勇氣上升！";
-    }
-
-
-    // --------------------
-    // ⑤ 頁面初始化
-    // --------------------
-    calculateDateProgress();
-    countdown();
-  </script>
+  // -------------------- 初始化 --------------------
+  updateEnergyBar();
+  calculateDateProgress();
+  countdown();
+  renderCalendar();
+</script>
 </body>
 </html>
