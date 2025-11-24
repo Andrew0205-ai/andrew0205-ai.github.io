@@ -5,19 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>小宏的部落格 | 音樂、程式與生活探索</title>
   <link rel="stylesheet" href="main.css">
-
 </head>
 <body>
   <header>
     <h1>小宏的部落格</h1>
+
+    <!-- 漢堡選單 -->
+    <div class="hamburger" id="hamburger">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#about-section">關於我</a>
+      <a href="#task-section">任務挑戰</a>
+      <a href="#contact-section">聯絡我</a>
+      <a href="name.html" target="_blank">🪪 電子名片</a>
+      <a href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a>
+      <a href="#comment-section">留言板</a>
+    </nav>
   </header>
 
   <main class="container">
     <!-- 👦 關於我 -->
-    <section>
-<br>
-<br>
-<br>
+    <section id="about-section">
       <h2>關於我</h2>
       <span id="typing-text"></span><span class="cursor" id="cursor"></span>
       <img id="avatar" src="images/andrew.png" alt="星宏頭像">
@@ -31,7 +43,6 @@
       <button onclick="closeTask()">🔙 返回</button>
     </section>
 
-    
     <!-- 📬 聯絡我 -->
     <section id="contact-section">
       <h3>📬 聯絡我</h3>
@@ -40,68 +51,57 @@
       </p>
     </section>
 
-    <!-- 🔗 其他連結 -->
-    <section id="links-section">
-      <h3>🔗 其他連結</h3>
-      <ul>
-        <li><a href="name.html" target="_blank">🪪 電子名片</a></li>
-        <li><a href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a></li>
-      </ul>
-    </section>
     <div class="game-id">
-  <h3>🎮 我的遊戲 ID</h3>
-  <p>遊戲名稱: <a href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a><br>
-     玩家名: 小宏鎮<br>
-     遊戲ID: <span id="gameID">K3Q92B</span>
-  </p>
-  <button onclick="copyGameID()">複製 ID</button>
-</div>
-
-
-
-    <section id="comment-section">
-  <h2>留言板與交流</h2>
-
-  <!-- 登入區 -->
-  <div id="auth-section">
-    <button id="login-btn">登入 Google</button>
-    <div id="user-info" class="hidden">
-      <img id="user-photo" src="images/default-avatar.png" alt="頭像" class="avatar">
-      <span id="user-name" width="200px"></span>
-      <input type="text" id="nickname-input" placeholder="自訂暱稱">
-      <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
-      <button id="upload-btn">
-        <img src="images/imgupload.png" class="upload-icon" alt="上傳圖片"> 上傳頭像
-      </button>
-      <button id="update-profile-btn">更新資料</button>
-      <button id="logout-btn">登出</button>
+      <h3>🎮 我的遊戲 ID</h3>
+      <p>遊戲名稱: <a href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a><br>
+         玩家名: 小宏鎮<br>
+         遊戲ID: <span id="gameID">K3Q92B</span>
+      </p>
+      <button onclick="copyGameID()">複製 ID</button>
     </div>
-  </div>
 
-  <!-- 留言輸入區 -->
-  <div id="comment-box" style="display:none;">
-    <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
-    <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
-    <button id="send-btn">送出留言</button>
-  </div>
+    <!-- 留言板 -->
+    <section id="comment-section">
+      <h2>留言板與交流</h2>
 
-  <!-- 留言列表 -->
-  <div id="comment-list" class="comment-list">
-    <p>正在載入留言...</p>
-  </div>
-</section>
+      <!-- 登入區 -->
+      <div id="auth-section">
+        <button id="login-btn">登入 Google</button>
+        <div id="user-info" class="hidden">
+          <img id="user-photo" src="images/default-avatar.png" alt="頭像" class="avatar">
+          <span id="user-name" width="200px"></span>
+          <input type="text" id="nickname-input" placeholder="自訂暱稱">
+          <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
+          <button id="upload-btn">
+            <img src="images/imgupload.png" class="upload-icon" alt="上傳圖片"> 上傳頭像
+          </button>
+          <button id="update-profile-btn">更新資料</button>
+          <button id="logout-btn">登出</button>
+        </div>
+      </div>
 
+      <!-- 留言輸入區 -->
+      <div id="comment-box" style="display:none;">
+        <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
+        <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
+        <button id="send-btn">送出留言</button>
+      </div>
 
+      <!-- 留言列表 -->
+      <div id="comment-list" class="comment-list">
+        <p>正在載入留言...</p>
+      </div>
+    </section>
 
     <!-- 🕓 更新日期 -->
     <section id="update-section">
       <p>🕓 最後更新日期：<span id="lastUpdate"></span></p>
     </section>
-<!-- 回到頂部按鈕 -->
-<button id="backToTop" style="display:none;" class="back-to-top">⬆️</button>
+
+    <!-- 回到頂部按鈕 -->
+    <button id="backToTop" class="back-to-top">⬆️</button>
   </main>
 
-  <!-- ⚙️ 頁尾 -->
   <footer>
     <p>© 2025 小宏工作室</p>
   </footer>
@@ -113,10 +113,11 @@
   <script type="module" src="./js/firebase.js"></script>
   <script type="module" src="./js/comment-board.js"></script>
 
-  <!-- 🌈 其他功能 JS  -->
+  <!-- 🌈 其他功能 JS -->
   <script src="badge.js"></script>
   <script src="type.js"></script>
   <script src="lan.js"></script>
   <script src="other.js"></script>
-</body>
+
+  
 </html>
