@@ -35,6 +35,7 @@ header h1 {
 }
 
 .nav-links {
+  margin-right: 0;
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
