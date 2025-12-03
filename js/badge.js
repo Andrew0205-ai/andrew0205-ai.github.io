@@ -69,7 +69,7 @@ window.addEventListener("DOMContentLoaded", () => {
   window.goTask = function () {
     const token = Math.random().toString(36).substring(2, 10);
     sessionStorage.setItem("taskToken", token);
-    window.location.href = "tasks.html;
+    window.location.href = "../tasks.html;
   };
 
   // 🔙 「返回」按鈕
