@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<title>任務列表 Tasks</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(120deg, #7f92ff, #b09dff);
+        font-family: "Segoe UI", sans-serif;
+        color: #fff;
+    }
+
+    /* 回到任務首頁 */
+    .top-link {
+        display: block;
+        margin: 20px auto 10px;
+        width: fit-content;
+        background: rgba(255,255,255,0.25);
+        padding: 10px 18px;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: bold;
+        text-decoration: none;
+        backdrop-filter: blur(6px);
+        transition: 0.2s;
+    }
+    .top-link:hover {
+        background: rgba(255,255,255,0.4);
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 5px;
+        font-size: 32px;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* 玩法介紹 */
+    .how-to-play {
+        background: rgba(255,255,255,0.15);
+        width: 90%;
+        margin: 10px auto 25px;
+        padding: 15px 20px;
+        border-radius: 16px;
+        line-height: 1.7;
+        font-size: 16px;
+        backdrop-filter: blur(5px);
+    }
+
+    /* 任務卡片列表 */
+    .task-list {
+        width: 90%;
+        margin: auto;
+    }
+
+    .task-card {
+        display: flex;
+        background: #fff;
+        color: #333;
+        padding: 15px;
+        border-radius: 16px;
+        margin-bottom: 22px;
+        align-items: center;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        transform: translateX(-40px);
+        opacity: 0;
+        animation: slideIn 0.6s forwards;
+    }
+
+    .task-card:nth-child(1){ animation-delay: 0.1s; }
+    .task-card:nth-child(2){ animation-delay: 0.2s; }
+    .task-card:nth-child(3){ animation-delay: 0.3s; }
+
+    @keyframes slideIn {
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* 任務預覽圖 */
+    .task-preview {
+        width: 110px;
+        height: 110px;
+        border-radius: 12px;
+        object-fit: cover;
+        margin-right: 15px;
+        border: 3px solid #dcdcff;
+    }
+
+    /* 任務內容 */
+    .task-info {
+        flex: 1;
+    }
+
+    .task-info h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #444;
+    }
+
+    .task-desc {
+        margin: 8px 0;
+        font-size: 14px;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    /* 徽章預覽 */
+    .badge-preview {
+        width: 60px;
+        height: 60px;
+        margin-left: 15px;
+        border-radius: 50%;
+        border: 3px solid #cdb7ff;
+        object-fit: cover;
+        background: #eee;
+    }
+
+    /* 任務連結按鈕 */
+    .task-btn {
+        margin-top: 10px;
+        display: inline-block;
+        background: #6a4dff;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    .task-btn:hover {
+        background: #5538e6;
+    }
+</style>
+</head>
+<body>
+
+<a class="top-link" href="/">← 回到首頁</a>
+
+<h1>任務列表 Tasks</h1>
+
+<!-- 玩法介紹 -->
+<div class="how-to-play">
+    ⭐ 點入任務後依照指示完成<br>
+    ⭐ 每個任務會送你一個「專屬徽章」<br>
+    ⭐ 徽章會自動儲存，下次回來還會存在<br>
+    ⭐ 任務每天都可以重新挑戰！
+</div>
+
+<div class="task-list">
+
+    <!-- 任務 1 -->
+    <div class="task-card">
+      
+        <img class="task-preview" src="images/task1.png">
+        <div class="task-info">
+            <h2>海中尋船</h2>
+            <div class="task-desc">在海面上找出那艘神秘的小船，點擊即可完成任務。</div>
+            <a class="task-btn" href="task.html">開始任務</a>
+        </div>
+
+    </div>
+
+    <!-- 任務 2 -->
+    <div class="task-card">
+        <img class="task-preview" src="images/task2.png">
+        <div class="task-info">
+            <h2>海底寶藏</h2>
+            <div class="task-desc">在深海裡尋找閃亮的寶箱，找到就能拿到罕見徽章！</div>
+            <a class="task-btn" href="treasure.html">開始任務</a>
+        </div>
+       
+    </div>
+
+</div>
+
+</body>
+</html>
