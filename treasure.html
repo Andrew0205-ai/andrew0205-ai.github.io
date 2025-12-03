@@ -20,17 +20,22 @@
     #treasure-room img:hover {
       transform: scale(1.1);
     }
-    #treasure-success {
-      display: none;
-      position: absolute;
-      top: 350px;
-      left: 300px;
-      font-size: 20px;
-      color: white;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 10px;
-      border-radius: 5px;
-    }
+    /* 成功訊息 */
+  #treasure-success {
+    display: none;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    z-index: 100;
+  }
+
   </style>
 </head>
 <body>
@@ -43,11 +48,24 @@
   <!-- 任務完成提示 -->
   <div id="treasure-success">
     🎉 恭喜你找到寶藏！你獲得了「尋寶徽章」
+     <button onclick="javascript:window.location.href='index.html'">回首頁</button>
   </div>
+  <!-- 自訂彈窗 -->
+<div id="custom-alert">
+  <p>任務說明：點擊寶藏就能獲得徽章！</p>
+  <p></p>
+  <button onclick="closeAlert()">知道了</button>
+</div>
 
   <script>
     const treasureRoom = document.getElementById("treasure-room");
     const treasureSuccess = document.getElementById("treasure-success");
+    const alertBox = document.getElementById("custom-alert");
+
+  function closeAlert() {
+    alertBox.style.display = "none";
+  }
+
 
     treasureRoom.addEventListener("click", () => {
       // 顯示任務完成提示
@@ -69,3 +87,4 @@
 
 </body>
 </html>
+
