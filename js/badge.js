@@ -69,7 +69,7 @@ window.addEventListener("DOMContentLoaded", () => {
   window.goTask = function () {
     const token = Math.random().toString(36).substring(2, 10);
     sessionStorage.setItem("taskToken", token);
-    window.location.href = "ship.html?key=" + token;
+    window.location.href = "tasks.html;
   };
 
   // 🔙 「返回」按鈕
@@ -83,7 +83,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // 隨機鼓勵語
     const messages = [
-      "💪 加油，小宏一定能完成任務！",
+      "💪 加油，一定能完成任務！",
       "🌈 不急，慢慢來也沒關係喔～",
       "⭐ 下次再挑戰吧，你最棒了！",
       "🚀 我相信你一定能成功！"
