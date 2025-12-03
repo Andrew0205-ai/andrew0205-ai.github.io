@@ -11,7 +11,9 @@
       background-size: cover;
       height: 100vh;
       font-family: Arial, sans-serif;
+      overflow: hidden;
     }
+
     #treasure-room img {
       width: 100px;
       cursor: pointer;
@@ -20,71 +22,115 @@
     #treasure-room img:hover {
       transform: scale(1.1);
     }
-    /* 成功訊息 */
-  #treasure-success {
-    display: none;
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px 30px;
-    border-radius: 10px;
-    font-size: 20px;
-    color: #333;
-    text-align: center;
-    z-index: 100;
-  }
 
+    /* 成功訊息 */
+    #treasure-success {
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px 35px;
+      border-radius: 14px;
+      font-size: 20px;
+      color: #333;
+      text-align: center;
+      z-index: 100;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+    }
+
+    #treasure-success button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #8a2be2;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #treasure-success button:hover {
+      background: #6c1fc7;
+    }
+
+    /* 自訂彈窗 */
+    #custom-alert {
+      display: block;
+      position: fixed;
+      top: 28%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.95);
+      border: 2px solid #333;
+      padding: 20px 30px;
+      border-radius: 12px;
+      text-align: center;
+      z-index: 999;
+      width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+      animation: fadein 0.4s ease-out;
+    }
+
+    #custom-alert button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: none;
+      background: #8a2be2;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #custom-alert button:hover {
+      background: #6a1fbf;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to   { opacity: 1; transform: translate(-50%, -50%); }
+    }
   </style>
 </head>
 <body>
 
-  <!-- 寶藏室圖片 -->
-  <div id="treasure-room" style="position: absolute; bottom:145px;left:670px; font-size:100px; ">
-    <p>🎁</p>
+  <!-- 寶藏圖示 -->
+  <div id="treasure-room" style="position: absolute; bottom:145px; left:670px; font-size:100px;">
+    <img src="https://cdn-icons-png.flaticon.com/512/854/854866.png">
   </div>
 
   <!-- 任務完成提示 -->
   <div id="treasure-success">
-    🎉 恭喜你找到寶藏！你獲得了「尋寶徽章」
-     <button onclick="javascript:window.location.href='index.html'">回首頁</button>
+    🎉 恭喜你找到寶藏！<br>你獲得了「尋寶徽章」
+    <br><br>
+    <button onclick="location.href='index.html'">回首頁</button>
   </div>
-  <!-- 自訂彈窗 -->
-<div id="custom-alert">
-  <p>任務說明：點擊寶藏就能獲得徽章！</p>
-  <p></p>
-  <button onclick="closeAlert()">知道了</button>
-</div>
+
+  <!-- 說明彈窗 -->
+  <div id="custom-alert">
+    <p>任務說明：<br>點擊寶藏即可獲得徽章！</p>
+    <p>🎁</p>
+    <button onclick="closeAlert()">知道了</button>
+  </div>
 
   <script>
     const treasureRoom = document.getElementById("treasure-room");
     const treasureSuccess = document.getElementById("treasure-success");
     const alertBox = document.getElementById("custom-alert");
 
-  function closeAlert() {
-    alertBox.style.display = "none";
-  }
-
+    function closeAlert() {
+      alertBox.style.display = "none";
+    }
 
     treasureRoom.addEventListener("click", () => {
-      // 顯示任務完成提示
       treasureSuccess.style.display = "block";
 
-      // 存徽章到 localStorage
       let badges = JSON.parse(localStorage.getItem("badges") || "[]");
       if (!badges.includes("尋寶徽章")) {
         badges.push("尋寶徽章");
         localStorage.setItem("badges", JSON.stringify(badges));
       }
-
-      // 5 秒後自動隱藏提示
-      setTimeout(() => {
-        treasureSuccess.style.display = "none";
-      }, 5000); // 5000 毫秒 = 5 秒
     });
   </script>
 
 </body>
 </html>
-
