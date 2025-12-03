@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const now = performance.now();
 
       // 間隔過久會重置
-      if (now - lastClickTime > 600) clickCount = 0;
+      if (now - lastClickTime > 1500) clickCount = 0;
 
       clickCount++;
       lastClickTime = now;
