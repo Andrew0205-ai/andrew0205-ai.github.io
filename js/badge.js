@@ -60,6 +60,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }, 50);
 
         alert("🎯 成功啟動任務模式！");
+        console.log("🎯 成功啟動任務模式！")
         clickCount = 0;
       }
     });
