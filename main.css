@@ -36,8 +36,8 @@ header h1 {
 }
 
 button {
-  background-color: green;
-  color: white;
+  background-color: green !important;
+  color: white !important;
   border: 2px solid white;
   padding: 6px 12px;
   margin: 3px;
@@ -48,11 +48,11 @@ button {
 }
 
 button:hover {
-  background-color: olivegreen;
+  background-color: olivegreen !important;
   color: white;
 }
 
-.btn.small {
+button.small {
   padding: 4px 8px;
   font-size: 0.85em;
 }
