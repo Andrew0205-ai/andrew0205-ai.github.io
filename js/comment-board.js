@@ -225,7 +225,7 @@ async function loadComments() {
     const commentId = doc.id;
     const isAuthor = currentUser && currentUser.uid === data.uid;
     
-    // 處理時間戳記 (如果存在，格式化為易讀的格式)
+    // 處理時間戳記
     const timestamp = data.createdAt ? 
       new Date(data.createdAt.seconds * 1000).toLocaleString('zh-TW', { hour12: false }) : 
       '剛剛';
