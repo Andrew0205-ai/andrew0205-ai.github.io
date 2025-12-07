@@ -1,7 +1,4 @@
 // Firebase 初始化
-// 註：你已在 index.html 引用了 firebase-config.js，這裡不重複載入，
-// 假設 firebase 已經在全域或被正確載入。
-
 export const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
   authDomain: "mycomment-ad1ba.firebaseapp.com",
@@ -11,7 +8,6 @@ export const firebaseConfig = {
   appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
   measurementId: "G-3NGHCWH7TP"
 };
-// 假設 firebase 已經被正確引用
 if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -30,7 +26,6 @@ const userTitleEl = document.getElementById("user-title");
 const userAvatar = document.getElementById("user-avatar");
 const avatarUpload = document.getElementById("avatar-upload");
 const displayNameInput = document.getElementById("display-name-input");
-// ⭐ 修正：從 HTML 中正確取得 user-title-input 元素
 const userTitleInput = document.getElementById("user-title-input");
 const saveProfileBtn = document.getElementById("save-profile");
 const commentInput = document.getElementById("comment-input");
@@ -56,7 +51,6 @@ async function showUserData(user) {
   userTitleEl.textContent = data.title || "";
   userAvatar.src = data.avatarUrl || user.photoURL || "https://via.placeholder.com/36";
   displayNameInput.value = data.displayName || "";
-  // ⭐ 修正：userTitleInput 已經被正確取得，可以設定 value
   if (userTitleInput) {
       userTitleInput.value = data.title || "";
   }
@@ -112,7 +106,7 @@ registerBtn.addEventListener("click", async () => {
   const email = prompt("輸入 Email");
   const password = prompt("輸入密碼");
   
-  if (!email || !password) return; // 檢查輸入是否為空
+  if (!email || !password) return;
 
   try {
     const res = await auth.createUserWithEmailAndPassword(email, password);
@@ -120,11 +114,9 @@ registerBtn.addEventListener("click", async () => {
 
     alert("註冊成功！請設定您的暱稱與稱號。");
 
-    // ⭐ 優化：註冊後立即提示設定初始資料
     const initialDisplayName = prompt("請輸入您的暱稱 (必填)");
     const initialTitle = prompt("請輸入您的稱號 (可選)");
 
-    // 將初始資料存入 Firestore
     await db.collection("users").doc(user.uid).set({
       displayName: initialDisplayName || user.displayName || "新註冊使用者", 
       title: initialTitle || "", 
@@ -165,12 +157,11 @@ saveProfileBtn.addEventListener("click", async () => {
     userAvatar.src = avatarUrl;
   }
   
-  // 檢查 userTitleInput 是否存在，避免錯誤
   const titleValue = userTitleInput ? userTitleInput.value : "";
   
   await db.collection("users").doc(user.uid).set({
     displayName: displayNameInput.value,
-    title: titleValue, // 使用正確的 title value
+    title: titleValue,
     avatarUrl: avatarUrl
   }, { merge: true });
   
@@ -202,23 +193,65 @@ postCommentBtn.addEventListener("click", async () => {
   loadComments();
 });
 
-// 載入留言
+// ⭐ 新增功能：刪除留言函式
+async function deleteComment(commentId) {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("請先登入！");
+        return;
+    }
+    
+    if (confirm("確定要刪除這則留言嗎？此操作無法復原。")) {
+        try {
+            await db.collection("comments").doc(commentId).delete();
+            alert("留言已刪除！");
+            loadComments(); // 重新載入留言列表以更新 UI
+        } catch (error) {
+            console.error("刪除留言失敗: ", error);
+            alert("刪除留言失敗，請檢查權限或網路連線。");
+        }
+    }
+}
+
+// 載入留言 (已修改以動態生成刪除按鈕)
 async function loadComments() {
   const snapshot = await db.collection("comments").orderBy("createdAt", "desc").get();
   commentList.innerHTML = "";
+  
+  const currentUser = auth.currentUser;
+
   snapshot.forEach(doc => {
     const data = doc.data();
+    const commentId = doc.id; // 取得留言的 ID
+    const isAuthor = currentUser && currentUser.uid === data.uid; // 檢查是否為作者
+
     const div = document.createElement("div");
     div.classList.add("comment-card");
     
-    // 顯示稱號，如果沒有則顯示空白
     const titleText = data.title ? ` (${data.title})` : ''; 
     
+    // ⭐ 建立刪除按鈕的 HTML
+    let deleteButtonHTML = '';
+    if (isAuthor) {
+        // 使用 data-comment-id 儲存 ID，方便稍後找到並添加事件
+        deleteButtonHTML = `<button class="delete-comment-btn" data-comment-id="${commentId}">刪除</button>`;
+    }
+    
     div.innerHTML = `
-      <img class="avatar" src="${data.avatarUrl}">
-      <b>${data.displayName}${titleText}</b>
+      <div class="comment-header">
+        <img class="avatar" src="${data.avatarUrl}">
+        <b>${data.displayName}${titleText}</b>
+        ${deleteButtonHTML} 
+      </div>
       <p>${data.text}</p>
     `;
+    
     commentList.appendChild(div);
+
+    // ⭐ 為動態生成的刪除按鈕添加事件監聽器
+    if (isAuthor) {
+        const deleteBtn = div.querySelector('.delete-comment-btn');
+        deleteBtn.addEventListener('click', () => deleteComment(commentId));
+    }
   });
 }
