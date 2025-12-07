@@ -1,97 +1,166 @@
-/* ===== 基本排版 ===== */
-html { scroll-behavior: smooth; }
-body {
-  font-family: "Noto Sans TC", Arial, sans-serif;
+/* 全域樣式 */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color: #f4f6f8;
-  color: #222;
-  min-height: 100vh;
+  font-family: "Noto Sans TC", sans-serif;
 }
 
-/* ===== Header ===== */
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.hidden {
+  display: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+/* Header */
 header {
+  background-color: green; 
+  color: white;
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+header h1 {
+  margin-bottom: 10px;
+}
+
+.btn {
+  background-color: green;
+  color: white;
+  border: 2px solid white;
+  padding: 6px 12px;
+  margin: 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background-color: olivegreen;
+  color: white;
+}
+
+.btn.small {
+  padding: 4px 8px;
+  font-size: 0.85em;
+}
+
+/* 使用者資訊 */
+#user-info {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  background-color: #4CAF50;
-  color: white;
-  padding: 15px 30px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+}
+
+#user-info .avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 2px solid green;
+}
+
+.user-meta {
+  flex: 1;
+}
+
+.user-meta input[type="text"], 
+.user-meta input[type="file"] {
+  display: block;
+  margin: 5px 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
   width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: background-color 0.3s, box-shadow 0.3s;
-}
-header.scrolled {
-  background-color: #45a049;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-header h1 { margin: 0; font-size: clamp(1.2em, 2vw, 1.5em); }
-
-/* ===== 導航 ===== */
-.nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
-.nav-links a { color: white; text-decoration: none; font-size: 1em; transition: color 0.3s; }
-.nav-links a:hover { color: #dcdcdc; }
-
-/* 漢堡按鈕 */
-.hamburger { display: none; flex-direction: column; cursor: pointer; gap: 4px; }
-.hamburger div { width: 25px; height: 3px; background-color: white; transition: all 0.3s; }
-.hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-.hamburger.active div:nth-child(2) { opacity: 0; }
-.hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-
-/* 手機版 */
-@media (max-width: 768px) {
-  .nav-links { display: none; flex-direction: column; gap: 15px; background-color: #4CAF50; position: absolute; top: 60px; right: 0; width: 200px; padding: 15px; border-radius: 0 0 8px 8px; }
-  .nav-links.show { display: flex; }
-  .hamburger { display: flex; }
 }
 
-/* ===== 主容器 ===== */
-.container { padding: 20px; padding-top: 100px; max-width: 90%; margin: auto; }
-
-/* ===== 打字機效果 ===== */
-.typewriter-container, #typing-text {
-  display: block; font-size: 1.2em; color: #333;
-  word-break: break-word; white-space: normal; max-width: 100%; margin: 0 auto; text-align: left;
+/* 留言區 */
+#comment-section {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
 }
-.cursor { width: 2.5px; height: 1.25em; background-color: #666; display: inline-block; vertical-align: middle; animation: blink 0.8s infinite; }
-@keyframes blink { 50% { opacity: 0; } }
 
-/* ===== Footer ===== */
-footer { background-color: #4CAF50; color: white; text-align: center; padding: 10px 0; margin-top: 40px; width: 100%; }
+#comment-input {
+  width: 100%;
+  height: 80px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
 
-/* ===== 回頂部按鈕 ===== */
-#backToTop { position: fixed; bottom: 30px; right: 30px; background-color: green; color: white; border: none; border-radius: 50%; padding: 12px 15px; font-size: 18px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: none; transition: opacity 0.3s ease; }
-#backToTop:hover { background-color: #7b68ee; }
+.comment-list {
+  margin-top: 15px;
+}
 
-/* ===== 隱藏/顯示 ===== */
-.hidden { display: none !important; }
-.show { display: block; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.comment-card {
+  display: flex;
+  align-items: flex-start;
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
 
-/* ===== 使用者資訊 ===== */
-#user-info { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
-.user-meta { flex: 1; }
-#user-name { font-weight: 700; margin-bottom: 6px; }
+.comment-card .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 1px solid green;
+}
 
-/* ===== 留言區 ===== */
-#comment-box textarea { width: 100%; min-height: 84px; resize: vertical; padding: 10px; }
-.comment-list { margin-top: 1em; }
-.comment-card { background: #e8f5e9; border: 1px solid #d0e6d3; border-radius: 8px; padding: 10px 15px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.comment-card b { color: #333; font-size: 1.05em; }
-.comment-card small { color: #666; font-size: 0.8em; }
-.delete-btn { background: #e74c3c; color: white; border: none; padding: 6px 8px; border-radius: 6px; margin-left: auto; cursor: pointer; }
+.comment-card b {
+  display: block;
+  font-size: 0.95em;
+  margin-bottom: 2px;
+}
 
-/* ===== 徽章 ===== */
-#badgeList .badge { background: linear-gradient(135deg, #ffd700, #ffb100); padding: 12px 16px; margin: 10px 0; border-radius: 14px; font-weight: bold; color: #4a3400; box-shadow: 0 4px 10px rgba(0,0,0,0.15); animation: badgeAppear 0.5s ease forwards; opacity: 0; }
-@keyframes badgeAppear { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.comment-card p {
+  margin: 0;
+  font-size: 0.9em;
+  word-break: break-word;
+}
 
-/* ===== 任務區塊 ===== */
-#task-section { transform: translateY(40px); opacity: 0; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); }
-#task-section.show { transform: translateY(0); opacity: 1; }
+/* 響應式 */
+@media (max-width: 600px) {
+  #user-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #user-info .avatar {
+    margin-bottom: 10px;
+  }
+
+  .comment-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comment-card .avatar {
+    margin-bottom: 5px;
+  }
+}
