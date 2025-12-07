@@ -66,36 +66,61 @@
       <button onclick="copyGameID()">複製 ID</button>
     </div>
 
-    <!-- 留言板 -->
+    <!-- 留言區 -->
     <section id="comment-section">
       <h2>留言板與交流</h2>
 
-      <!-- 登入區 -->
-      <div id="auth-section">
-        <button id="login-btn">登入 Google</button>
-        <div id="user-info" class="hidden">
+      <!-- 登入 / 註冊 區塊 -->
+      <div id="auth-area">
+        <div id="auth-buttons">
+          <button id="google-login-btn" class="btn">用 Google 登入</button>
+          <button id="show-email-form-btn" class="btn">Email 登入 / 註冊</button>
+        </div>
+
+        <!-- Email 登入/註冊表單（預設隱藏） -->
+        <div id="email-form" class="hidden card">
+          <input id="email-input" type="email" placeholder="電子郵件">
+          <input id="password-input" type="password" placeholder="密碼">
+          <div class="row">
+            <button id="email-login-btn" class="btn small">登入</button>
+            <button id="email-register-btn" class="btn small">註冊</button>
+            <button id="forgot-btn" class="btn small">忘記密碼</button>
+          </div>
+          <p class="muted">註冊會建立帳號；忘記密碼會寄送重設信。</p>
+        </div>
+
+        <!-- 已登入資訊 -->
+        <div id="user-info" class="hidden card">
           <img id="user-photo" src="images/default-avatar.png" alt="頭像" class="avatar">
-          <span id="user-name" width="200px"></span>
-          <input type="text" id="nickname-input" placeholder="自訂暱稱">
-          <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
-          <button id="upload-btn">
-            <img src="images/imgupload.png" class="upload-icon" alt="上傳圖片"> 上傳頭像
-          </button>
-          <button id="update-profile-btn">更新資料</button>
-          <button id="logout-btn">登出</button>
+          <div class="user-meta">
+            <div id="user-name">未登入</div>
+            <input id="nickname-input" placeholder="自訂暱稱">
+          </div>
+
+          <div class="upload-row">
+            <button id="upload-btn" class="btn small">
+              <img src="images/imgupload.png" alt="upload" class="upload-icon"> 選擇頭像
+            </button>
+            <input id="avatar-upload" type="file" accept="image/*" style="display:none;">
+            <button id="update-profile-btn" class="btn">更新資料</button>
+            <button id="logout-btn" class="btn ghost">登出</button>
+          </div>
         </div>
       </div>
 
-      <!-- 留言輸入區 -->
-      <div id="comment-box" style="display:none;">
+      <!-- 留言輸入 -->
+      <div id="comment-box" class="card hidden">
         <textarea id="comment-input" placeholder="輸入留言內容..."></textarea>
-        <label><input type="checkbox" id="anonymous-checkbox"> 匿名留言</label>
-        <button id="send-btn">送出留言</button>
+        <div class="row">
+          <label><input id="anonymous-checkbox" type="checkbox"> 匿名留言</label>
+          <button id="send-btn" class="btn">送出留言</button>
+        </div>
+        <div id="preview-container"></div>
       </div>
 
-      <!-- 留言列表 -->
-      <div id="comment-list" class="comment-list">
-        <p>正在載入留言...</p>
+      <!-- 留言列表（使用 <div> 容器） -->
+      <div id="comment-list" class="comment-list card">
+        <p class="muted">載入留言中…</p>
       </div>
     </section>
 
