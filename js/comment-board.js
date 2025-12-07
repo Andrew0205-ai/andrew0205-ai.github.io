@@ -263,5 +263,5 @@ async function loadComments() {
         const deleteBtn = div.querySelector('.delete-comment-btn');
         deleteBtn.addEventListener('click', () => deleteComment(commentId));
     }
-  });
+  );
 }
