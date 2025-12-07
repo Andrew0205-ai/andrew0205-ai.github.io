@@ -213,7 +213,7 @@ async function deleteComment(commentId) {
     }
 }
 
-// 載入留言 (已修改以動態生成刪除按鈕)
+// 載入留言 (已修改以實現新的排版結構)
 async function loadComments() {
   const snapshot = await db.collection("comments").orderBy("createdAt", "desc").get();
   commentList.innerHTML = "";
@@ -222,14 +222,49 @@ async function loadComments() {
 
   snapshot.forEach(doc => {
     const data = doc.data();
-    const commentId = doc.id; // 取得留言的 ID
-    const isAuthor = currentUser && currentUser.uid === data.uid; // 檢查是否為作者
+    const commentId = doc.id;
+    const isAuthor = currentUser && currentUser.uid === data.uid;
+    
+    // 處理時間戳記 (如果存在，格式化為易讀的格式)
+    const timestamp = data.createdAt ? 
+      new Date(data.createdAt.seconds * 1000).toLocaleString('zh-TW', { hour12: false }) : 
+      '剛剛';
 
     const div = document.createElement("div");
     div.classList.add("comment-card");
     
     const titleText = data.title ? ` (${data.title})` : ''; 
     
+    // ⭐ 建立刪除按鈕的 HTML
+    let deleteButtonHTML = '';
+    if (isAuthor) {
+        deleteButtonHTML = `<button class="delete-comment-btn" data-comment-id="${commentId}">刪除留言</button>`;
+    }
+    
+    // ⭐ 新的 HTML 結構
+    div.innerHTML = `
+      <div class="comment-header">
+        <img class="avatar" src="${data.avatarUrl}">
+        <div class="user-info">
+          <span class="user-name-title"><b>${data.displayName}</b>${titleText}</span>
+        </div>
+      </div>
+      <p class="comment-text">${data.text}</p>
+      <div class="comment-footer">
+          ${deleteButtonHTML} 
+          <span class="comment-timestamp">${timestamp}</span>
+      </div>
+    `;
+    
+    commentList.appendChild(div);
+
+    // 為動態生成的刪除按鈕添加事件監聽器
+    if (isAuthor) {
+        const deleteBtn = div.querySelector('.delete-comment-btn');
+        deleteBtn.addEventListener('click', () => deleteComment(commentId));
+    }
+  });
+}
     // ⭐ 建立刪除按鈕的 HTML
     let deleteButtonHTML = '';
     if (isAuthor) {
