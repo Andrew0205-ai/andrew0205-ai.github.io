@@ -1,4 +1,4 @@
-/* 全域樣式 */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -35,7 +35,8 @@ header h1 {
   margin-bottom: 10px;
 }
 
-button {
+/* 按鈕樣式 */
+button, .btn {
   background-color: green !important;
   color: white !important;
   border: 2px solid white;
@@ -47,12 +48,12 @@ button {
   transition: 0.2s;
 }
 
-button:hover {
+button:hover, .btn:hover {
   background-color: olivegreen !important;
-  color: white;
+  color: white !important;
 }
 
-button.small {
+.btn.small {
   padding: 4px 8px;
   font-size: 0.85em;
 }
