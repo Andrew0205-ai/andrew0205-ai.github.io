@@ -9,59 +9,64 @@
 如果你也喜歡交通、音樂，或對做網站有興趣，歡迎一起來交流！
 你也可以去看看[我的日記](https://andrew0205blogs.blogspot.com/)，了解我的生活喔！`;
 
-    const output = document.getElementById("typing-text");
-    const cursor = document.getElementById("cursor");
+const output = document.getElementById("typing-text");
+const cursor = document.getElementById("cursor");
 
-    let i = 0;
-    const totalTypingTime = 17000; // 17秒
-    const interval = totalTypingTime / text.length;
+let i = 0;
+const totalTypingTime = 17000; // 17秒
+const interval = totalTypingTime / text.length;
 
-    function typeEffect() {
-      if (i >= text.length) return;
+function typeEffect() {
+  if (i >= text.length) return;
 
-      if (text[i] === '[') {
-        const endBracket = text.indexOf(']', i);
-        const linkText = text.slice(i + 1, endBracket);
-        const startParen = text.indexOf('(', endBracket);
-        const endParen = text.indexOf(')', startParen);
-        const url = text.slice(startParen + 1, endParen);
+  if (text[i] === '[') {
+    const endBracket = text.indexOf(']', i);
+    const startParen = text.indexOf('(', endBracket);
+    const endParen = text.indexOf(')', startParen);
 
-        const linkEl = document.createElement("a");
-        linkEl.href = url;
-        linkEl.target = "_blank";
-        linkEl.style.color = "#4CAF50";
-        linkEl.style.textDecoration = "underline";
-        output.appendChild(linkEl);
+    if (endBracket !== -1 && startParen !== -1 && endParen !== -1) {
+      const linkText = text.slice(i + 1, endBracket);
+      const url = text.slice(startParen + 1, endParen);
 
-        let j = 0;
-        function typeLink() {
-          if (j < linkText.length) {
-            linkEl.innerHTML += linkText[j];
-            j++;
-            setTimeout(typeLink, interval);
-          } else {
-            i = endParen + 1;
-            setTimeout(typeEffect, interval);
-          }
+      const linkEl = document.createElement("a");
+      linkEl.href = url;
+      linkEl.target = "_blank";
+      linkEl.style.color = "#4CAF50";
+      linkEl.style.textDecoration = "underline";
+      output.appendChild(linkEl);
+
+      let j = 0;
+      function typeLink() {
+        if (j < linkText.length) {
+          linkEl.textContent += linkText[j];
+          j++;
+          setTimeout(typeLink, interval);
+        } else {
+          i = endParen + 1;
+          setTimeout(typeEffect, interval);
         }
-        typeLink();
-        return;
       }
-
-      if (text[i] === '\n') {
-        output.innerHTML += "<br>";
-      } else {
-        output.innerHTML += text[i];
-      }
-
-      i++;
-      setTimeout(typeEffect, interval);
+      typeLink();
+      return;
     }
+  }
 
-    // 啟動打字機效果
-    typeEffect();
+  if (text[i] === '\n') {
+    output.innerHTML += "<br>";
+  } else {
+    output.innerHTML += text[i];
+  }
 
-    // 游標閃爍
-    setInterval(() => {
-      cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
-    }, 500);
+  i++;
+  setTimeout(typeEffect, interval);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  typeEffect();
+
+  // 游標閃爍
+  setInterval(() => {
+    cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
+  }, 500);
+});
+
