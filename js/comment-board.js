@@ -1,5 +1,6 @@
 // Firebase 初始化
-
+// 註：你已在 index.html 引用了 firebase-config.js，這裡不重複載入，
+// 假設 firebase 已經在全域或被正確載入。
 
 export const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
@@ -10,7 +11,11 @@ export const firebaseConfig = {
   appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
   measurementId: "G-3NGHCWH7TP"
 };
-firebase.initializeApp(firebaseConfig);
+// 假設 firebase 已經被正確引用
+if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -25,6 +30,7 @@ const userTitleEl = document.getElementById("user-title");
 const userAvatar = document.getElementById("user-avatar");
 const avatarUpload = document.getElementById("avatar-upload");
 const displayNameInput = document.getElementById("display-name-input");
+// ⭐ 修正：從 HTML 中正確取得 user-title-input 元素
 const userTitleInput = document.getElementById("user-title-input");
 const saveProfileBtn = document.getElementById("save-profile");
 const commentInput = document.getElementById("comment-input");
@@ -36,7 +42,7 @@ async function uploadAvatarToCloudinary(file) {
   const url = `https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload`;
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "ml_default"); 
+  formData.append("upload_preset", "ml_default");
   const res = await fetch(url, { method: "POST", body: formData });
   const data = await res.json();
   return data.secure_url;
@@ -50,7 +56,10 @@ async function showUserData(user) {
   userTitleEl.textContent = data.title || "";
   userAvatar.src = data.avatarUrl || user.photoURL || "https://via.placeholder.com/36";
   displayNameInput.value = data.displayName || "";
-  userTitleInput.value = data.title || "";
+  // ⭐ 修正：userTitleInput 已經被正確取得，可以設定 value
+  if (userTitleInput) {
+      userTitleInput.value = data.title || "";
+  }
   userInfo.classList.remove("hidden");
 }
 
@@ -83,6 +92,8 @@ googleLoginBtn.addEventListener("click", async () => {
 emailLoginBtn.addEventListener("click", async () => {
   const email = prompt("輸入 Email");
   const password = prompt("輸入密碼");
+  if (!email || !password) return;
+    
   try {
     await auth.signInWithEmailAndPassword(email, password);
   } catch (err) {
@@ -100,9 +111,26 @@ emailLoginBtn.addEventListener("click", async () => {
 registerBtn.addEventListener("click", async () => {
   const email = prompt("輸入 Email");
   const password = prompt("輸入密碼");
+  
+  if (!email || !password) return; // 檢查輸入是否為空
+
   try {
     const res = await auth.createUserWithEmailAndPassword(email, password);
-    alert("註冊成功！");
+    const user = res.user;
+
+    alert("註冊成功！請設定您的暱稱與稱號。");
+
+    // ⭐ 優化：註冊後立即提示設定初始資料
+    const initialDisplayName = prompt("請輸入您的暱稱 (必填)");
+    const initialTitle = prompt("請輸入您的稱號 (可選)");
+
+    // 將初始資料存入 Firestore
+    await db.collection("users").doc(user.uid).set({
+      displayName: initialDisplayName || user.displayName || "新註冊使用者", 
+      title: initialTitle || "", 
+      avatarUrl: user.photoURL || "https://via.placeholder.com/36"
+    }, { merge: true });
+
   } catch (err) {
     alert(err.message);
   }
@@ -112,8 +140,12 @@ registerBtn.addEventListener("click", async () => {
 emailLoginBtn.addEventListener("dblclick", async () => {
   const email = prompt("輸入 Email 以重設密碼");
   if (email) {
-    await auth.sendPasswordResetEmail(email);
-    alert("已發送重設密碼信件");
+    try {
+        await auth.sendPasswordResetEmail(email);
+        alert("已發送重設密碼信件");
+    } catch (err) {
+        alert(err.message);
+    }
   }
 });
 
@@ -124,17 +156,24 @@ logoutBtn.addEventListener("click", () => auth.signOut());
 saveProfileBtn.addEventListener("click", async () => {
   const user = auth.currentUser;
   if (!user) return;
+  
   let avatarUrl = userAvatar.src;
   const file = avatarUpload.files[0];
+  
   if (file) {
     avatarUrl = await uploadAvatarToCloudinary(file);
     userAvatar.src = avatarUrl;
   }
+  
+  // 檢查 userTitleInput 是否存在，避免錯誤
+  const titleValue = userTitleInput ? userTitleInput.value : "";
+  
   await db.collection("users").doc(user.uid).set({
     displayName: displayNameInput.value,
-    title: userTitleInput.value,
+    title: titleValue, // 使用正確的 title value
     avatarUrl: avatarUrl
   }, { merge: true });
+  
   showUserData(user);
   alert("資料已儲存！");
 });
@@ -143,18 +182,22 @@ saveProfileBtn.addEventListener("click", async () => {
 postCommentBtn.addEventListener("click", async () => {
   const user = auth.currentUser;
   if (!user) return alert("請先登入");
+  
   const text = commentInput.value.trim();
   if (!text) return;
+  
   const docRef = db.collection("comments").doc();
   const userData = (await db.collection("users").doc(user.uid).get()).data();
+  
   await docRef.set({
     uid: user.uid,
-    displayName: userData.displayName || user.displayName,
+    displayName: userData.displayName || user.displayName || "匿名",
     title: userData.title || "",
     avatarUrl: userData.avatarUrl || user.photoURL || "https://via.placeholder.com/36",
     text: text,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
+  
   commentInput.value = "";
   loadComments();
 });
@@ -167,9 +210,13 @@ async function loadComments() {
     const data = doc.data();
     const div = document.createElement("div");
     div.classList.add("comment-card");
+    
+    // 顯示稱號，如果沒有則顯示空白
+    const titleText = data.title ? ` (${data.title})` : ''; 
+    
     div.innerHTML = `
       <img class="avatar" src="${data.avatarUrl}">
-      <b>${data.displayName} (${data.title})</b>
+      <b>${data.displayName}${titleText}</b>
       <p>${data.text}</p>
     `;
     commentList.appendChild(div);
