@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -145,7 +144,39 @@ button:hover, .btn:hover {
   word-break: break-word;
 }
 
-/* 響應式 */
+/* 關於我區塊 */
+#about-section .about-content {
+  display: flex;            /* 文字和圖片並排 */
+  align-items: flex-start;  /* 上下對齊 */
+  gap: 20px;                /* 文字和圖片間距 */
+  margin-top: 10px;
+}
+
+#about-section .typing-container {
+  flex: 1;                  /* 文字區塊占滿剩餘空間 */
+}
+
+#about-section #avatar {
+  width: 150px;             /* 圖片大小 */
+  height: auto;
+  border-radius: 8px;
+  flex-shrink: 0;           /* 不縮小圖片 */
+}
+
+/* 響應式關於我 */
+@media (max-width: 600px) {
+  #about-section .about-content {
+    flex-direction: column; /* 小螢幕改成上下排列 */
+    align-items: flex-start;
+  }
+
+  #about-section #avatar {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+/* 響應式使用者資訊與留言板 */
 @media (max-width: 600px) {
   #user-info {
     flex-direction: column;
