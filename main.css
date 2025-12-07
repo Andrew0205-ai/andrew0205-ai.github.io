@@ -91,7 +91,9 @@ button:hover, .btn:hover {
   width: 100%;
 }
 
-/* 留言區 */
+/* ==================================== */
+/* 留言區基礎樣式 (保留) */
+/* ==================================== */
 #comment-section {
   background-color: #fff;
   padding: 15px;
@@ -113,16 +115,21 @@ button:hover, .btn:hover {
   margin-top: 15px;
 }
 
+/* ==================================== */
+/* ⭐ 核心修正：留言卡片結構與排版 */
+/* ==================================== */
+
 .comment-card {
-  display: flex;
-  align-items: flex-start;
+  /* 移除 display: flex; 改用 padding 或 margin 來處理頭像和內容的分隔 */
   background-color: white;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 8px;
   box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+  position: relative; /* 為了讓頭像和內容能並排 */
 }
 
+/* 頭像：固定在左側頂部 */
 .comment-card .avatar {
   width: 36px;
   height: 36px;
@@ -130,20 +137,80 @@ button:hover, .btn:hover {
   object-fit: cover;
   margin-right: 10px;
   border: 1px solid green;
+  
+  /* ⭐ 讓頭像脫離文件流，讓後續內容可以環繞它 */
+  float: left; 
 }
 
-.comment-card b {
-  display: block;
-  font-size: 0.95em;
-  margin-bottom: 2px;
+/* 使用者資訊 (暱稱/稱號) */
+.comment-card .user-info {
+  /* 確保暱稱/稱號在頭像旁邊 */
+  margin-left: 46px; /* 36px 頭像 + 10px 間隔 */
+  margin-top: 0;
+  line-height: 1.2;
 }
 
-.comment-card p {
-  margin: 0;
+.comment-card .user-name-title b {
+    font-size: 1.1em;
+    color: #333;
+    margin-right: 5px;
+}
+
+/* 留言內容 */
+.comment-card .comment-text {
+  /* ⭐ 留言內容緊跟在暱稱下方，並確保不被頭像遮擋 */
+  margin: 5px 0 10px 0;
+  min-height: 36px; /* 確保內容區塊不會被 float: left 的頭像忽略 */
   font-size: 0.9em;
   word-break: break-word;
+  clear: left; /* 清除左側浮動，確保內容在頭像下方開始 */
+  padding-top: 10px; /* 增加間隔 */
 }
 
+/* ==================================== */
+/* 留言底部 (時間與刪除按鈕) */
+/* ==================================== */
+
+.comment-card .comment-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 將內容推到最右側 */
+    gap: 10px; /* 刪除按鈕和時間之間的間距 */
+    
+    /* 清除浮動 */
+    clear: both; 
+    
+    /* 讓整個底部對齊留言內容 */
+    margin-top: 5px; 
+}
+
+/* 刪除按鈕 (位於時間之前) */
+.delete-comment-btn {
+    order: 1; /* 確保按鈕在時間之前 */
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+/* 留言時間 (在最右邊) */
+.comment-timestamp {
+    order: 2; /* 確保時間在按鈕之後 */
+    font-size: 0.8em;
+    color: #999;
+    white-space: nowrap;
+}
+
+/* 清除浮動 (通常放在包含 float 元素的父容器之後) */
+.comment-card::after {
+    content: "";
+    display: table;
+    clear: both;
+}
 /* 關於我區塊 */
 #about-section .about-content {
   display: flex;            /* 文字和圖片並排 */
