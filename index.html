@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>小宏的部落格 | 音樂、程式與生活探索</title>
   <link rel="stylesheet" href="main.css">
-
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -18,46 +16,35 @@
 <body>
   <header>
     <h1>小宏的部落格</h1>
-
-    <!-- 漢堡選單 -->
     <div class="hamburger" id="hamburger">
       <div></div>
       <div></div>
       <div></div>
     </div>
-
     <nav class="nav-links" id="navLinks">
       <a href="#contact-section">聯絡我</a>
       <a href="name.html" target="_blank">🪪 電子名片</a>
       <a href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a>
     </nav>
   </header>
-
   <main class="container">
-    <!-- 關於我 -->
     <section id="about-section">
       <h2>關於我</h2>
       <span id="typing-text"></span><span class="cursor" id="cursor"></span>
-      
     </section>
-<img id="avatar" src="images/andrew.png" alt="星宏頭像">
-    <!-- 小宏的任務挑戰 -->
+    <img id="avatar" src="images/andrew.png" alt="星宏頭像">
     <section id="task-section" class="hidden">
       <h2>🏅 小宏的任務挑戰</h2>
       <div id="badgeList"></div>
       <button onclick="goTask()">🚀 開始任務</button>
       <button onclick="closeTask()">🔙 返回</button>
     </section>
-
-    <!-- 聯絡我 -->
     <section id="contact-section">
       <h3>📬 聯絡我</h3>
       <p>電子郵件：
         <a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a>
       </p>
     </section>
-
-    <!-- 遊戲 ID -->
     <div class="game-id">
       <h3>🎮 我的遊戲 ID</h3>
       <p>遊戲名稱: <a href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a><br>
@@ -66,8 +53,6 @@
       </p>
       <button onclick="copyGameID()">複製 ID</button>
     </div>
-
-    <!-- 留言板 -->
     <h2>留言板</h2>
     <div id="auth-buttons">
       <button id="google-login" class="btn">Google 登入</button>
@@ -75,7 +60,6 @@
       <button id="register" class="btn">註冊</button>
       <button id="logout" class="btn hidden">登出</button>
     </div>
-
     <div id="user-info" class="hidden">
       <img id="user-avatar" class="avatar" src="">
       <div class="user-meta">
@@ -83,37 +67,27 @@
         <div id="user-title"></div>
         <input type="file" id="avatar-upload" accept="image/*">
         <input type="text" id="display-name-input" placeholder="暱稱">
+        <input type="text" id="user-title-input" placeholder="稱號">
         <button id="save-profile" class="btn small">儲存個人資料</button>
       </div>
     </div>
-
     <div id="comment-section">
       <textarea id="comment-input" placeholder="輸入留言..."></textarea>
       <button id="post-comment" class="btn">/送出留言</button>
       <div class="comment-list" id="comment-list"></div>
     </div>
-
-    <!-- 最後更新 -->
     <section id="update-section">
       <p>🕓 最後更新日期：<span id="lastUpdate"></span></p>
     </section>
-
-    <!-- 回到頂部 -->
     <button id="backToTop" class="back-to-top">⬆️</button>
   </main>
-
   <footer>
     <p>© 2025 小宏工作室</p>
   </footer>
-
   <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
-
-  <!-- 模組 JS -->
   <script type="module" src="./js/firebase-config.js"></script>
   <script type="module" src="./js/firebase.js"></script>
   <script type="module" src="./js/comment-board.js"></script>
-
-  <!-- 其他 JS -->
   <script src="js/badge.js"></script>
   <script src="js/type.js"></script>
   <script src="js/lan.js"></script>
