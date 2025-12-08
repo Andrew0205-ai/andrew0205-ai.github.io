@@ -264,4 +264,5 @@ async function loadComments() {
         deleteBtn.addEventListener('click', () => deleteComment(commentId));
     }
   ;
-}
+)}
+                   
