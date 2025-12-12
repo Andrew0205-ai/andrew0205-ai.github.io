@@ -1,7 +1,11 @@
-// ================================
-//  Firebase 初始化
-// ================================
-export const firebaseConfig = {
+// ================================================
+// 🔐 安全初始化 Firebase（避免 IndexedDB 問題）
+// ================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
   authDomain: "mycomment-ad1ba.firebaseapp.com",
   projectId: "mycomment-ad1ba",
@@ -10,9 +14,19 @@ export const firebaseConfig = {
   appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
   measurementId: "G-3NGHCWH7TP"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+
+let app, auth, db;
+
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  console.log("✅ Firebase 初始化成功");
+} catch (err) {
+  console.warn("⚠ Firebase 初始化失敗，可能是隱私模式或 IndexedDB 問題", err);
+  // fallback：僅提供登入/註冊介面但不操作 Firestore
+}
+
 
 // ================================
 //  監聽登入狀態
