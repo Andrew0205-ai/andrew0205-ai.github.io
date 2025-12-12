@@ -22,13 +22,4 @@ function copyGameID() {
     alert("已複製遊戲 ID：" + idText);
   });
 }
-function toggleMenu() {
-  document.getElementById("menu").classList.toggle("active");
-}
- const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
 
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('show');
-      hamburger.classList.toggle('active');
-    });
