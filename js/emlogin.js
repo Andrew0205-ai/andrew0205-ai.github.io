@@ -1,41 +1,47 @@
-// 取得元件
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const togglePassword = document.getElementById("togglePassword");
-const statusText = document.getElementById("status");
+import { auth } from "./firebase.js";
+import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// 切換密碼顯示
-togglePassword.addEventListener("click", () => {
-  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-  passwordInput.setAttribute("type", type);
-  togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+// Google 登入
+const googleLoginBtn = document.getElementById("google-login");
+googleLoginBtn.addEventListener("click", async () => {
+    try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        alert("登入成功！即將回到首頁");
+        window.location.href = "index.html";
+    } catch (err) {
+        console.error(err);
+        alert("登入失敗：" + err.message);
+    }
 });
 
 // Email 登入
-function loginEmailUser() {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
+const emailLoginBtn = document.getElementById("email-login");
+emailLoginBtn.addEventListener("click", async () => {
+    const email = prompt("請輸入 Email");
+    const password = prompt("請輸入密碼");
+    if (!email || !password) return;
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("登入成功！即將回到首頁");
+        window.location.href = "index.html";
+    } catch (err) {
+        console.error(err);
+        if (err.code === "auth/user-not-found") alert("帳號不存在");
+        else if (err.code === "auth/wrong-password") alert("密碼錯誤");
+        else alert("登入失敗：" + err.message);
+    }
+});
 
-  if (!email || !password) {
-    alert("請輸入完整的 Email 和密碼！");
-    return;
-  }
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      statusText.textContent = `✅ 已登入：${user.email}`;
-      alert("登入成功！");
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      alert("登入失敗：" + error.message);
-    });
-}
-
-// 登出
-function logout() {
-  auth.signOut().then(() => {
-    statusText.textContent = "已登出";
-  });
-}
+// 雙擊 Email 按鈕可重設密碼
+emailLoginBtn.addEventListener("dblclick", async () => {
+    const email = prompt("輸入 Email 以重設密碼");
+    if (!email) return;
+    try {
+        await auth.sendPasswordResetEmail(email);
+        alert("已發送重設密碼信件");
+    } catch (err) {
+        console.error(err);
+        alert("重設密碼失敗：" + err.message);
+    }
+});
