@@ -1,10 +1,8 @@
-// ================================================
-// 🔐 安全初始化 Firebase（避免 IndexedDB 問題）
-// ================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, setDoc, getDocs, orderBy, query, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+// Firebase 初始化
 const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
   authDomain: "mycomment-ad1ba.firebaseapp.com",
@@ -14,108 +12,148 @@ const firebaseConfig = {
   appId: "1:1076313273646:web:2b5aaa8c6bd5824828f6bf",
   measurementId: "G-3NGHCWH7TP"
 };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-let app, auth, db;
+// 元素
+const googleLoginBtn = document.getElementById("google-login");
+const emailLoginBtn = document.getElementById("email-login");
+const registerBtn = document.getElementById("register");
+const logoutBtn = document.getElementById("logout");
+const userInfo = document.getElementById("user-info");
+const displayNameInput = document.getElementById("display-name-input");
+const userAvatar = document.getElementById("user-avatar");
+const avatarUpload = document.getElementById("avatar-upload");
+const saveProfileBtn = document.getElementById("save-profile");
+const commentInput = document.getElementById("comment-input");
+const postCommentBtn = document.getElementById("post-comment");
+const commentList = document.getElementById("comment-list");
 
-try {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-  console.log("✅ Firebase 初始化成功");
-} catch (err) {
-  console.warn("⚠ Firebase 初始化失敗，可能是隱私模式或 IndexedDB 問題", err);
-  // fallback：僅提供登入/註冊介面但不操作 Firestore
+// 顯示使用者資料
+async function showUserData(user) {
+  const docSnap = await getDoc(doc(db, "users", user.uid));
+  const data = docSnap.exists() ? docSnap.data() : {};
+  displayNameInput.value = data.displayName || user.displayName || "";
+  userAvatar.src = data.avatarUrl || user.photoURL || "https://via.placeholder.com/36";
+  userInfo.classList.remove("d-none");
 }
 
-
-// ================================
-//  監聽登入狀態
-// ================================
-auth.onAuthStateChanged((user) => {
+// 登入狀態監控
+onAuthStateChanged(auth, async user => {
   if (user) {
-    loadComments();
+    googleLoginBtn.classList.add("d-none");
+    emailLoginBtn.classList.add("d-none");
+    registerBtn.classList.add("d-none");
+    logoutBtn.classList.remove("d-none");
+    await showUserData(user);
+    await loadComments();
   } else {
-    console.log("使用者未登入");
+    googleLoginBtn.classList.remove("d-none");
+    emailLoginBtn.classList.remove("d-none");
+    registerBtn.classList.remove("d-none");
+    logoutBtn.classList.add("d-none");
+    userInfo.classList.add("d-none");
+    commentList.innerHTML = "";
   }
 });
 
-// ================================
-//  發送留言
-// ================================
-async function sendComment() {
-  const input = document.getElementById("commentInput");
-  const text = input.value.trim();
-  const user = auth.currentUser;
+// Google 登入
+googleLoginBtn.addEventListener("click", async () => {
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(auth, provider);
+});
 
-  if (!user) {
-    alert("請先登入！");
-    return;
-  }
+// Email 登入
+emailLoginBtn.addEventListener("click", async () => {
+  const email = prompt("輸入 Email");
+  const password = prompt("輸入密碼");
+  if (!email || !password) return;
+  try { await signInWithEmailAndPassword(auth, email, password); } 
+  catch(err) { alert(err.message); }
+});
 
-  if (text === "") {
-    alert("不能送出空白留言！");
-    return;
-  }
+// 註冊
+registerBtn.addEventListener("click", async () => {
+  const email = prompt("輸入 Email");
+  const password = prompt("輸入密碼");
+  if (!email || !password) return;
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+    const displayName = prompt("請輸入暱稱");
+    await setDoc(doc(db, "users", user.uid), { displayName, avatarUrl: user.photoURL || "https://via.placeholder.com/36" });
+    alert("註冊成功！");
+  } catch(err) { alert(err.message); }
+});
 
-  await db.collection("comments").add({
-    text: text,
-    uid: user.uid,
-    name: user.displayName || "匿名",
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-  });
+// 登出
+logoutBtn.addEventListener("click", () => signOut(auth));
 
-  input.value = "";
-  loadComments();
-}
-
-// ================================
-//  顯示留言
-// ================================
-async function loadComments() {
-  const list = document.getElementById("commentList");
-  list.innerHTML = "";
-
-  const snapshot = await db.collection("comments")
-    .orderBy("createdAt", "desc")
-    .get();
-
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    const div = document.createElement("div");
-    div.className = "comment-item";
-
-    const canDelete = auth.currentUser && auth.currentUser.uid === data.uid;
-
-    div.innerHTML = `
-      <p class="comment-text">${data.text}</p>
-      <p class="comment-author">— ${data.name}</p>
-      ${
-        canDelete
-          ? `<button class="delete-btn" onclick="deleteComment('${doc.id}')">
-               ❌ 刪除
-             </button>`
-          : ""
-      }
-    `;
-
-    list.appendChild(div);
-  });
-}
-
-// ================================
-//  刪除留言（僅本人）
-// ================================
-async function deleteComment(id) {
+// 儲存個人資料
+saveProfileBtn.addEventListener("click", async () => {
   const user = auth.currentUser;
   if (!user) return;
-
-  const docRef = await db.collection("comments").doc(id).get();
-
-  if (docRef.data().uid !== user.uid) {
-    alert("只能刪除自己的留言！");
-    return;
+  let avatarUrl = userAvatar.src;
+  const file = avatarUpload.files[0];
+  if(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset","ml_default");
+    const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {method:"POST", body:formData});
+    const data = await res.json();
+    avatarUrl = data.secure_url;
+    userAvatar.src = avatarUrl;
   }
+  await setDoc(doc(db, "users", user.uid), { displayName: displayNameInput.value, avatarUrl }, { merge:true });
+  alert("資料已儲存！");
+});
 
-  await db.collection("comments").doc(id).delete();
-  loadComments();
+// 發佈留言
+postCommentBtn.addEventListener("click", async () => {
+  const user = auth.currentUser;
+  if(!user) return alert("請先登入");
+  const text = commentInput.value.trim();
+  if(!text) return;
+  await addDoc(collection(db, "comments"), {
+    uid: user.uid,
+    displayName: displayNameInput.value || "匿名",
+    avatarUrl: userAvatar.src,
+    text,
+    createdAt: serverTimestamp()
+  });
+  commentInput.value = "";
+  await loadComments();
+});
+
+// 刪除留言
+async function deleteComment(commentId) {
+  const user = auth.currentUser;
+  if(!user) return alert("請先登入");
+  if(!confirm("確定要刪除留言？")) return;
+  await deleteDoc(doc(db, "comments", commentId));
+  await loadComments();
+}
+
+// 載入留言
+async function loadComments() {
+  const q = query(collection(db, "comments"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  const user = auth.currentUser;
+  commentList.innerHTML = "";
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const div = document.createElement("div");
+    div.classList.add("comment-card");
+    let deleteBtnHTML = "";
+    if(user && user.uid === data.uid) deleteBtnHTML = `<button class="delete-comment-btn">刪除留言</button>`;
+    div.innerHTML = `
+      <img class="avatar" src="${data.avatarUrl}">
+      <div class="user-info"><b>${data.displayName}</b></div>
+      <p class="comment-text">${data.text}</p>
+      <div class="comment-footer">${deleteBtnHTML}<span class="comment-timestamp">${data.createdAt ? new Date(data.createdAt.seconds*1000).toLocaleString('zh-TW',{hour12:false}) : '剛剛'}</span></div>
+    `;
+    commentList.appendChild(div);
+    if(deleteBtnHTML) div.querySelector(".delete-comment-btn").addEventListener("click", ()=>deleteComment(docSnap.id));
+  });
 }
