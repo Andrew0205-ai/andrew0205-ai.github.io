@@ -1,94 +1,87 @@
-// 🏅 badge.js — 小宏的隱藏任務系統（升級版）
+// 📌 徽章資料
+const badges = [
+  { id: 1, name: "第一步達成！", desc: "完成了你的第一個任務！", unlocked: true },
+  { id: 2, name: "每日挑戰者", desc: "連續三天登入。", unlocked: false },
+  { id: 3, name: "任務大師", desc: "完成 10 個任務。", unlocked: false },
+  { id: 4, name: "探索者", desc: "瀏覽所有頁面。", unlocked: true }
+];
 
-window.addEventListener("DOMContentLoaded", () => {
-  const badgeContainer = document.getElementById("badgeList");
-  const secretImg = document.getElementById("avatar");
-  const taskSection = document.getElementById("task-section");
+// ✅ 顯示徽章
+function showBadges() {
+  const badgeList = document.getElementById("badgeList");
+  if (!badgeList) return;
 
-  let clickCount = 0;
-  let lastClickTime = 0;
+  badgeList.innerHTML = "";
 
-  // 顯示徽章
-  function showBadges() {
-    let badges = JSON.parse(localStorage.getItem("badges") || "[]");
-    badgeContainer.innerHTML = "";
+  badges.forEach(badge => {
+    const card = document.createElement("div");
+    card.className =
+      "badge-card card shadow-sm p-3 mb-3 " +
+      (badge.unlocked ? "border-success unlocked" : "border-secondary locked");
 
-    if (badges.length === 0) {
-      badgeContainer.innerHTML = "<p>你還沒有徽章，快去完成任務吧！</p>";
-    } else {
-      badges.forEach((b, i) => {
-        let div = document.createElement("div");
-        div.className = "badge";
-        div.innerText = b;
+    card.innerHTML = `
+      <div class="d-flex align-items-center">
+        <div class="badge-icon me-3">
+          ${badge.unlocked ? "🏅" : "🔒"}
+        </div>
 
-        // 每個徽章延遲出現
-        div.style.animationDelay = `${i * 0.15}s`;
+        <div>
+          <h5 class="card-title mb-1">${badge.name}</h5>
+          <p class="card-text small text-muted">${badge.desc}</p>
+        </div>
+      </div>
+    `;
 
-        badgeContainer.appendChild(div);
-      });
+    badgeList.appendChild(card);
+  });
+}
+
+
+// 🌟 加入閃爍、縮放、hover 動畫
+document.addEventListener("DOMContentLoaded", () => {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    
+    /* 卡片出現動畫 */
+    .badge-card {
+      animation: popIn 0.5s ease forwards;
+      transform-origin: center;
+      cursor: pointer;
+      border-radius: 12px;
     }
-  }
 
-  showBadges();
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
 
-  // ⚙️ 點三下圖片觸發任務區塊（神秘啟動動畫）
-  if (secretImg) {
-    secretImg.addEventListener("click", () => {
-      const now = performance.now();
+    /* 已解鎖：發亮 */
+    .badge-card.unlocked {
+      animation: popIn 0.5s ease, shine 2s infinite;
+    }
 
-      // 間隔過久會重置
-      if (now - lastClickTime > 1500) clickCount = 0;
+    @keyframes shine {
+      0% { box-shadow: 0 0 5px rgba(0,255,100,0.4); }
+      50% { box-shadow: 0 0 15px rgba(0,255,100,0.7); }
+      100% { box-shadow: 0 0 5px rgba(0,255,100,0.4); }
+    }
 
-      clickCount++;
-      lastClickTime = now;
+    /* 滑過時跳一下 */
+    .badge-card:hover {
+      transform: scale(1.03);
+      transition: 0.2s;
+    }
 
-      if (clickCount === 3) {
-        // ✨ 神秘啟動動畫（旋轉 + 放大 + 閃光）
-        secretImg.animate(
-          [
-            { transform: "scale(1) rotate(0deg) brightness(1)" },
-            { transform: "scale(1.25) rotate(10deg) brightness(1.8)" },
-            { transform: "scale(1) rotate(0deg) brightness(1)" }
-          ],
-          { duration: 600, easing: "ease-out" }
-        );
+    /* 未解鎖：灰色 */
+    .badge-card.locked {
+      filter: grayscale(1);
+      opacity: 0.6;
+    }
 
-        // 顯示任務區塊（帶滑動效果）
-        taskSection.classList.remove("hidden");
-        setTimeout(() => {
-          taskSection.classList.add("show");
-        }, 50);
-
-        alert("🎯 成功啟動任務模式！");
-        console.log("🎯 成功啟動任務模式！")
-        clickCount = 0;
-      }
-    });
-  }
-
-  // 🚀 「開始任務」按鈕
-  window.goTask = function () {
-    const token = Math.random().toString(36).substring(2, 10);
-    sessionStorage.setItem("taskToken", token);
-    window.location.href = "/tasks.html";
-  };
-
-  // 🔙 「返回」按鈕
-  window.closeTask = function () {
-    taskSection.classList.remove("show");
-
-    // 加回 hidden（晚一點避免動畫硬切）
-    setTimeout(() => {
-      taskSection.classList.add("hidden");
-    }, 300);
-
-    // 隨機鼓勵語
-    const messages = [
-      "💪 加油，一定能完成任務！",
-      "🌈 不急，慢慢來也沒關係喔～",
-      "⭐ 下次再挑戰吧，你最棒了！",
-      "🚀 我相信你一定能成功！"
-    ];
-    alert(messages[Math.floor(Math.random() * messages.length)]);
-  };
+    .badge-icon {
+      font-size: 2.5rem;
+    }
+  `;
+  document.head.appendChild(style);
 });
+
