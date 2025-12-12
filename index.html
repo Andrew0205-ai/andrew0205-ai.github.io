@@ -25,6 +25,7 @@
 <!-- 🔵 導覽列 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3">
   <div class="container">
+    
     <a class="navbar-brand fw-bold" href="#">小宏的部落格</a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
@@ -33,13 +34,46 @@
 
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#contact-section">聯絡我</a></li>
-        <li class="nav-item"><a class="nav-link" href="name.html" target="_blank">🪪 電子名片</a></li>
-        <li class="nav-item"><a class="nav-link" href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a></li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#contact-section">聯絡我</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="name.html" target="_blank">🪪 電子名片</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a>
+        </li>
+
+        <!-- 🔽 Dropdown（修正結構） -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            我的遊戲 ID
+          </a>
+
+          <ul class="dropdown-menu">
+            <li><h4 class="dropdown-header">遊戲名稱</h4></li>
+            <li><a class="dropdown-item" href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a></li>
+
+            <li><h4 class="dropdown-header">玩家名稱</h4></li>
+            <li><p class="dropdown-item">小宏鎮</p></li>
+
+            <li><h4 class="dropdown-header">遊戲 ID</h4></li>
+            <li class="px-3 pb-2">
+              <p class="mb-1 fw-bold">ID：<span id="gameID">K3Q92B</span></p>
+              <button onclick="copyGameID()" class="btn btn-success btn-sm">複製 ID</button>
+            </li>
+          </ul>
+        </li>
+
       </ul>
     </div>
+
   </div>
 </nav>
+
 
 <!-- 🔵 主內容 -->
 <div class="container">
@@ -62,21 +96,10 @@
       <h2>🏅 小宏的任務挑戰</h2>
       <div id="badgeList" style="color:black;"></div>
       <button onclick="goTask()" class="btn btn-success">🚀 開始任務</button>
-      <button onclick="closeTask()" class="btn btn-success">🔙 返回</button>
     </section>
 
-  <!-- ⭐ 遊戲 ID -->
-  <section class="mb-4" style="width:200px;">
-    <div class="card p-3">
-      <h3 class="mb-2">🎮 我的遊戲 ID</h3>
-      <p>
-        遊戲名稱: <a href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a><br>
-        玩家名: 小宏鎮<br>
-        遊戲 ID: <span id="gameID" class="fw-bold">K3Q92B</span>
-      </p>
-      <button onclick="copyGameID()" class="btn btn-success btn-sm">複製 ID</button>
-    </div>
-  </section>
+ 
+
 
   <!-- ⭐ 使用者資訊 -->
     <h3>留言板</h3>
