@@ -1,7 +1,8 @@
 // ./js/firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
   authDomain: "mycomment-ad1ba.firebaseapp.com",
   projectId: "mycomment-ad1ba",
@@ -12,3 +13,4 @@ export const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
