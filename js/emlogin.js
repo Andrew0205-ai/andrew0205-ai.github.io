@@ -1,35 +1,60 @@
-import { auth } from "./firebase.js";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+// ./js/emlogin.js
+import { auth } from "./firebase.js"; // 確保 firebase.js 已 export auth
 
+document.addEventListener("DOMContentLoaded", () => {
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const togglePasswordBtn = document.getElementById("togglePassword");
+  const statusEl = document.getElementById("status");
 
-// Email 登入
-const emailLoginBtn = document.getElementById("email-login");
-emailLoginBtn.addEventListener("click", async () => {
-    const email = prompt("請輸入 Email");
-    const password = prompt("請輸入密碼");
-    if (!email || !password) return;
+  // 切換密碼可見性
+  togglePasswordBtn?.addEventListener("click", () => {
+    if (!passwordInput) return;
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+    } else {
+      passwordInput.type = "password";
+    }
+  });
+
+  // 登入函式
+  window.loginEmailUser = async function() {
+    if (!emailInput || !passwordInput) return;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      statusEl.textContent = "請輸入 Email 與密碼";
+      return;
+    }
+
     try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("登入成功！即將回到首頁");
+      await auth.signInWithEmailAndPassword(email, password);
+      statusEl.textContent = "登入成功！即將返回首頁...";
+      // 登入成功後跳回 index.html
+      setTimeout(() => {
         window.location.href = "index.html";
+      }, 1000);
     } catch (err) {
-        console.error(err);
-        if (err.code === "auth/user-not-found") alert("帳號不存在");
-        else if (err.code === "auth/wrong-password") alert("密碼錯誤");
-        else alert("登入失敗：" + err.message);
+      console.error("登入失敗:", err);
+      if (err.code === "auth/user-not-found") {
+        statusEl.textContent = "帳號不存在";
+      } else if (err.code === "auth/wrong-password") {
+        statusEl.textContent = "密碼錯誤";
+      } else {
+        statusEl.textContent = err.message;
+      }
     }
-});
+  };
 
-// 雙擊 Email 按鈕可重設密碼
-emailLoginBtn.addEventListener("dblclick", async () => {
-    const email = prompt("輸入 Email 以重設密碼");
-    if (!email) return;
+  // 登出函式
+  window.logout = async function() {
     try {
-        await auth.sendPasswordResetEmail(email);
-        alert("已發送重設密碼信件");
+      await auth.signOut();
+      statusEl.textContent = "已登出";
     } catch (err) {
-        console.error(err);
-        alert("重設密碼失敗：" + err.message);
+      console.error("登出失敗:", err);
+      statusEl.textContent = "登出失敗";
     }
+  };
 });
-
