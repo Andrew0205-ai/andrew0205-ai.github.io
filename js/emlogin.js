@@ -45,3 +45,4 @@ emailLoginBtn.addEventListener("dblclick", async () => {
         alert("重設密碼失敗：" + err.message);
     }
 });
+
