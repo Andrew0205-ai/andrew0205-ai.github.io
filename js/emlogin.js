@@ -1,19 +1,6 @@
 import { auth } from "./firebase.js";
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Google 登入
-const googleLoginBtn = document.getElementById("google-login");
-googleLoginBtn.addEventListener("click", async () => {
-    try {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        alert("登入成功！即將回到首頁");
-        window.location.href = "index.html";
-    } catch (err) {
-        console.error(err);
-        alert("登入失敗：" + err.message);
-    }
-});
 
 // Email 登入
 const emailLoginBtn = document.getElementById("email-login");
