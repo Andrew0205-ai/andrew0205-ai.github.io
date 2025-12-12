@@ -47,3 +47,130 @@ body {
 #backToTop {
   border-radius: 50%;
 }
+/* -------------------------------------- */
+/* 🌟 基本排列 */
+/* -------------------------------------- */
+#badgeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+/* 外框：3D 翻牌容器 */
+.badge {
+  width: 120px;
+  height: 50px;
+  perspective: 800px; /* 3D 視角 */
+  position: relative;
+  cursor: pointer;
+  animation: badgePop 0.6s ease-out forwards;
+  transform: scale(0.5);
+  opacity: 0;
+}
+
+/* 內層：正反面都在裡面 */
+.badge-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+/* 滑鼠懸浮 → 3D 翻牌 */
+.badge:hover .badge-inner {
+  transform: rotateY(180deg);
+}
+
+/* 正面 */
+.badge-front,
+.badge-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1em;
+  color: #333;
+
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+/* 正面：金色漸層 */
+.badge-front {
+  background: linear-gradient(135deg, #ffdd57, #ffb700);
+}
+
+/* 反面：黑色像 Steam 顏色 */
+.badge-back {
+  background: #333;
+  color: #ffd700;
+  transform: rotateY(180deg);
+}
+
+/* -------------------------------------- */
+/* 🌟 彈跳出場動畫（搭配 JS delay） */
+/* -------------------------------------- */
+@keyframes badgePop {
+  0% {
+    transform: scale(0.4) rotate(-8deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) rotate(3deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* -------------------------------------- */
+/* 🌟 金光粒子特效 */
+/* -------------------------------------- */
+.badge::after {
+  content: "✨";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1.2em;
+  opacity: 0;
+  animation: sparkle 1.4s infinite ease-in-out;
+}
+
+/* 隨機閃爍金光 */
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.4) rotate(10deg); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* -------------------------------------- */
+/* 🌟 Steam-style 成就提示框 */
+/* -------------------------------------- */
+#achievementToast {
+  position: fixed;
+  bottom: 30px;
+  right: -350px;
+  width: 300px;
+  padding: 15px;
+  background: rgba(30,30,30,0.9);
+  color: white;
+  border-left: 6px solid gold;
+  border-radius: 8px;
+  font-size: 1em;
+  z-index: 9999;
+  transition: right 0.6s ease-out;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+#achievementToast.show {
+  right: 20px;
+}
