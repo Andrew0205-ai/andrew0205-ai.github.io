@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email 登入</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
-  <script  type="module"src="./js/firebase.js"></script>
   <link rel="stylesheet" href="login.css">
+  <script type="module" src="./js/firebase.js"></script>
+  <script type="module" src="./js/emlogin.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>使用 Email 登入</h2>
+
     <input type="email" id="email" placeholder="輸入電子郵件">
-    
+
     <div class="password-box">
       <input type="password" id="password" placeholder="輸入密碼">
       <button type="button" id="togglePassword" class="eye-btn">👁️</button>
@@ -23,8 +23,5 @@
     <button onclick="logout()">登出</button>
     <p id="status"></p>
   </div>
-
-  <!-- 外部腳本 -->
-  <script  type="module"src="./js/emlogin.js"></script>
 </body>
 </html>
