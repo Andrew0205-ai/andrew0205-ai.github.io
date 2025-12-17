@@ -112,7 +112,12 @@
   <div id="userArea" class="mb-3 d-none">
     <img id="userAvatar" src="" width="50" class="rounded-circle me-2">
     <strong id="userName"></strong>
-    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="changeProfile()">修改暱稱 / 頭像</button>
+    <button class="btn btn-sm btn-outline-secondary ms-2"
+        data-bs-toggle="modal"
+        data-bs-target="#profileModal">
+  修改資料
+</button>
+
     <button class="btn btn-sm btn-outline-danger ms-2" onclick="logout()">登出</button>
   </div>
 
