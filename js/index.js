@@ -1,6 +1,7 @@
 // ===== DOM =====
-const googleLoginBtn = document.getElementById("google-login");
-const emailLoginBtn = document.getElementById("email-login");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+const emailLoginBtn = document.getElementById("emailLoginBtn");
+const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
 const userArea = document.getElementById("userArea");
@@ -21,6 +22,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signOut,
   updateProfile,
   onAuthStateChanged
@@ -38,9 +40,10 @@ import {
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// ===== 登入/登出 =====
+// ===== 登入 / 登出事件 =====
 googleLoginBtn.addEventListener("click", googleLogin);
 emailLoginBtn.addEventListener("click", emailLogin);
+forgotPasswordBtn.addEventListener("click", forgotPassword);
 logoutBtn.addEventListener("click", logout);
 
 async function googleLogin() {
@@ -49,7 +52,6 @@ async function googleLogin() {
     await signInWithPopup(auth, provider);
     alert("Google 登入成功！");
   } catch (err) {
-    console.error(err);
     alert("登入失敗：" + err.message);
   }
 }
@@ -58,8 +60,8 @@ async function emailLogin() {
   const action = prompt("輸入 1 登入 / 2 註冊");
   if (!action) return;
 
-  const email = prompt("輸入 Email：");
-  const password = prompt("輸入密碼：");
+  const email = prompt("請輸入 Email：");
+  const password = prompt("請輸入密碼：");
   if (!email || !password) return;
 
   try {
@@ -67,7 +69,7 @@ async function emailLogin() {
       await signInWithEmailAndPassword(auth, email, password);
       alert("登入成功！");
     } else if (action === "2") {
-      const displayName = prompt("輸入暱稱：");
+      const displayName = prompt("請輸入暱稱：");
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName });
       await sendEmailVerification(userCredential.user);
@@ -76,8 +78,18 @@ async function emailLogin() {
       alert("無效操作");
     }
   } catch (err) {
-    console.error(err);
     alert("操作失敗：" + err.message);
+  }
+}
+
+async function forgotPassword() {
+  const email = prompt("請輸入你的 Email，用來重設密碼：");
+  if (!email) return;
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("已寄送重設密碼信到 " + email + "，請前往收信並重設密碼！");
+  } catch (err) {
+    alert("重設密碼失敗：" + err.message);
   }
 }
 
@@ -86,7 +98,6 @@ async function logout() {
     await signOut(auth);
     alert("已登出！");
   } catch (err) {
-    console.error(err);
     alert("登出失敗：" + err.message);
   }
 }
@@ -105,6 +116,7 @@ onAuthStateChanged(auth, user => {
 
     googleLoginBtn.classList.add("d-none");
     emailLoginBtn.classList.add("d-none");
+    forgotPasswordBtn.classList.add("d-none");
     logoutBtn.classList.remove("d-none");
   } else {
     userArea.classList.add("d-none");
@@ -114,6 +126,7 @@ onAuthStateChanged(auth, user => {
 
     googleLoginBtn.classList.remove("d-none");
     emailLoginBtn.classList.remove("d-none");
+    forgotPasswordBtn.classList.remove("d-none");
     logoutBtn.classList.add("d-none");
   }
 });
@@ -173,7 +186,7 @@ postBtn.addEventListener("click", async () => {
   commentInput.value = "";
 });
 
-// ===== 顯示留言（即時）+ 編輯/刪除 =====
+// ===== 顯示留言 + 編輯/刪除 =====
 const q = query(collection(db, "comments"), orderBy("createdAt", "desc"));
 onSnapshot(q, snapshot => {
   commentList.innerHTML = "";
@@ -219,3 +232,4 @@ onSnapshot(q, snapshot => {
     commentList.appendChild(div);
   });
 });
+``
