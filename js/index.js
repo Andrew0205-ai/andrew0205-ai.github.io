@@ -11,7 +11,8 @@ import {
   orderBy,
   onSnapshot,
   deleteDoc,
-  doc
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { auth, db } from "./firebase.js";
@@ -105,7 +106,7 @@ postBtn.addEventListener("click", async () => {
   commentInput.value = "";
 });
 
-/* ===== 顯示留言（即時）+ 只能刪自己 ===== */
+/* ===== 顯示留言（即時）+ 編輯/刪除自己留言 ===== */
 const q = query(collection(db, "comments"), orderBy("createdAt", "desc"));
 
 onSnapshot(q, snapshot => {
@@ -129,6 +130,19 @@ onSnapshot(q, snapshot => {
     `;
 
     if (currentUser && currentUser.uid === c.uid) {
+      // 編輯按鈕
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "編輯";
+      editBtn.className = "btn btn-sm btn-primary me-1";
+
+      editBtn.onclick = async () => {
+        const newText = prompt("修改留言內容：", c.text);
+        if (!newText || newText === c.text) return;
+
+        await updateDoc(doc(db, "comments", id), { text: newText });
+      };
+
+      // 刪除按鈕
       const delBtn = document.createElement("button");
       delBtn.textContent = "刪除";
       delBtn.className = "btn btn-sm btn-danger";
@@ -139,9 +153,11 @@ onSnapshot(q, snapshot => {
         }
       };
 
+      div.appendChild(editBtn);
       div.appendChild(delBtn);
     }
 
     commentList.appendChild(div);
   });
 });
+
