@@ -1,4 +1,6 @@
+import { auth, db } from "./firebase.js";
 import {
+  signOut,
   onAuthStateChanged,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -15,9 +17,11 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-import { auth, db } from "./firebase.js";
-
 /* ===== DOM ===== */
+const googleLoginBtn = document.getElementById("google-login");
+const emailLoginBtn = document.getElementById("email-login");
+const logoutBtn = document.getElementById("logoutBtn");
+
 const userArea = document.getElementById("userArea");
 const userAvatar = document.getElementById("userAvatar");
 const userName = document.getElementById("userName");
@@ -27,6 +31,20 @@ const postBtn = document.getElementById("post-comment");
 const commentList = document.getElementById("commentList");
 
 let currentUser = null;
+
+/* ===== 登入/登出按鈕事件 ===== */
+googleLoginBtn.addEventListener("click", () => googleLogin());
+emailLoginBtn.addEventListener("click", () => emailLogin());
+
+logoutBtn.addEventListener("click", async () => {
+  if (!currentUser) return;
+  try {
+    await signOut(auth);
+    alert("已登出！");
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 /* ===== 登入狀態監聽 ===== */
 onAuthStateChanged(auth, user => {
@@ -39,11 +57,19 @@ onAuthStateChanged(auth, user => {
 
     commentInput.disabled = false;
     postBtn.disabled = false;
+
+    googleLoginBtn.classList.add("d-none");
+    emailLoginBtn.classList.add("d-none");
+    logoutBtn.classList.remove("d-none");
   } else {
     userArea.classList.add("d-none");
 
     commentInput.disabled = true;
     postBtn.disabled = true;
+
+    googleLoginBtn.classList.remove("d-none");
+    emailLoginBtn.classList.remove("d-none");
+    logoutBtn.classList.add("d-none");
   }
 });
 
@@ -58,7 +84,7 @@ userName.addEventListener("click", async () => {
   userName.textContent = newName;
 });
 
-/* ===== 點頭像修改（Cloudinary） ===== */
+/* ===== 點頭像修改 ===== */
 userAvatar.addEventListener("click", () => {
   if (!currentUser) return;
 
@@ -80,7 +106,6 @@ userAvatar.addEventListener("click", () => {
     );
 
     const data = await res.json();
-
     await updateProfile(currentUser, { photoURL: data.secure_url });
     userAvatar.src = data.secure_url;
   };
@@ -90,8 +115,7 @@ userAvatar.addEventListener("click", () => {
 
 /* ===== 送出留言 ===== */
 postBtn.addEventListener("click", async () => {
-  if (!currentUser || !currentUser.emailVerified) return;
-
+  if (!currentUser) return;
   const text = commentInput.value.trim();
   if (!text) return;
 
@@ -106,7 +130,7 @@ postBtn.addEventListener("click", async () => {
   commentInput.value = "";
 });
 
-/* ===== 顯示留言（即時）+ 編輯/刪除自己留言 ===== */
+/* ===== 顯示留言（即時）+ 編輯/刪除 ===== */
 const q = query(collection(db, "comments"), orderBy("createdAt", "desc"));
 
 onSnapshot(q, snapshot => {
@@ -121,32 +145,25 @@ onSnapshot(q, snapshot => {
 
     div.innerHTML = `
       <div class="d-flex align-items-center mb-1">
-        <img src="${c.avatar || 'images/default-avatar.png'}"
-             width="32"
-             class="rounded-circle me-2">
+        <img src="${c.avatar || 'images/default-avatar.png'}" width="32" class="rounded-circle me-2">
         <strong>${c.name || "匿名"}</strong>
       </div>
       <p class="mb-1">${c.text}</p>
     `;
 
     if (currentUser && currentUser.uid === c.uid) {
-      // 編輯按鈕
       const editBtn = document.createElement("button");
       editBtn.textContent = "編輯";
       editBtn.className = "btn btn-sm btn-primary me-1";
-
       editBtn.onclick = async () => {
         const newText = prompt("修改留言內容：", c.text);
         if (!newText || newText === c.text) return;
-
         await updateDoc(doc(db, "comments", id), { text: newText });
       };
 
-      // 刪除按鈕
       const delBtn = document.createElement("button");
       delBtn.textContent = "刪除";
       delBtn.className = "btn btn-sm btn-danger";
-
       delBtn.onclick = async () => {
         if (confirm("確定要刪除這則留言？")) {
           await deleteDoc(doc(db, "comments", id));
@@ -160,4 +177,3 @@ onSnapshot(q, snapshot => {
     commentList.appendChild(div);
   });
 });
-
