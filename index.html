@@ -100,18 +100,18 @@
 <section id="comment-section" class="mb-4">
   <h3>💬 留言板</h3>
 
-  <!-- 登入區 -->
-  <div id="auth-area" class="mb-3">
-    <button id="google-login" class="btn btn-success me-2">Google 登入</button>
-    <button id="email-login" class="btn btn-primary me-2">Email 登入</button>
-    <button id="logoutBtn" class="btn btn-secondary d-none">登出</button>
+  <!-- 登入 / 註冊彈窗觸發 -->
+  <div id="loginArea" class="mb-3">
+    <button class="btn btn-outline-success me-2" id="googleLoginBtn">Google 登入</button>
+    <button class="btn btn-outline-primary me-2" id="emailLoginBtn">Email 登入 / 註冊</button>
+    <button class="btn btn-outline-warning" id="forgotPasswordBtn">忘記密碼</button>
   </div>
 
   <!-- 使用者資訊 -->
-  <div id="userArea" class="mb-3 d-none align-items-center">
-    <img id="userAvatar" src="" width="48" class="rounded-circle me-2 clickable" title="點擊可更換頭像">
-    <strong id="userName" class="clickable" title="點擊可修改暱稱"></strong>
-    <span class="text-muted ms-2" style="font-size:0.85em;">（點頭像或暱稱可修改）</span>
+  <div id="userArea" class="mb-3 d-none">
+    <img id="userAvatar" src="" width="50" class="rounded-circle me-2" style="cursor:pointer;">
+    <strong id="userName" style="cursor:pointer;"></strong>
+    <button id="logoutBtn" class="btn btn-secondary btn-sm ms-2">登出</button>
   </div>
 
   <!-- 留言輸入 -->
