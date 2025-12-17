@@ -103,31 +103,53 @@
 
   <!-- 登入區 -->
   <div id="loginArea" class="mb-3">
-    <button id="google-login" class="btn btn-outline-success me-2">Google 登入</button>
-    <button id="email-login" class="btn btn-outline-secondary">Email 登入</button>
+    <button id="google-login" class="btn btn-outline-success me-2">
+      Google 登入
+    </button>
+    <button id="email-login" class="btn btn-outline-secondary">
+      Email 登入
+    </button>
   </div>
 
   <!-- 使用者資訊 -->
-  <div id="userArea" class="mb-3 d-none">
-    <img id="userAvatar" src="" width="50" class="rounded-circle me-2">
-    <strong id="userName"></strong>
-    <br>
-    <small class="text-muted d-block mt-1">
-  💡 點擊頭像可更換照片，點擊暱稱可修改名稱
-</small>
+  <div id="userArea" class="mb-3 d-none align-items-center">
+    <img
+      id="userAvatar"
+      src=""
+      width="50"
+      height="50"
+      class="rounded-circle me-2"
+      style="cursor:pointer"
+      alt="頭像"
+    >
+    <strong id="userName" style="cursor:pointer"></strong>
 
-    <button id="logout" class="btn btn-secondary btn-sm ms-2">登出</button>
+    <button id="logout" class="btn btn-sm btn-secondary ms-3">
+      登出
+    </button>
+
+    <!-- 🔔 使用提示 -->
+    <small class="text-muted d-block mt-1">
+      💡 點擊頭像可更換照片，點擊暱稱可修改名稱
+    </small>
   </div>
 
   <!-- 留言輸入 -->
   <div id="commentInputArea" class="card p-3 d-none">
-    <textarea id="comment-input" class="form-control mb-3" placeholder="輸入留言..."></textarea>
-    <button id="post-comment" class="btn btn-success">送出留言</button>
+    <textarea
+      id="comment-input"
+      class="form-control mb-2"
+      placeholder="輸入留言..."
+    ></textarea>
+    <button id="post-comment" class="btn btn-success">
+      送出留言
+    </button>
   </div>
 
   <!-- 留言列表 -->
   <div id="comment-list" class="mt-3"></div>
 </section>
+
 
   <!-- ⭐ 聯絡我 -->
   <section id="contact-section" class="mb-4">
