@@ -220,6 +220,41 @@
     </div>
   </div>
 </div>
+<!-- 🔐 登入 / 註冊 彈出視窗 -->
+<div id="authModal" class="auth-modal d-none">
+  <div class="auth-box">
+    <h3 id="authTitle">登入</h3>
+
+    <!-- Email -->
+    <input id="authEmail" type="email" placeholder="電子郵件">
+
+    <!-- 密碼 -->
+    <input id="authPassword" type="password" placeholder="密碼">
+
+    <!-- 註冊專用 -->
+    <input id="authName" type="text" placeholder="暱稱（註冊用）" class="d-none">
+    <input id="authAvatar" type="file" accept="image/*" class="d-none">
+
+    <!-- 按鈕 -->
+    <button id="authSubmit" class="btn btn-success w-100 mt-2">
+      登入
+    </button>
+
+    <button id="forgotPassword" class="btn btn-link mt-1">
+      忘記密碼？
+    </button>
+
+    <hr>
+
+    <button id="switchAuth" class="btn btn-outline-secondary w-100">
+      切換為註冊
+    </button>
+
+    <button id="closeAuth" class="btn btn-sm btn-secondary mt-2">
+      關閉
+    </button>
+  </div>
+</div>
 
 </body>
 </html>
