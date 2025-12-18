@@ -1,214 +1,249 @@
-document.addEventListener("DOMContentLoaded", () => {
+// === Firebase 初始化 ===
+// 你原本的 firebase-config.js 與 firebase.js 必須先載入
+// firebase v8
+// firebase.auth(), firebase.firestore()
 
-  // ===== DOM =====
-  const googleLoginBtn = document.getElementById("googleLoginBtn");
-  const emailLoginBtn = document.getElementById("emailLoginBtn");
-  const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
+// DOM
+const loginArea = document.getElementById('loginArea');
+const userArea = document.getElementById('userArea');
+const commentInputArea = document.getElementById('commentInputArea');
+const commentList = document.getElementById('comment-list');
+const emailModal = document.getElementById('emailModal');
 
-  const userArea = document.getElementById("userArea");
-  const userAvatar = document.getElementById("userAvatar");
-  const userName = document.getElementById("userName");
+// 使用者資料
+let currentUser = null;
+const adminEmail = "andrewwork03295@gmail.com";
 
-  const commentInput = document.getElementById("comment-input");
-  const postBtn = document.getElementById("post-comment");
-  const commentList = document.getElementById("commentList");
+// === 登入 / 登出 ===
+function googleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(result => {
+    currentUser = result.user;
+    afterLogin();
+  });
+}
 
-  let currentUser = null;
+function emailLoginPrompt() {
+  emailModal.style.display = 'block';
+  document.getElementById('authNickname').classList.add('d-none');
+  document.getElementById('authAvatar').classList.add('d-none');
+  document.getElementById('registerBtn').classList.remove('d-none');
+}
 
-  // ===== 綁定事件 =====
-  googleLoginBtn?.addEventListener("click", googleLogin);
-  emailLoginBtn?.addEventListener("click", emailLogin);
-  forgotPasswordBtn?.addEventListener("click", forgotPassword);
-  logoutBtn?.addEventListener("click", logout);
+function login() {
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(res => {
+      currentUser = res.user;
+      closeEmailModal();
+      afterLogin();
+    })
+    .catch(err => alert(err.message));
+}
 
-  userName?.addEventListener("click", editDisplayName);
-  userAvatar?.addEventListener("click", editAvatar);
-  postBtn?.addEventListener("click", postComment);
+function register() {
+  document.getElementById('authNickname').classList.remove('d-none');
+  document.getElementById('authAvatar').classList.remove('d-none');
 
-  // ===== 登入 / 登出 =====
-  function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-      .then(() => alert("Google 登入成功！"))
-      .catch(err => alert("登入失敗：" + err.message));
-  }
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  const nickname = document.getElementById('authNickname').value;
+  const avatarFile = document.getElementById('authAvatar').files[0];
 
-  function emailLogin() {
-    const action = prompt("輸入 1 登入 / 2 註冊");
-    if (!action) return;
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(async res => {
+      currentUser = res.user;
 
-    const email = prompt("請輸入 Email：");
-    const password = prompt("請輸入密碼：");
-    if (!email || !password) return;
+      // 上傳頭像到 Cloudinary
+      let avatarURL = '';
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append('file', avatarFile);
+        formData.append('upload_preset', '你的Cloudinary預設');
+        const r = await fetch(`https://api.cloudinary.com/v1_1/你的CloudName/image/upload`, {
+          method: 'POST', body: formData
+        });
+        const data = await r.json();
+        avatarURL = data.secure_url;
+      }
 
-    if (action === "1") {
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => alert("登入成功！"))
-        .catch(err => alert("登入失敗：" + err.message));
-    } else if (action === "2") {
-      const displayName = prompt("請輸入暱稱：") || "未命名";
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(res => {
-          res.user.updateProfile({ displayName });
-          res.user.sendEmailVerification();
-          alert("註冊成功！請到 Email 驗證後再登入。");
-        })
-        .catch(err => alert("註冊失敗：" + err.message));
-    } else {
-      alert("無效操作");
-    }
-  }
+      // 存暱稱 & 頭像
+      await firebase.firestore().collection('users').doc(currentUser.uid).set({
+        nickname: nickname,
+        avatar: avatarURL
+      });
 
-  function forgotPassword() {
-    const email = prompt("請輸入你的 Email 用來重設密碼：");
-    if (!email) return;
+      closeEmailModal();
+      afterLogin();
+    }).catch(err => alert(err.message));
+}
 
-    firebase.auth().sendPasswordResetEmail(email)
-      .then(() => alert("已寄送重設密碼信到 " + email))
-      .catch(err => alert("重設密碼失敗：" + err.message));
-  }
+function logout() {
+  firebase.auth().signOut().then(() => {
+    currentUser = null;
+    loginArea.style.display = 'block';
+    userArea.classList.add('d-none');
+    commentInputArea.classList.add('d-none');
+  });
+}
 
-  function logout() {
-    firebase.auth().signOut()
-      .then(() => alert("已登出"))
-      .catch(err => alert("登出失敗：" + err.message));
-  }
+function forgotPassword() {
+  const email = document.getElementById('authEmail').value;
+  if (!email) return alert('請輸入電子郵件');
+  firebase.auth().sendPasswordResetEmail(email)
+    .then(()=> alert('已發送重置密碼信件'))
+    .catch(err => alert(err.message));
+}
 
-  // ===== 登入狀態監聽 =====
-  firebase.auth().onAuthStateChanged(user => {
-    currentUser = user;
+// === 登入後 UI 更新 ===
+async function afterLogin() {
+  loginArea.style.display = 'none';
+  userArea.classList.remove('d-none');
+  commentInputArea.classList.remove('d-none');
 
-    if (user && user.emailVerified) {
-      userArea?.classList.remove("d-none");
-      userAvatar.src = user.photoURL || "images/default-avatar.png";
-      userName.textContent = user.displayName || "未命名使用者";
+  // 讀取暱稱和頭像
+  const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
+  const data = doc.data() || {};
+  document.getElementById('userName').textContent = data.nickname || currentUser.email;
+  document.getElementById('userAvatar').src = data.avatar || 'default-avatar.png';
 
-      commentInput.disabled = false;
-      postBtn.disabled = false;
+  loadCommentsRealtime();
+}
 
-      googleLoginBtn?.classList.add("d-none");
-      emailLoginBtn?.classList.add("d-none");
-      forgotPasswordBtn?.classList.add("d-none");
-      logoutBtn?.classList.remove("d-none");
+// === 修改暱稱 / 頭像 ===
+function changeNickname() {
+  const newName = prompt('輸入新暱稱');
+  if (!newName) return;
+  firebase.firestore().collection('users').doc(currentUser.uid).update({nickname: newName});
+  document.getElementById('userName').textContent = newName;
+}
 
-    } else {
-      userArea?.classList.add("d-none");
+async function changeAvatar() {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.onchange = async e => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', '你的Cloudinary預設');
+    const r = await fetch(`https://api.cloudinary.com/v1_1/你的CloudName/image/upload`, {
+      method: 'POST', body: formData
+    });
+    const data = await r.json();
+    const url = data.secure_url;
+    await firebase.firestore().collection('users').doc(currentUser.uid).update({avatar: url});
+    document.getElementById('userAvatar').src = url;
+  };
+  fileInput.click();
+}
 
-      commentInput.disabled = true;
-      postBtn.disabled = true;
+// === 留言功能 ===
+function postComment() {
+  const text = document.getElementById('comment-input').value.trim();
+  if (!text) return;
+  const markdownText = marked.parse(text); // marked.js 支援 Markdown
 
-      googleLoginBtn?.classList.remove("d-none");
-      emailLoginBtn?.classList.remove("d-none");
-      forgotPasswordBtn?.classList.remove("d-none");
-      logoutBtn?.classList.add("d-none");
-    }
-    loadComments(); // 每次狀態改變重載留言
+  firebase.firestore().collection('comments').add({
+    uid: currentUser.uid,
+    email: currentUser.email,
+    nickname: document.getElementById('userName').textContent,
+    avatar: document.getElementById('userAvatar').src,
+    text: markdownText,
+    timestamp: Date.now()
   });
 
-  // ===== 編輯暱稱 =====
-  function editDisplayName() {
-    if (!currentUser) return;
-    const newName = prompt("請輸入新的暱稱：", currentUser.displayName || "");
-    if (!newName) return;
+  document.getElementById('comment-input').value = '';
+}
 
-    currentUser.updateProfile({ displayName: newName })
-      .then(() => { userName.textContent = newName; });
-  }
-
-  // ===== 編輯頭像 =====
-  function editAvatar() {
-    if (!currentUser) return;
-
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-
-    input.onchange = async () => {
-      const file = input.files[0];
-      if (!file) return;
-
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("upload_preset", "YOUR_UPLOAD_PRESET"); // Cloudinary 設定
-
-      const res = await fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", {
-        method: "POST", body: fd
-      });
-      const data = await res.json();
-      currentUser.updateProfile({ photoURL: data.secure_url })
-        .then(() => { userAvatar.src = data.secure_url; });
-    };
-
-    input.click();
-  }
-
-  // ===== 送出留言 =====
-  function postComment() {
-    if (!currentUser) return;
-    const text = commentInput.value.trim();
-    if (!text) return;
-
-    firebase.firestore().collection("comments").add({
-      text,
-      uid: currentUser.uid,
-      name: currentUser.displayName,
-      avatar: currentUser.photoURL,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      commentInput.value = "";
-    });
-  }
-
-  // ===== 顯示留言 =====
-  function loadComments() {
-    const q = firebase.firestore().collection("comments").orderBy("createdAt", "desc");
-    q.onSnapshot(snapshot => {
-      commentList.innerHTML = "";
-
-      snapshot.forEach(docSnap => {
-        const c = docSnap.data();
-        const id = docSnap.id;
-
-        const div = document.createElement("div");
-        div.className = "card p-2 mb-2";
+// === 即時更新留言 ===
+function loadCommentsRealtime() {
+  firebase.firestore().collection('comments').orderBy('timestamp')
+    .onSnapshot(snapshot => {
+      commentList.innerHTML = '';
+      snapshot.forEach(doc => {
+        const c = doc.data();
+        const div = document.createElement('div');
+        div.classList.add('mb-2', 'p-2', 'border', 'rounded');
 
         div.innerHTML = `
-          <div class="d-flex align-items-center mb-1">
-            <img src="${c.avatar || 'images/default-avatar.png'}" width="32" class="rounded-circle me-2">
-            <strong>${c.name || "匿名"}</strong>
-          </div>
-          <p class="mb-1">${c.text}</p>
+          <img src="${c.avatar}" width="30" class="rounded-circle me-2">
+          <strong>${c.nickname}</strong> 
+          <small>${new Date(c.timestamp).toLocaleString()}</small>
+          <div>${c.text}</div>
         `;
 
-        // 編輯 / 刪除只限自己
-        if (currentUser && currentUser.uid === c.uid) {
-          const editBtn = document.createElement("button");
-          editBtn.textContent = "編輯";
-          editBtn.className = "btn btn-sm btn-primary me-1";
-          editBtn.onclick = () => {
-            const newText = prompt("修改留言內容：", c.text);
-            if (!newText || newText === c.text) return;
-            firebase.firestore().collection("comments").doc(id).update({ text: newText });
-          };
-
-          const delBtn = document.createElement("button");
-          delBtn.textContent = "刪除";
-          delBtn.className = "btn btn-sm btn-danger";
-          delBtn.onclick = () => {
-            if (confirm("確定要刪除這則留言？")) {
-              firebase.firestore().collection("comments").doc(id).delete();
-            }
-          };
-
+        // 編輯 / 刪除按鈕
+        if (currentUser.uid === c.uid || currentUser.email === adminEmail) {
+          const editBtn = document.createElement('button');
+          editBtn.textContent = '編輯';
+          editBtn.className = 'btn btn-sm btn-warning me-1';
+          editBtn.onclick = () => editComment(doc.id, c.text);
           div.appendChild(editBtn);
+
+          const delBtn = document.createElement('button');
+          delBtn.textContent = '刪除';
+          delBtn.className = 'btn btn-sm btn-danger';
+          delBtn.onclick = () => firebase.firestore().collection('comments').doc(doc.id).delete();
           div.appendChild(delBtn);
         }
 
         commentList.appendChild(div);
       });
     });
+}
+
+// 編輯留言 Modal
+function editComment(id, oldText) {
+  const newText = prompt('修改留言內容', oldText); // 可改成自訂 modal
+  if (!newText) return;
+  firebase.firestore().collection('comments').doc(id).update({
+    text: marked.parse(newText)
+  });
+}
+
+// 插入圖片 / 連結
+function insertImageOrLink() {
+  const type = prompt('輸入 "img" 來插入圖片，"link" 來插入連結');
+  if (!type) return;
+
+  if (type.toLowerCase() === 'img') {
+    const url = prompt('請輸入圖片網址，如果沒有則選本地檔案');
+    if (url) {
+      document.getElementById('comment-input').value += `<img src="${url}" alt="圖片">`;
+    } else {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.onchange = async e => {
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', '你的Cloudinary預設');
+        const r = await fetch(`https://api.cloudinary.com/v1_1/你的CloudName/image/upload`, {
+          method: 'POST', body: formData
+        });
+        const data = await r.json();
+        const url = data.secure_url;
+        document.getElementById('comment-input').value += `<img src="${url}" alt="圖片">`;
+      };
+      fileInput.click();
+    }
+  } else if (type.toLowerCase() === 'link') {
+    const url = prompt('請輸入網址');
+    const text = prompt('顯示文字');
+    if (url && text) document.getElementById('comment-input').value += `<a href="${url}" target="_blank">${text}</a>`;
   }
+}
 
+// === Email Modal 控制 ===
+function closeEmailModal() { emailModal.style.display = 'none'; }
+
+// === 初始化 ===
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    afterLogin();
+  }
 });
-
