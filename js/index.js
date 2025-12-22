@@ -1,25 +1,35 @@
-firebase.initializeApp({
-  apiKey: "AIzaSyClktI5_wSo-u9LuwdsBVzH6buizJPXMAs",
-  authDomain: "mycomment-ad1ba.firebaseapp.com",
-  projectId: "mycomment-ad1ba"
+// Firebase 初始化
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// 使用者狀態
+let currentUser = null;
+
+auth.onAuthStateChanged(user => {
+  currentUser = user;
+  loadComments();
 });
 
-const db = firebase.firestore();
-let currentUser = { uid: "guest" };
+// Cloudinary 上傳
+async function uploadToCloudinary(file) {
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("upload_preset", "guest_upload");
 
-function postComment() {
-  const raw = document.getElementById("commentInput").value;
-  if (!raw) return;
+  const res = await fetch(
+    "https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload",
+    { method: "POST", body: fd }
+  );
 
-  db.collection("comments").add({
-    content: raw,
-    uid: currentUser.uid,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-
-  document.getElementById("commentInput").value = "";
+  const data = await res.json();
+  return data.secure_url || "";
 }
 
+// XSS 防護
+function sanitizeHTML(html) { /* ← 用上面那段 */ }
+
+// 載入留言
 function loadComments() {
   db.collection("comments")
     .orderBy("createdAt", "desc")
@@ -30,13 +40,13 @@ function loadComments() {
       snap.forEach(doc => {
         const c = doc.data();
         box.innerHTML += `
-          <div class="border p-2 mb-2">
-            ${renderContent(c.content)}
+          <div class="comment">
+            <div>${c.content}</div>
+            ${currentUser?.uid === c.uid
+              ? `<button onclick="openEdit('${doc.id}', \`${c.content}\`)">編輯</button>`
+              : ""}
           </div>
         `;
       });
     });
 }
-
-loadComments();
-
