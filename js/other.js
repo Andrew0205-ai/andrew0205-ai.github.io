@@ -32,7 +32,7 @@ function copyGameID() {
     if (banner) banner.style.display = "none";
   }
   const snowContainer = document.getElementById("snow-container");
-  const snowCount = 20; // 雪花數量（低調）
+  const snowCount = 30; // 雪花數量
 
   for (let i = 0; i < snowCount; i++) {
     const snow = document.createElement("div");
