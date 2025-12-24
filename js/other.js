@@ -22,4 +22,12 @@ function copyGameID() {
     alert("已複製遊戲 ID：" + idText);
   });
 }
+// 🎄 聖誕期間自動顯示（12/1～12/25）
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const date = today.getDate();
 
+  if (!(month === 12 && date <= 25)) {
+    const banner = document.getElementById("christmasBanner");
+    if (banner) banner.style.display = "none";
+  }
