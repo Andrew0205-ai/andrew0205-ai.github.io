@@ -26,6 +26,38 @@ h3::after {
   content: " 🎄";
   font-size: 0.9em;
 }
+    /* ❄️ 雪花容器 */
+#snow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* 不影響點擊 */
+  overflow: hidden;
+  z-index: 9999;
+}
+
+/* ❄️ 單顆雪花 */
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: white;
+  font-size: 14px;
+  opacity: 0.8;
+  animation-name: fall;
+  animation-timing-function: linear;
+}
+
+/* ❄️ 下落動畫 */
+@keyframes fall {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  100% {
+    transform: translateY(110vh) translateX(40px);
+  }
+}
 </style>
 
 
@@ -43,6 +75,9 @@ h3::after {
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 </head>
 <body>
+
+  <div id="snow-container"></div>
+
 
 <!-- 🔵 導覽列 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3">
