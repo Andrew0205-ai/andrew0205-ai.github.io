@@ -6,7 +6,7 @@ const db = firebase.firestore()
 let currentUser = null
 
 // 管理員 UID
-const ADMIN_UIDS = ["你的FirebaseUID放這裡"]
+const ADMIN_UIDS = ["mycomment-ad1ba"]
 
 // =======================
 // 登入 / 登出
@@ -35,7 +35,7 @@ auth.onAuthStateChanged(user => {
   document.getElementById("commentArea").classList.toggle("d-none", !user)
   if (user) {
     userName.innerText = user.displayName || "未命名"
-    userAvatar.src = user.photoURL || "https://i.imgur.com/1X6zY4K.png"
+    userAvatar.src = user.photoURL || "images/defult-avatar.png"
   }
 })
 
@@ -77,8 +77,8 @@ imageInput.addEventListener("change", async () => {
   if (!file) return
   const form = new FormData()
   form.append("file", file)
-  form.append("upload_preset", "guest_upload") // 你的 preset
-  const res = await fetch("https://api.cloudinary.com/v1_1/你的cloud_name/image/upload", {
+  form.append("upload_preset", "guest_upload") // preset
+  const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
     method: "POST",
     body: form
   })
