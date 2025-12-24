@@ -31,3 +31,23 @@ function copyGameID() {
     const banner = document.getElementById("christmasBanner");
     if (banner) banner.style.display = "none";
   }
+  const snowContainer = document.getElementById("snow-container");
+  const snowCount = 20; // 雪花數量（低調）
+
+  for (let i = 0; i < snowCount; i++) {
+    const snow = document.createElement("div");
+    snow.className = "snowflake";
+    snow.innerHTML = "❄️";
+
+    // 隨機位置與大小
+    snow.style.left = Math.random() * 100 + "vw";
+    snow.style.fontSize = (10 + Math.random() * 12) + "px";
+    snow.style.opacity = Math.random();
+
+    // 隨機速度
+    const duration = 8 + Math.random() * 7;
+    snow.style.animationDuration = duration + "s";
+    snow.style.animationDelay = Math.random() * 5 + "s";
+
+    snowContainer.appendChild(snow);
+  }
