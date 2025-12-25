@@ -1,87 +1,32 @@
-// 📌 徽章資料
-const badges = [
-  { id: 1, name: "第一步達成！", desc: "完成了你的第一個任務！", unlocked: true },
-  { id: 2, name: "每日挑戰者", desc: "連續三天登入。", unlocked: false },
-  { id: 3, name: "任務大師", desc: "完成 10 個任務。", unlocked: false },
-  { id: 4, name: "探索者", desc: "瀏覽所有頁面。", unlocked: true }
+// 任務列表
+const tasks = [
+  { name: "海中尋船", desc: "在海面上找出那艘神秘的小船", img: "images/task1.png", link: "task.html", badge: "海中尋船徽章" },
+  { name: "海底寶藏", desc: "在深海裡尋找閃亮的寶箱", img: "images/task2.png", link: "treasure.html", badge: "海底寶藏徽章" },
+  { name: "天空尋星任務", desc: "點擊天空中的星星收集徽章", img: "images/task3.png", link: "star.html", badge: "天空尋星徽章" },
+  { name: "星座探索任務", desc: "找出指定星座獲得專屬星座徽章", img: "images/task4.png", link: "xinzou.html", badge: "星座探索徽章" }
 ];
 
-// ✅ 顯示徽章
-function showBadges() {
-  const badgeList = document.getElementById("badgeList");
-  if (!badgeList) return;
+// 讀取已完成徽章
+let completedBadges = JSON.parse(localStorage.getItem("badges") || "[]");
 
-  badgeList.innerHTML = "";
+// 找到首頁容器
+const badgeList = document.getElementById("badgeList");
 
-  badges.forEach(badge => {
-    const card = document.createElement("div");
-    card.className =
-      "badge-card card shadow-sm p-3 mb-3 " +
-      (badge.unlocked ? "border-success unlocked" : "border-secondary locked");
+// 渲染任務卡片
+tasks.forEach((task, index) => {
+  const card = document.createElement("div");
+  card.className = "task-card";
+  card.style.animationDelay = `${0.1 + index * 0.1}s`;
 
-    card.innerHTML = `
-      <div class="d-flex align-items-center">
-        <div class="badge-icon me-3">
-          ${badge.unlocked ? "🏅" : "🔒"}
-        </div>
+  const completed = completedBadges.includes(task.badge);
 
-        <div>
-          <h5 class="card-title mb-1">${badge.name}</h5>
-          <p class="card-text small text-muted">${badge.desc}</p>
-        </div>
-      </div>
-    `;
-
-    badgeList.appendChild(card);
-  });
-}
-
-
-// 🌟 加入閃爍、縮放、hover 動畫
-document.addEventListener("DOMContentLoaded", () => {
-  const style = document.createElement("style");
-  style.innerHTML = `
-    
-    /* 卡片出現動畫 */
-    .badge-card {
-      animation: popIn 0.5s ease forwards;
-      transform-origin: center;
-      cursor: pointer;
-      border-radius: 12px;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0.6); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* 已解鎖：發亮 */
-    .badge-card.unlocked {
-      animation: popIn 0.5s ease, shine 2s infinite;
-    }
-
-    @keyframes shine {
-      0% { box-shadow: 0 0 5px rgba(0,255,100,0.4); }
-      50% { box-shadow: 0 0 15px rgba(0,255,100,0.7); }
-      100% { box-shadow: 0 0 5px rgba(0,255,100,0.4); }
-    }
-
-    /* 滑過時跳一下 */
-    .badge-card:hover {
-      transform: scale(1.03);
-      transition: 0.2s;
-    }
-
-    /* 未解鎖：灰色 */
-    .badge-card.locked {
-      filter: grayscale(1);
-      opacity: 0.6;
-    }
-
-    .badge-icon {
-      font-size: 2.5rem;
-    }
+  card.innerHTML = `
+    <img src="${task.img}">
+    <div class="task-info">
+      <h2>${task.name} ${completed ? "✅" : ""}</h2>
+      <div class="task-desc">${task.desc}</div>
+      <a class="task-btn" href="${task.link}">開始任務</a>
+    </div>
   `;
-  document.head.appendChild(style);
+  badgeList.appendChild(card);
 });
-
