@@ -9,7 +9,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
   <style>
-/* 🎄 聖誕橫幅 */
+
+/* 🎄 聖誕橫幅樣式 */
 #christmasBanner {
   background: linear-gradient(90deg, #1e7e34, #198754);
   color: white;
@@ -19,44 +20,52 @@
   letter-spacing: 0.5px;
 }
 
-
-/* 🎄 標題小點綴 */
-h2::after,
-h3::after {
-  content: " 🎄";
-  font-size: 0.9em;
-}
-    /* ❄️ 雪花容器 */
+/* ❄️ 雪花容器：讓它浮在網頁最上層 */
 #snow-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* 不影響點擊 */
+  pointer-events: none; /* 讓雪花不影響點擊按鈕 */
   overflow: hidden;
   z-index: 9999;
 }
 
-/* ❄️ 單顆雪花 */
+/* ❄️ 雪花本體 */
 .snowflake {
   position: absolute;
-  top: -10px;
+  top: -20px;
   color: white;
-  font-size: 14px;
-  opacity: 0.8;
-  animation-name: fall;
+  user-select: none;
+  animation-name: fallAndSway; /* 套用下方的動畫 */
   animation-timing-function: linear;
+  animation-iteration-count: infinite; /* 無限循環 */
 }
 
-/* ❄️ 下落動畫 */
-@keyframes fall {
+/* ❄️ 核心動畫：下落 + 左右晃動 */
+@keyframes fallAndSway {
   0% {
-    transform: translateY(0) translateX(0);
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(25vh) translateX(20px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(50vh) translateX(-20px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(75vh) translateX(20px) rotate(270deg);
   }
   100% {
-    transform: translateY(110vh) translateX(40px);
+    transform: translateY(105vh) translateX(0) rotate(360deg);
   }
+}
+    /* 🎄 標題小點綴 */
+h2::after,
+h3::after {
+  content: " 🎄";
+  font-size: 0.9em;
 }
 </style>
 
