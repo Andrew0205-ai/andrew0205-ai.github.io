@@ -1,205 +1,92 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<title>任務列表 Tasks</title>
-
+<meta charset="UTF-8">
+<title>🏅 小宏的任務挑戰</title>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(120deg, green, yellow);
-        font-family: "Segoe UI", sans-serif;
-        color: #fff;
-    }
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(120deg, #6a5acd, #ffda6a);
+    padding: 20px;
+  }
+  h1, h2 { text-align: center; }
 
-    /* 回到任務首頁 */
-    .top-link {
-        display: block;
-        margin: 20px auto 10px;
-        width: fit-content;
-        background: rgba(255,255,255,0.25);
-        padding: 10px 18px;
-        border-radius: 12px;
-        color: #fff;
-        font-weight: bold;
-        text-decoration: none;
-        backdrop-filter: blur(6px);
-        transition: 0.2s;
-    }
-    .top-link:hover {
-        background: rgba(255,255,255,0.4);
-    }
+  .card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 15px auto;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.2);
+  }
 
-    h1 {
-        text-align: center;
-        margin-top: 5px;
-        font-size: 32px;
-        letter-spacing: 1px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
+  .badge {
+    background: #eee;
+    padding: 8px;
+    margin: 6px;
+    border-radius: 8px;
+    display: inline-block;
+  }
 
-    /* 玩法介紹 */
-    .how-to-play {
-        background: rgba(255,255,255,0.15);
-        width: 90%;
-        margin: 10px auto 25px;
-        padding: 15px 20px;
-        border-radius: 16px;
-        line-height: 1.7;
-        font-size: 16px;
-        backdrop-filter: blur(5px);
-    }
-
-    /* 任務卡片列表 */
-    .task-list {
-        width: 90%;
-        margin: auto;
-    }
-
-    .task-card {
-        display: flex;
-        background: #fff;
-        color: #333;
-        padding: 15px;
-        border-radius: 16px;
-        margin-bottom: 22px;
-        align-items: center;
-        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-        transform: translateX(-40px);
-        opacity: 0;
-        animation: slideIn 0.6s forwards;
-    }
-
-    .task-card:nth-child(1){ animation-delay: 0.1s; }
-    .task-card:nth-child(2){ animation-delay: 0.2s; }
-    .task-card:nth-child(3){ animation-delay: 0.3s; }
-    .task-card:nth-child(4){ animation-delay: 0.4s; }
-
-    @keyframes slideIn {
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    /* 任務預覽圖 */
-    .task-preview {
-        width: 110px;
-        height: 110px;
-        border-radius: 12px;
-        object-fit: cover;
-        margin-right: 15px;
-        border: 3px solid #dcdcff;
-    }
-
-    /* 任務內容 */
-    .task-info {
-        flex: 1;
-    }
-
-    .task-info h2 {
-        margin: 0;
-        font-size: 20px;
-        color: #444;
-    }
-
-    .task-desc {
-        margin: 8px 0;
-        font-size: 14px;
-        color: #555;
-        line-height: 1.6;
-    }
-
-   
-
-    /* 任務連結按鈕 */
-    .task-btn {
-        margin-top: 10px;
-        display: inline-block;
-        background: #6a4dff;
-        color: #fff;
-        padding: 8px 15px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-size: 14px;
-    }
-    .task-btn:hover {
-        background: #5538e6;
-    }
+  a {
+    display: inline-block;
+    margin-top: 10px;
+    background: #6a4dff;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
 </style>
 </head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3NGHCWH7TP');
-</script>
 <body>
 
-<a class="top-link" href="/">← 回到首頁</a>
+<h1>🏅 小宏的任務挑戰</h1>
 
-<h1>任務列表 Tasks</h1>
+<h2>📋 任務列表</h2>
+<div id="taskList"></div>
 
-<!-- 玩法介紹 -->
-<div class="how-to-play">
-    ⭐ 點入任務後依照指示完成<br>
-    ⭐ 每個任務會送你一個「專屬徽章」<br>
-    ⭐ 徽章會自動儲存，下次回來還會存在<br>
-    ⭐ 任務每天都可以重新挑戰！
-</div>
+<h2>🎖️ 已獲得徽章</h2>
+<div id="badgeWall" style="text-align:center;"></div>
 
-<div class="task-list">
+<script>
+  const tasks = [
+    { title: "海中尋船", desc: "在海面上找出神秘的小船", link: "task.html", badge: "海中尋船徽章" },
+    { title: "海底寶藏", desc: "在深海中找到寶箱", link: "treasure.html", badge: "海底寶藏徽章" },
+    { title: "天空尋星", desc: "點擊天空中的星星", link: "star.html", badge: "天空尋星徽章" },
+    { title: "星座探索", desc: "找出指定星座", link: "xinzou.html", badge: "星座探索徽章" }
+  ];
 
-    <!-- 任務 1 -->
-    <div class="task-card">
-        <img class="task-preview" src="images/task1.png">
-        <div class="task-info">
-            <h2>海中尋船</h2>
-            <div class="task-desc">在海面上找出那艘神秘的小船，點擊即可完成任務。</div>
-            <a class="task-btn" href="task.html">開始任務</a>
-        </div>
-    </div>
+  const earned = JSON.parse(localStorage.getItem("badges") || "[]");
 
-    <!-- 任務 2 -->
-    <div class="task-card">
-        <img class="task-preview" src="images/task2.png">
-        <div class="task-info">
-            <h2>海底寶藏</h2>
-            <div class="task-desc">在深海裡尋找閃亮的寶箱，找到就能拿到罕見徽章！</div>
-            <a class="task-btn" href="treasure.html">開始任務</a>
-        </div>
-    </div>
+  const taskList = document.getElementById("taskList");
+  const badgeWall = document.getElementById("badgeWall");
 
-    <!-- 任務 3 -->
-    <div class="task-card">
-        <img class="task-preview" src="images/task3.png">
-        <div class="task-info">
-            <h2>天空尋星任務</h2>
-            <div class="task-desc">點擊天空中的星星收集徽章！</div>
-            <a class="task-btn" href="star.html">開始任務</a>
-        </div>
-    </div>
+  // 任務列表
+  tasks.forEach(t => {
+    const done = earned.includes(t.badge);
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <strong>${t.title} ${done ? "✅" : ""}</strong>
+      <p>${t.desc}</p>
+      <a href="${t.link}">開始任務</a>
+    `;
+    taskList.appendChild(div);
+  });
 
-    <!-- 任務 4 -->
-    <div class="task-card">
-        <img class="task-preview" src="task4.png">
-        <div class="task-info">
-            <h2>星座探索任務</h2>
-            <div class="task-desc">在夜空中找出指定星座，點擊即可獲得專屬星座徽章！</div>
-            <a class="task-btn" href="xinzou.html">開始任務</a>
-        </div>
-    </div>
-
-</div>
-
-</body>
-</html>
-
-</div>
+  // 徽章牆
+  if (earned.length === 0) {
+    badgeWall.innerHTML = "目前還沒有徽章";
+  } else {
+    earned.forEach(b => {
+      const span = document.createElement("span");
+      span.className = "badge";
+      span.textContent = "🏅 " + b;
+      badgeWall.appendChild(span);
+    });
+  }
+</script>
 
 </body>
 </html>
