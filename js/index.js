@@ -15,7 +15,7 @@ let currentUser = null
 
 // 管理員 UID（一定要是真實 UID）
 const ADMIN_UIDS = [
-  "PUT_REAL_ADMIN_UID_HERE"
+  "mKU5cngfmNXyXupfM9XAc8MqgNU2"
 ]
 
 // =======================
