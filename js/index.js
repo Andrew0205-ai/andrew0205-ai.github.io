@@ -13,7 +13,7 @@ const auth = firebase.auth()
 const db = firebase.firestore()
 let currentUser = null
 
-// 管理員 UID（一定要是真實 UID）
+// 管理員 UID
 const ADMIN_UIDS = [
   "mKU5cngfmNXyXupfM9XAc8MqgNU2"
 ]
@@ -113,7 +113,7 @@ async function handleImageUpload() {
 
   const form = new FormData()
   form.append("file", file)
-  form.append("upload_preset", "guest_upload")
+  form.append("upload_preset", "guest-upload")
 
   const res = await fetch(
     "https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload",
