@@ -4,73 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>小宏的部落格 | 音樂、程式與生活探索</title>
-
-  <!-- Bootstrap -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
+  
   <style>
+    /* 🎄 聖誕橫幅樣式 */
+    #christmasBanner {
+      background: linear-gradient(90deg, #1e7e34, #198754);
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
 
-/* 🎄 聖誕橫幅樣式 */
-#christmasBanner {
-  background: linear-gradient(90deg, #1e7e34, #198754);
-  color: white;
-  text-align: center;
-  padding: 8px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
+    /* ❄️ 雪花容器 */
+    #snow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
 
-/* ❄️ 雪花容器：讓它浮在網頁最上層 */
-#snow-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* 讓雪花不影響點擊按鈕 */
-  overflow: hidden;
-  z-index: 9999;
-}
+    /* ❄️ 雪花本體 */
+    .snowflake {
+      position: absolute;
+      top: -20px;
+      color: white;
+      user-select: none;
+      animation-name: fallAndSway;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
 
-/* ❄️ 雪花本體 */
-.snowflake {
-  position: absolute;
-  top: -20px;
-  color: white;
-  user-select: none;
-  animation-name: fallAndSway; /* 套用下方的動畫 */
-  animation-timing-function: linear;
-  animation-iteration-count: infinite; /* 無限循環 */
-}
+    @keyframes fallAndSway {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); }
+      25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
+      50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
+      75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
+      100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
+    }
 
-/* ❄️ 核心動畫：下落 + 左右晃動 */
-@keyframes fallAndSway {
-  0% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(25vh) translateX(20px) rotate(90deg);
-  }
-  50% {
-    transform: translateY(50vh) translateX(-20px) rotate(180deg);
-  }
-  75% {
-    transform: translateY(75vh) translateX(20px) rotate(270deg);
-  }
-  100% {
-    transform: translateY(105vh) translateX(0) rotate(360deg);
-  }
-}
     /* 🎄 標題小點綴 */
-h2::after,
-h3::after {
-  content: " 🎄";
-  font-size: 0.9em;
-}
-</style>
+    h2::after, h3::after {
+      content: " 🎄";
+      font-size: 0.9em;
+    }
 
+    /* ✈️ 新加坡區塊特效 */
+    .travel-card {
+      transition: transform 0.3s ease;
+      border-radius: 20px !important;
+    }
+    .travel-card:hover {
+      transform: scale(1.01);
+    }
+    .travel-img {
+      filter: brightness(0.6);
+      height: 350px;
+      object-fit: cover;
+    }
+  </style>
 
-  <!-- Google Tag -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -78,222 +78,160 @@ h3::after {
     gtag('js', new Date());
     gtag('config', 'G-3NGHCWH7TP');
   </script>
-
-  <!-- Markdown & DOMPurify -->
+  
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 </head>
 <body>
-
   <div id="snow-container"></div>
 
-
-<!-- 🔵 導覽列 -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="index.html">小宏的部落格</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navMenu">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="#contact-section">聯絡我</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="name.html" target="_blank">🪪 電子名片</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-            我的遊戲 ID
-          </a>
-          <ul class="dropdown-menu">
-            <li><h6 class="dropdown-header">遊戲名稱</h6></li>
-            <li><a class="dropdown-item" href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a></li>
-
-            <li><h6 class="dropdown-header">玩家名稱</h6></li>
-            <li><span class="dropdown-item-text">小宏鎮</span></li>
-
-            <li><h6 class="dropdown-header">遊戲 ID</h6></li>
-            <li class="px-3 pb-2">
-              <p class="mb-1 fw-bold">ID：<span id="gameID">K3Q92B</span></p>
-              <button onclick="copyGameID()" class="btn btn-success btn-sm">複製 ID</button>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-
-<!-- 跑馬燈 -->
-<div class="marquee-wrapper">
-  <div class="marquee" id="marquee">
-    <span id="marqueeText"></span>
-  </div>
-</div>
-
-
-
-  <div id="christmasBanner">
-  🎄 聖誕快樂！願這個季節充滿平安與喜樂 ✨
-</div>
-
-
-<div class="container">
-  <!-- ⭐ 關於我 -->
-  <section id="about-section" class="mb-4">
-    <h2 class="mb-3">關於我</h2>
-    <div class="row align-items-start g-3">
-      <div class="col-md-7">
-        <span id="typing-text"></span><span class="cursor" id="cursor"></span>
-      </div>
-      <div class="col-md-5 text-center">
-        <img src="images/andrew.png"
-             id="avatar"
-             class="img-fluid rounded shadow-sm mx-auto d-block"
-             alt="頭像">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3 shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">小宏的部落格</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#contact-section">聯絡我</a></li>
+          <li class="nav-item"><a class="nav-link" href="name.html" target="_blank">🪪 電子名片</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">我的遊戲 ID</a>
+            <ul class="dropdown-menu">
+              <li><h6 class="dropdown-header">遊戲名稱</h6></li>
+              <li><a class="dropdown-item" href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a></li>
+              <li><h6 class="dropdown-header">玩家名稱</h6></li>
+              <li><span class="dropdown-item-text">小宏鎮</span></li>
+              <li><h6 class="dropdown-header">遊戲 ID</h6></li>
+              <li class="px-3 pb-2">
+                <p class="mb-1 fw-bold">ID：<span id="gameID">K3Q92B</span></p>
+                <button onclick="copyGameID()" class="btn btn-success btn-sm">複製 ID</button>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
-  </section>
-<section id="featured-posts" class="mb-4">
-  <h2 class="mb-3">推薦文章</h2>
+  </nav>
 
-  <div class="card" style="width: 25rem;">
-    <div class="card-body">
-      <h5 class="card-title">🎹 鋼琴演奏！</h5>
-      <p class="card-text">我花了一個月練鋼琴，終於練好了！</p>
-      <a href="https://andrew0205blogs.blogspot.com/2025/12/blog-post.html?m=1"
-         class="btn btn-primary">
-        閱讀完整內容
-      </a>
+  <div class="marquee-wrapper">
+    <div class="marquee" id="marquee">
+      <span id="marqueeText"></span>
     </div>
   </div>
-</section>
 
+  <div id="christmasBanner">🎄 聖誕快樂！願這個季節充滿平安與喜樂 ✨</div>
 
-<section id="comment-section">
-
-    <h3 class="mb-3">💬 留言板</h3>
-
-    <!-- 登入區 -->
-    <div id="loginArea" class="mb-3">
-      <button class="btn btn-danger me-2" onclick="googleLogin()">Google 登入</button>
-      <button class="btn btn-outline-secondary" onclick="emailLogin()">Email 登入</button>
-    </div>
-
-    <!-- 使用者資訊 -->
-    <div id="userArea" class="d-none mb-3 align-items-center">
-      <img id="userAvatar"
-           width="36"
-           height="36"
-           class="rounded-circle me-2"
-           style="cursor:pointer"
-           onclick="changeAvatar()">
-
-      <strong id="userName"
-              style="cursor:pointer"
-              onclick="changeNickname()"></strong>
-
-      <button class="btn btn-sm btn-outline-secondary ms-2" onclick="logout()">登出</button>
-    </div>
-
-    <!-- 輸入留言 -->
-    <div id="commentArea" class="d-none mb-3">
-      <textarea id="commentInput"
-        class="form-control mb-1"
-        rows="4"
-        maxlength="500"
-        placeholder="支援 Markdown，最多 500 字"></textarea>
-
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="text-muted">
-          <span id="count">0</span> / 500
-        </span>
-
-        <div>
-          <button class="btn btn-sm btn-outline-primary me-1" onclick="uploadImage()">📎 圖片</button>
-          <button class="btn btn-primary" onclick="postComment()">送出</button>
+  <div class="container mt-5">
+    <section id="about-section" class="mb-5">
+      <h2 class="mb-3">關於我</h2>
+      <div class="row align-items-start g-3">
+        <div class="col-md-7">
+          <span id="typing-text"></span><span class="cursor" id="cursor"></span>
+        </div>
+        <div class="col-md-5 text-center">
+          <img src="images/andrew.png" id="avatar" class="img-fluid rounded shadow-sm mx-auto d-block" alt="頭像">
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- 留言列表 -->
-    <div id="comments"></div>
+    <section id="travel-announcement" class="mb-5">
+      <h2 class="mb-4">最新動態</h2>
+      <div class="card bg-dark text-white border-0 shadow-lg overflow-hidden travel-card">
+        <img src="https://media.istockphoto.com/id/465901948/photo/singapore-skyline.jpg?s=612x612&w=0&k=20&c=IZ0DPDqY_Qh7F0R-nl9ZKT0YaGnjqABInY0shyC-8Go=" 
+             class="card-img travel-img" alt="Singapore View">
+        <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
+          <h3 class="card-title fw-bold display-6">寒假出發：新加坡城市探索</h3>
+          <p class="card-text fs-5">「從台中的街頭，到獅城的盛景。這是我第一次在網站宣告：我要出國旅行啦！」</p>
+          <p class="card-text">
+            <span class="badge rounded-pill bg-warning text-dark px-3 py-2">📌 預計撰寫：旅遊日記、景點筆記、美食探索</span>
+          </p>
+          <div class="mt-3">
+             <a href="#contact-section" class="btn btn-outline-light fw-bold px-4">跟我分享新加坡攻略</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- 載入更多 -->
-    <button class="btn btn-outline-secondary w-100 mt-3" onclick="loadMore()">
-      載入更多
-    </button>
+    <section id="featured-posts" class="mb-5">
+      <h2 class="mb-3">推薦文章</h2>
+      <div class="card shadow-sm" style="max-width: 400px;">
+        <div class="card-body">
+          <h5 class="card-title">🎹 鋼琴演奏！</h5>
+          <p class="card-text">我花了一個月練鋼琴，終於練好了！</p>
+          <a href="https://andrew0205blogs.blogspot.com/2025/12/blog-post.html?m=1" class="btn btn-success">
+            閱讀完整內容
+          </a>
+        </div>
+      </div>
+    </section>
 
-  </section>
-</div>
+    <section id="comment-section" class="mb-5">
+      <h3 class="mb-3">💬 留言板</h3>
+      <div id="loginArea" class="mb-3">
+        <button class="btn btn-danger me-2" onclick="googleLogin()">Google 登入</button>
+        <button class="btn btn-outline-secondary" onclick="emailLogin()">Email 登入</button>
+      </div>
+      <div id="userArea" class="d-none mb-3 align-items-center">
+        <img id="userAvatar" width="36" height="36" class="rounded-circle me-2" style="cursor:pointer" onclick="changeAvatar()">
+        <strong id="userName" style="cursor:pointer" onclick="changeNickname()"></strong>
+        <button class="btn btn-sm btn-outline-secondary ms-2" onclick="logout()">登出</button>
+      </div>
+      <div id="commentArea" class="d-none mb-3">
+        <textarea id="commentInput" class="form-control mb-1" rows="4" maxlength="500" placeholder="支援 Markdown，最多 500 字"></textarea>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted"><span id="count">0</span> / 500</span>
+          <div>
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="uploadImage()">📎 圖片</button>
+            <button class="btn btn-primary" onclick="postComment()">送出</button>
+          </div>
+        </div>
+      </div>
+      <div id="comments"></div>
+      <button class="btn btn-outline-secondary w-100 mt-3" onclick="loadMore()">載入更多</button>
+    </section>
+  </div>
 
-<!-- ======================= -->
-<!-- 編輯留言 Modal -->
-<!-- ======================= -->
-<div class="modal fade" id="editModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content p-3">
-      <h5 class="mb-2">✏️ 編輯留言</h5>
-      <textarea id="editInput" class="form-control mb-3" rows="4"></textarea>
-      <button class="btn btn-success w-100" onclick="saveEdit()">儲存修改</button>
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content p-3">
+        <h5 class="mb-2">✏️ 編輯留言</h5>
+        <textarea id="editInput" class="form-control mb-3" rows="4"></textarea>
+        <button class="btn btn-success w-100" onclick="saveEdit()">儲存修改</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ======================= -->
-<!-- 隱藏的圖片 input（⚠️ 必須存在） -->
-<!-- ======================= -->
-<input type="file" id="imageInput" accept="image/*" hidden>
+  <input type="file" id="imageInput" accept="image/*" hidden>
 
+  <div class="container">
+    <section id="contact-section" class="mb-4">
+      <h3>📬 聯絡我</h3>
+      <p>電子郵件：<a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a></p>
+    </section>
+    
+    <section id="update-section" class="text-muted mb-4">
+      🕓 最後更新日期：<span id="lastUpdate"></span>
+    </section>
+  </div>
 
-  <!-- ⭐ 聯絡我 -->
-  <section id="contact-section" class="mb-4">
-    <h3>📬 聯絡我</h3>
-    <p>
-      電子郵件：
-      <a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a>
-    </p>
-  </section>
+  <button id="backToTop" class="btn btn-success position-fixed bottom-0 end-0 m-3">⬆️</button>
+  <footer class="bg-success text-white text-center py-3 mt-4">
+    © 2025 小宏工作室 · Merry Christmas 🎄
+  </footer>
 
-  
+  <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
 
-  <!-- 更新 -->
-  <section id="update-section" class="text-muted mb-4">
-    🕓 最後更新日期：<span id="lastUpdate"></span>
-  </section>
-
-
-<!-- 返回頂部 -->
-<button id="backToTop" class="btn btn-success position-fixed bottom-0 end-0 m-3">⬆️</button>
-
-<footer class="bg-success text-white text-center py-2 mt-4">
-  © 2025 小宏工作室 · Merry Christmas 🎄
-</footer>
-
-<noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
-
-<!-- Firebase v8 -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-<!-- Firebase 設定 -->
-<script src="./js/firebase-config.js"></script>
-
-<!-- 主程式 -->
-<script src="./js/index.js"></script>
-
-<!-- 其他 JS -->
-<script src="js/badge-index.js"></script>
-<script src="js/type.js"></script>
-<script src="js/lan.js"></script>
-<script src="js/other.js"></script>
-
-<!-- Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="./js/firebase-config.js"></script>
+  <script src="./js/index.js"></script>
+  <script src="js/badge-index.js"></script>
+  <script src="js/type.js"></script>
+  <script src="js/lan.js"></script>
+  <script src="js/other.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
