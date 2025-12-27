@@ -50,11 +50,9 @@
       100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
     }
 
-    /* 🎄 標題小點綴 */
-    h2::after, h3::after {
-      content: " 🎄";
-      font-size: 0.9em;
-    }
+h2::after, h3::after {
+  content: var(--after-icon);
+}
 
     /* ✈️ 新加坡區塊特效 */
     .travel-card {
