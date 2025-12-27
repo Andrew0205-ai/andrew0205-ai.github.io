@@ -252,7 +252,7 @@ body {
 }
 .marquee-wrapper {
   overflow: hidden;
-
+  background: #1e7e34;
   color: white;
   font-weight: 500;
   padding: 8px;
@@ -261,13 +261,15 @@ body {
 .marquee span {
   display: inline-block;
   white-space: nowrap;
-  animation: scroll 10s linear infinite;
+  animation: scroll 8s linear infinite;
 }
 
 @keyframes scroll {
-  0% { transform: translateX(100%); }
+  0%   { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
+
+
 
 @keyframes slideUp {
   from { transform: translateY(12px); }
