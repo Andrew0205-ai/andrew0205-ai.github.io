@@ -253,7 +253,7 @@ body {
 .marquee-wrapper {
   overflow: hidden;
   background: #1e7e34;
-  color: white;
+  color: black;
   font-weight: 500;
   padding: 8px;
 }
