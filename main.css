@@ -275,3 +275,70 @@ body {
   from { transform: translateY(12px); }
   to { transform: translateY(0); }
 }
+
+/* 🎄 聖誕橫幅樣式 */
+    #christmasBanner {
+      background: linear-gradient(90deg, #1e7e34, #198754);
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* ❄️ 雪花容器 */
+    #snow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    /* ❄️ 雪花本體 */
+    .snowflake {
+      position: absolute;
+      top: -20px;
+      color: white;
+      user-select: none;
+      animation-name: fallAndSway;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fallAndSway {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); }
+      25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
+      50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
+      75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
+      100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
+    }
+
+h2::after, h3::after {
+  content: var(--after-icon);
+}
+
+    /* ✈️ 新加坡區塊特效 */
+    .travel-card {
+      transition: transform 0.3s ease;
+      border-radius: 20px !important;
+    }
+    .travel-card:hover {
+      transform: scale(1.01);
+    }
+    .travel-img {
+      filter: brightness(0.6);
+      height: 350px;
+      object-fit: cover;
+    }
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
