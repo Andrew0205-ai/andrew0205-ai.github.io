@@ -8,67 +8,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
   
-  <style>
-    /* 🎄 聖誕橫幅樣式 */
-    #christmasBanner {
-      background: linear-gradient(90deg, #1e7e34, #198754);
-      color: white;
-      text-align: center;
-      padding: 8px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-
-    /* ❄️ 雪花容器 */
-    #snow-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 9999;
-    }
-
-    /* ❄️ 雪花本體 */
-    .snowflake {
-      position: absolute;
-      top: -20px;
-      color: white;
-      user-select: none;
-      animation-name: fallAndSway;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-    }
-
-    @keyframes fallAndSway {
-      0% { transform: translateY(0) translateX(0) rotate(0deg); }
-      25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
-      50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
-      75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
-      100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
-    }
-
-h2::after, h3::after {
-  content: var(--after-icon);
-}
-
-    /* ✈️ 新加坡區塊特效 */
-    .travel-card {
-      transition: transform 0.3s ease;
-      border-radius: 20px !important;
-    }
-    .travel-card:hover {
-      transform: scale(1.01);
-    }
-    .travel-img {
-      filter: brightness(0.6);
-      height: 350px;
-      object-fit: cover;
-    }
-  </style>
-
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -181,7 +120,7 @@ h2::after, h3::after {
         <div class="d-flex justify-content-between align-items-center mb-2">
           <span class="text-muted"><span id="count">0</span> / 500</span>
           <div>
-            <button class="btn btn-sm btn-outline-primary me-1" onclick="uploadImage()">📎 圖片</button>
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="uploadImage()"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add_photo_alternate" />圖片</button>
             <button class="btn btn-primary" onclick="postComment()">送出</button>
           </div>
         </div>
