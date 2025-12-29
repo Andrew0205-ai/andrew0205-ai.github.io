@@ -107,13 +107,13 @@ if (month === 12) {
 // ---------- 1/01 ～ 1/05 ----------
 else if (month === 1 && day <= 5) {
   if (banner) banner.textContent = "🎉 2026 新年快樂！";
-  if (footer) footer.textContent = "Happy New Year 2026 🎆";
+  if (footer) footer.textContent = "© 2025 小宏工作室 ·Happy New Year 2026 🎆";
   if (snowContainer) snowContainer.innerHTML = "";
 }
 
 // ---------- 1/06 ～ 2 月底 ----------
 else if (month === 1 || month === 2) {
   if (banner) banner.textContent = "🎉 2026 新年快樂！";
-  if (footer) footer.textContent = "Happy New Year 2026 🎆";
+  if (footer) footer.textContent = "© 2025 小宏工作室 ·Happy New Year 2026 🎆";
   showSnowflakes(20);
 }
