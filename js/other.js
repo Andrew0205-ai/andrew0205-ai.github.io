@@ -66,54 +66,38 @@ if (marqueeText) {
   setInterval(showNextMarquee, 8000);
 }
 
-
-// =======================
-// 節慶判斷（聖誕 / 新年）
-// =======================
+// 節慶自動切換邏輯
 const today = new Date();
+const year = today.getFullYear(); // 2026
 const month = today.getMonth() + 1;
 const day = today.getDate();
 
 const banner = document.getElementById("bannerText");
 const footer = document.getElementById("footerText");
-const snowContainer = document.getElementById("snow-container");
+const bannerContainer = document.getElementById("christmasBanner"); // 外層容器
 
-function showSnowflakes(count = 30) {
-  if (!snowContainer) return;
-  snowContainer.innerHTML = "";
-
-  for (let i = 0; i < count; i++) {
-    const snow = document.createElement("div");
-    snow.className = "snowflake";
-    snow.textContent = "❄️";
-
-    snow.style.left = Math.random() * 100 + "vw";
-    snow.style.fontSize = 10 + Math.random() * 12 + "px";
-    snow.style.opacity = Math.random();
-    snow.style.animationDuration = 8 + Math.random() * 7 + "s";
-    snow.style.animationDelay = Math.random() * 5 + "s";
-
-    snowContainer.appendChild(snow);
+function updateFestival() {
+  if (month === 12) {
+    // 12月聖誕季
+    if (banner) banner.textContent = "🎄 聖誕快樂！願這個季節充滿平安與喜樂 ✨";
+    if (footer) footer.textContent = `© ${year} 小宏工作室 · Merry Christmas 🎄`;
+    if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #1e7e34, #198754)";
+    showSnowflakes(30);
+  } 
+  else if (month === 1 || month === 2) {
+    // 1-2月新年季 
+    if (banner) banner.textContent = `🎉 ${year} 新年快樂！迎接美好的新開始`;
+    if (footer) footer.textContent = `© ${year} 小宏工作室 · Happy New Year ${year} 🎆`;
+    if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #d4a017, #b8860b)"; // 新年改用金色系
+    
+    // 1/1~1/5 休息不下雪，之後才下
+    if (month === 1 && day <= 5) {
+       if (snowContainer) snowContainer.innerHTML = "";
+    } else {
+       showSnowflakes(20);
+    }
   }
 }
 
-// ---------- 12/01 ～ 12/31 ----------
-if (month === 12) {
-  if (banner) banner.textContent = "🎄 聖誕快樂！願這個季節充滿平安與喜樂 ✨";
-  if (footer) footer.textContent = "© 2025 小宏工作室 · Merry Christmas 🎄";
-  showSnowflakes();
-}
-
-// ---------- 1/01 ～ 1/05 ----------
-else if (month === 1 && day <= 5) {
-  if (banner) banner.textContent = "🎉 2026 新年快樂！";
-  if (footer) footer.textContent = "© 2026 小宏工作室 ·Happy New Year 2026 🎆";
-  if (snowContainer) snowContainer.innerHTML = "";
-}
-
-// ---------- 1/06 ～ 2 月底 ----------
-else if (month === 1 || month === 2) {
-  if (banner) banner.textContent = "🎉 2026 新年快樂！";
-  if (footer) footer.textContent = "© 2026 小宏工作室 ·Happy New Year 2026 🎆";
-  showSnowflakes(20);
-}
+// 執行判斷
+updateFestival();
