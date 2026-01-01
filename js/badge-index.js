@@ -14,6 +14,6 @@
 
     if (count1 === 3) {
       clearTimeout(timer);
-      window.location.href = "tasks.html";
+      window.location.href = "task/tasks.html";
     }
   });
