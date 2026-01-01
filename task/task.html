@@ -73,7 +73,21 @@
     border-radius:6px;
     cursor:pointer;
   }
-  #custom-alert button:hover { background:#6a1fbf; }
+  #custom-alert button:hover { background:#6a1fbf;}
+      #success button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #8a2be2;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #success button:hover {
+      background: #6c1fc7;
+    }
+
 </style>
 
 </head>
@@ -94,7 +108,7 @@
 <!-- 成功訊息 -->
 <div id="success">
   ✅ 恭喜你找到船！你獲得了「海中尋船徽章」
-   <button id="custom-alert button" onclick="javascript:window.location.href='tasks.html'">回任務列表</button>
+   <button ionclick="javascript:window.location.href='tasks.html'">回任務列表</button>
 </div>     
 
 
@@ -146,6 +160,7 @@ setInterval(() => {
 
 </body>
 </html>
+
 
 
 
