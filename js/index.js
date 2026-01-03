@@ -161,14 +161,46 @@ function listenComments() {
     })
 }
 
-// =======================
-// 外部連結處理
-// =======================
-// 安全連結白名單（不 redirect）
+// 安全連結白名單
 const SAFE_DOMAINS = [
-  location.hostname,                  // 目前網站
-  "andrew0205blogs.blogspot.com"       // 日記
+  location.hostname,                  // 你自己網站
+  "andrew0205blogs.blogspot.com"       // 你的日記
 ]
+
+function processCommentLinks(container) {
+  const links = container.querySelectorAll("a")
+
+  links.forEach(a => {
+    const href = a.getAttribute("href")
+    if (!href) return
+
+    try {
+      const url = new URL(href, location.origin)
+
+      // 危險協定封鎖
+      if (!["http:", "https:"].includes(url.protocol)) {
+        a.removeAttribute("href")
+        a.textContent += "（不安全連結）"
+        return
+      }
+
+      // 白名單連結 → 直接開
+      if (SAFE_DOMAINS.includes(url.hostname)) {
+        a.rel = "noopener noreferrer"
+        return
+      }
+
+      // 外部連結 → redirect
+      a.href = `/redirect.html?url=${encodeURIComponent(url.href)}`
+      a.rel = "noopener noreferrer"
+      a.target = "_self"
+
+    } catch {
+      a.removeAttribute("href")
+      a.textContent += "（連結格式錯誤）"
+    }
+  })
+}
 
 
 
