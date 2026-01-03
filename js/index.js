@@ -99,13 +99,11 @@ async function handleImageUpload() {
   const file = imageInput.files[0]
   if (!file) return
 
-  // 類型限制
   if (!file.type.startsWith("image/")) {
     alert("只能上傳圖片")
     return
   }
 
-  // 大小限制（2MB）
   if (file.size > 2 * 1024 * 1024) {
     alert("圖片不可超過 2MB")
     return
@@ -147,35 +145,54 @@ function postComment() {
 }
 
 // =======================
-// 讀取留言（Lazy Load）
+// 讀取留言
 // =======================
 let lastDoc = null
 const PAGE_SIZE = 10
 
 function listenComments() {
-  let query = db.collection("comments")
-    .orderBy("time", "desc")
-    .limit(PAGE_SIZE)
-
-  query.onSnapshot(snapshot => {
-    comments.innerHTML = ""
-    snapshot.forEach(renderComment)
-    lastDoc = snapshot.docs[snapshot.docs.length - 1]
-  })
-}
-
-function loadMore() {
-  if (!lastDoc) return
-
   db.collection("comments")
     .orderBy("time", "desc")
-    .startAfter(lastDoc)
     .limit(PAGE_SIZE)
-    .get()
-    .then(snapshot => {
+    .onSnapshot(snapshot => {
+      comments.innerHTML = ""
       snapshot.forEach(renderComment)
       lastDoc = snapshot.docs[snapshot.docs.length - 1]
     })
+}
+
+// =======================
+// 外部連結處理（核心）
+// =======================
+function processCommentLinks(container) {
+  const links = container.querySelectorAll("a")
+
+  links.forEach(a => {
+    const href = a.getAttribute("href")
+    if (!href) return
+
+    try {
+      const url = new URL(href, location.origin)
+
+      // 危險協定
+      if (!["http:", "https:"].includes(url.protocol)) {
+        a.removeAttribute("href")
+        a.textContent += "（不安全連結）"
+        return
+      }
+
+      // 站內連結放行
+      if (url.hostname === location.hostname) return
+
+      // 外部連結 → redirect
+      a.href = `/redirect.html?url=${encodeURIComponent(url.href)}`
+      a.rel = "noopener noreferrer"
+      a.target = "_blank"
+
+    } catch {
+      a.removeAttribute("href")
+    }
+  })
 }
 
 // =======================
@@ -200,7 +217,7 @@ function renderComment(doc) {
 
     ${currentUser?.uid === c.uid ? `
       <button class="btn btn-sm btn-outline-primary mt-1"
-        onclick="openEdit('${doc.id}', \`${c.text.replace(/`/g, "\\`")}\`)"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333333"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+        onclick="openEdit('${doc.id}', \`${c.text.replace(/`/g, "\\`")}\`)">
         編輯
       </button>
       <button class="btn btn-sm btn-outline-danger mt-1"
@@ -209,6 +226,9 @@ function renderComment(doc) {
       </button>
     ` : ""}
   `
+
+  const body = div.querySelector(".comment-body")
+  processCommentLinks(body)
 
   comments.appendChild(div)
 }
