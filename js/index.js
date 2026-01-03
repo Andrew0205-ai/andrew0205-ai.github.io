@@ -162,7 +162,7 @@ function listenComments() {
 }
 
 // =======================
-// 外部連結處理（核心）
+// 外部連結處理
 // =======================
 function processCommentLinks(container) {
   const links = container.querySelectorAll("a")
@@ -187,7 +187,6 @@ function processCommentLinks(container) {
       // 外部連結 → redirect
       a.href = `/redirect.html?url=${encodeURIComponent(url.href)}`
       a.rel = "noopener noreferrer"
-      a.target = "_blank"
 
     } catch {
       a.removeAttribute("href")
