@@ -74,7 +74,8 @@ const day = today.getDate();
 
 const banner = document.getElementById("bannerText");
 const footer = document.getElementById("footerText");
-const bannerContainer = document.getElementById("christmasBanner"); // 外層容器
+const bannerContainer = document.getElementById("christmasBanner"); 
+const snowContainer = document.getElementById("snowContainer"); 
 
 function updateFestival() {
   if (month === 12) {
