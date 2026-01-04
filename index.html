@@ -241,6 +241,37 @@ h2::after, h3::after {
     </div>
   </div>
 </div>
+    <div class="modal fade" id="profileModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+      <div class="modal-header">
+        <h5 class="modal-title">更新個人資料</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="mb-3">
+          <img id="modalPreviewImg" src="images/andrew.png" class="rounded-circle img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+        </div>
+        <div class="mb-3">
+          <label class="btn btn-outline-primary btn-sm">
+            選擇新頭像 <input type="file" id="modalFileBtn" hidden accept="image/*">
+          </label>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">顯示名稱</label>
+          <input type="text" id="modalNameInput" class="form-control" placeholder="你想叫什麼名字？">
+        </div>
+        <div id="uploadProgress" class="progress d-none" style="height: 10px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-success" onclick="saveProfileChanges()">儲存更新</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
   <div class="container">
