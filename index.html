@@ -164,28 +164,138 @@ h2::after, h3::after {
       </div>
     </section>
 
-<div id="userArea" class="d-none mb-4 text-center p-3 border rounded bg-light shadow-sm">
-  <div class="position-relative d-inline-block">
-    <img id="userAvatar" src="images/andrew.png" width="80" height="80" 
-         class="rounded-circle mb-2 border cursor-pointer shadow-sm" 
-         onclick="openProfileModal()" title="點擊更換頭像">
-  </div>
-  
-  <h4 class="fw-bold mb-3">
-    <span id="userName">載入中...</span>
-  </h4>
-  
-  <div class="mt-2">
-    <button class="btn btn-sm btn-outline-primary me-2" onclick="openProfileModal()">
-      <i class="bi bi-pencil-square"></i> 編輯個人資料
+<div class="container mt-5">
+  <section id="comment-section" class="mb-5" style="max-width: 800px; margin: auto;">
+    <h3 class="mb-4 text-center">💬 留言板</h3>
+
+    <div id="loginArea" class="card p-4 shadow-sm mb-4 text-center">
+      <p class="text-muted">歡迎來到我的日記網站，請先登入以發表留言</p>
+      <div>
+        <button class="btn btn-danger me-2" onclick="googleLogin()">
+          <i class="bi bi-google"></i> Google 登入
+        </button>
+        <button class="btn btn-outline-secondary" onclick="openEmailModal('login')">
+          <i class="bi bi-envelope"></i> Email 登入
+        </button>
+      </div>
+    </div>
+
+    <div id="userArea" class="d-none mb-4 text-center p-4 border rounded bg-light shadow-sm">
+      <div class="position-relative d-inline-block">
+        <img id="userAvatar" src="images/andrew.png" width="90" height="90" 
+             class="rounded-circle mb-3 border border-3 border-white shadow-sm cursor-pointer" 
+             onclick="openProfileModal()" title="點擊更換頭像">
+      </div>
+      <h4 class="fw-bold mb-3"><span id="userName">載入中...</span></h4>
+      <div class="mt-2">
+        <button class="btn btn-sm btn-outline-primary me-2" onclick="openProfileModal()">
+          <i class="bi bi-pencil-square"></i> 編輯個人資料
+        </button>
+        <button class="btn btn-sm btn-outline-danger" onclick="logout()">
+          <i class="bi bi-box-arrow-right"></i> 登出
+        </button>
+      </div>
+    </div>
+
+    <div id="commentArea" class="d-none card p-3 shadow-sm mb-4">
+      <textarea id="commentInput" class="form-control mb-2" rows="4" maxlength="500" placeholder="支援 Markdown 語法，最多輸入 500 字..."></textarea>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted small"><span id="count">0</span> / 500</span>
+        <div>
+          <button class="btn btn-sm btn-outline-secondary me-1" onclick="uploadImage()">
+            <i class="bi bi-image"></i> 插入圖片
+          </button>
+          <button class="btn btn-primary px-4" onclick="postComment()">送出留言</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="comments" class="mt-4">
+      </div>
+
+    <button id="loadMoreBtn" class="btn btn-outline-secondary w-100 mt-3" onclick="loadComments()">
+      載入更多留言
     </button>
-    <button class="btn btn-sm btn-outline-danger" onclick="logout()">
-      <i class="bi bi-box-arrow-right"></i> 登出
-    </button>
+  </section>
+</div>
+
+<input type="file" id="imageInput" accept="image/*" hidden>
+
+<div class="modal fade" id="profileModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">更新個人資料</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <div class="mb-3">
+          <img id="modalPreviewImg" src="images/andrew.png" class="rounded-circle img-thumbnail shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
+        </div>
+        <div class="mb-4">
+          <label class="btn btn-sm btn-outline-primary">
+            選擇新頭像 <input type="file" id="modalFileBtn" hidden accept="image/*">
+          </label>
+        </div>
+        <div class="text-start">
+          <label class="form-label fw-bold">顯示名稱</label>
+          <input type="text" id="modalNameInput" class="form-control form-control-lg" placeholder="輸入您的暱稱">
+        </div>
+        <div id="uploadProgress" class="progress d-none mt-3" style="height: 8px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-success px-4" onclick="saveProfileChanges()">儲存更新</button>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <h5 class="mb-3 fw-bold">編輯留言內容</h5>
+      <textarea id="editInput" class="form-control mb-3" rows="5"></textarea>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light flex-grow-1" data-bs-dismiss="modal">取消</button>
+        <button class="btn btn-success flex-grow-1" onclick="saveEdit()">確認修改</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="modal fade" id="emailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4 border-0 shadow">
+      <h5 class="mb-4 fw-bold text-center" id="emailModalTitle">Email 登入</h5>
+      <div id="emailError" class="alert alert-danger d-none small"></div>
+      
+      <div class="mb-3">
+        <input id="emailInput" class="form-control" placeholder="電子郵件">
+      </div>
+      <div id="passwordRow" class="mb-3">
+        <input id="passwordInput" type="password" class="form-control" placeholder="密碼">
+      </div>
+      <div id="nameRow" class="mb-3" style="display:none">
+        <input id="nameInput" class="form-control" placeholder="您想使用的暱稱">
+      </div>
+      <div id="avatarRow" class="mb-3" style="display:none">
+        <label class="form-label small text-muted">上傳初始頭像 (選填)</label>
+        <input id="avatarInput" type="file" class="form-control" accept="image/*">
+      </div>
+
+      <button class="btn btn-success w-100 py-2 mb-3" onclick="submitEmailAuth()">送出</button>
+
+      <div class="text-center small">
+        <a href="javascript:void(0)" class="text-decoration-none" onclick="openEmailModal('login')">登入</a> ·
+        <a href="javascript:void(0)" class="text-decoration-none" onclick="openEmailModal('signup')">註冊</a> ·
+        <a href="javascript:void(0)" class="text-decoration-none" onclick="openEmailModal('reset')">忘記密碼</a>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="container">
     <section id="contact-section" class="mb-4">
       <h3>📬 聯絡我</h3>
