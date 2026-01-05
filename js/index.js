@@ -1,7 +1,7 @@
 // =======================
-// index.js V3.0 - 小宏留言板
+// index.js V3.1 - 小宏留言板
 // =======================
-console.log("📢 index.js V3.0 運作中......");
+console.log("📢 index.js V3.1 運作中......");
 
 // -----------------------
 // Firebase 初始化
@@ -11,7 +11,7 @@ const db = firebase.firestore();
 let currentUser = null;
 
 // -----------------------
-// DOM 變數
+// DOM 變數 (包含原本的與新 Modal 的)
 // -----------------------
 const loginArea = document.getElementById("loginArea");
 const userArea = document.getElementById("userArea");
@@ -31,6 +31,14 @@ const passwordInput = document.getElementById("passwordInput");
 const nameInput = document.getElementById("nameInput");
 const avatarInput = document.getElementById("avatarInput");
 const emailError = document.getElementById("emailError");
+
+// --- 新增個人資料 Modal 專用 DOM ---
+const profileModalEl = document.getElementById('profileModal');
+const modalPreviewImg = document.getElementById('modalPreviewImg');
+const modalFileBtn = document.getElementById('modalFileBtn');
+const modalNameInput = document.getElementById('modalNameInput');
+const uploadProgress = document.getElementById('uploadProgress');
+
 let emailMode = "login";
 let editId = null;
 let lastVisible = null;
@@ -44,10 +52,11 @@ function showEmailError(msg) {
   setTimeout(() => emailError.classList.add("d-none"), 4000);
 }
 
-function welcomeAnimation(name) {
+function welcomeAnimation(msg) {
   const toast = document.createElement("div");
   toast.className = "position-fixed top-0 start-50 translate-middle-x mt-3 p-3 bg-success text-white rounded shadow";
-  toast.textContent = `歡迎回來，${name} 👋`;
+  toast.style.zIndex = "9999";
+  toast.textContent = msg;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
@@ -67,7 +76,75 @@ function updateUI() {
 }
 
 // -----------------------
-// Google 登入
+// 更新個人資料 (解決 ReferenceError)
+// -----------------------
+function openProfileModal() {
+  if (!currentUser) return;
+  modalNameInput.value = currentUser.displayName || "";
+  modalPreviewImg.src = currentUser.photoURL || "images/andrew.png";
+  if (uploadProgress) uploadProgress.classList.add("d-none");
+  
+  const modal = new bootstrap.Modal(profileModalEl);
+  modal.show();
+}
+
+// 處理 Modal 內的圖片預覽
+if (modalFileBtn) {
+  modalFileBtn.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => modalPreviewImg.src = event.target.result;
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+// 儲存變更核心邏輯
+async function saveProfileChanges() {
+  const newName = modalNameInput.value.trim();
+  const file = modalFileBtn.files[0];
+  if (!newName) return alert("請輸入名字");
+
+  try {
+    if (uploadProgress) uploadProgress.classList.remove("d-none");
+    let finalPhotoURL = currentUser.photoURL;
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "guest-upload");
+      const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      finalPhotoURL = data.secure_url;
+    }
+
+    await currentUser.updateProfile({ displayName: newName, photoURL: finalPhotoURL });
+
+    const batch = db.batch();
+    const userComments = await db.collection("comments").where("uid", "==", currentUser.uid).get();
+    userComments.forEach(doc => {
+      batch.update(doc.ref, { name: newName, avatar: finalPhotoURL });
+    });
+    await batch.commit();
+
+    bootstrap.Modal.getInstance(profileModalEl).hide();
+    updateUI();
+    loadComments(true);
+    welcomeAnimation("個人資料更新成功！✨");
+  } catch (err) {
+    console.error(err);
+    alert("更新失敗：" + err.message);
+  } finally {
+    if (uploadProgress) uploadProgress.classList.add("d-none");
+  }
+}
+
+// -----------------------
+// 登入與登出
 // -----------------------
 async function googleLogin() {
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -75,38 +152,30 @@ async function googleLogin() {
     const res = await auth.signInWithPopup(provider);
     currentUser = res.user;
     updateUI();
-    welcomeAnimation(currentUser.displayName || "朋友");
+    welcomeAnimation(`歡迎回來，${currentUser.displayName || "朋友"} 👋`);
   } catch (err) {
     console.error(err);
   }
 }
 
+function logout() {
+  auth.signOut();
+  currentUser = null;
+  updateUI();
+}
+
 // -----------------------
-// Email Modal 控制
+// Email Auth
 // -----------------------
 function openEmailModal(mode) {
   emailMode = mode;
   emailModalTitle.textContent = mode === "login" ? "Email 登入" : mode === "signup" ? "註冊新帳號" : "忘記密碼";
-  if (mode === "signup") {
-    nameInput.parentElement.style.display = "block";
-    avatarInput.parentElement.style.display = "block";
-    passwordInput.parentElement.style.display = "block";
-  } else if (mode === "login") {
-    nameInput.parentElement.style.display = "none";
-    avatarInput.parentElement.style.display = "none";
-    passwordInput.parentElement.style.display = "block";
-  } else {
-    nameInput.parentElement.style.display = "none";
-    avatarInput.parentElement.style.display = "none";
-    passwordInput.parentElement.style.display = "none";
-  }
-  const modal = new bootstrap.Modal(emailModalEl);
-  modal.show();
+  nameInput.parentElement.style.display = mode === "signup" ? "block" : "none";
+  avatarInput.parentElement.style.display = mode === "signup" ? "block" : "none";
+  passwordInput.parentElement.style.display = mode === "reset" ? "none" : "block";
+  new bootstrap.Modal(emailModalEl).show();
 }
 
-// -----------------------
-// Email Auth（含 Cloudinary 上傳頭像）
-// -----------------------
 async function submitEmailAuth() {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
@@ -117,111 +186,72 @@ async function submitEmailAuth() {
     if (emailMode === "login") {
       const res = await auth.signInWithEmailAndPassword(email, password);
       currentUser = res.user;
-      bootstrap.Modal.getInstance(emailModalEl).hide();
-      updateUI();
-      welcomeAnimation(currentUser.displayName || "朋友");
     } else if (emailMode === "signup") {
       const res = await auth.createUserWithEmailAndPassword(email, password);
       currentUser = res.user;
-
-      // Cloudinary 上傳
       let avatarURL = "";
       if (avatarFile) {
         const formData = new FormData();
         formData.append("file", avatarFile);
         formData.append("upload_preset", "guest-upload"); 
-        const cloudRes = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
-          method: "POST",
-          body: formData
-        });
+        const cloudRes = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", { method: "POST", body: formData });
         const data = await cloudRes.json();
         avatarURL = data.secure_url;
       }
-
-      await currentUser.updateProfile({
-        displayName: name || "新朋友",
-        photoURL: avatarURL || ""
-      });
-
-      bootstrap.Modal.getInstance(emailModalEl).hide();
-      updateUI();
-      welcomeAnimation(currentUser.displayName || "朋友");
+      await currentUser.updateProfile({ displayName: name || "新朋友", photoURL: avatarURL || "" });
     } else if (emailMode === "reset") {
       await auth.sendPasswordResetEmail(email);
-      showEmailError("密碼重設信已寄出，請檢查信箱！");
+      showEmailError("密碼重設信已寄出！");
+      return;
     }
-  } catch (err) {
-    showEmailError(err.message);
-  }
-}
-
-// -----------------------
-// 登出
-// -----------------------
-function logout() {
-  auth.signOut();
-  currentUser = null;
-  updateUI();
+    bootstrap.Modal.getInstance(emailModalEl).hide();
+    updateUI();
+    welcomeAnimation(`登入成功，${currentUser.displayName}！`);
+  } catch (err) { showEmailError(err.message); }
 }
 
 // -----------------------
 // 留言板功能
 // -----------------------
-commentInput.addEventListener("input", () => {
-  countEl.textContent = commentInput.value.length;
-});
+commentInput.addEventListener("input", () => { countEl.textContent = commentInput.value.length; });
 
-async function uploadImage() {
-  imageInput.click();
-}
+async function uploadImage() { imageInput.click(); }
 
 imageInput.addEventListener("change", async () => {
   const file = imageInput.files[0];
   if (!file) return;
-
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "guest-upload");
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
-    method: "POST",
-    body: formData
-  });
+  const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", { method: "POST", body: formData });
   const data = await res.json();
   commentInput.value += `![](${data.secure_url})\n`;
   countEl.textContent = commentInput.value.length;
 });
 
-// 發布留言
 async function postComment() {
   if (!currentUser) return showEmailError("請先登入才能留言！");
   const text = commentInput.value.trim();
   if (!text) return;
-  const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-
-  const docRef = await db.collection("comments").add({
+  await db.collection("comments").add({
     uid: currentUser.uid,
     name: currentUser.displayName || currentUser.email,
     avatar: currentUser.photoURL || "",
     text,
-    timestamp
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
-
   commentInput.value = "";
   countEl.textContent = 0;
   loadComments(true);
 }
 
-// 載入留言
 async function loadComments(reset = false) {
   let query = db.collection("comments").orderBy("timestamp", "desc").limit(10);
   if (!reset && lastVisible) query = query.startAfter(lastVisible);
   const snapshot = await query.get();
   if (snapshot.empty) return;
-
   if (reset) commentsEl.innerHTML = "";
   lastVisible = snapshot.docs[snapshot.docs.length - 1];
-
   snapshot.forEach(doc => {
     const data = doc.data();
     const id = doc.id;
@@ -240,32 +270,26 @@ async function loadComments(reset = false) {
   });
 }
 
-// 編輯留言
 function editComment(id) {
   editId = id;
   const content = document.querySelector(`#comment-${id} div.flex-grow-1 div`).innerHTML;
   editInput.value = content.replace(/<[^>]+>/g, "");
-  const modal = new bootstrap.Modal(editModalEl);
-  modal.show();
+  new bootstrap.Modal(editModalEl).show();
 }
 
 async function saveEdit() {
   if (!editId) return;
-  const newText = editInput.value.trim();
-  await db.collection("comments").doc(editId).update({ text: newText });
+  await db.collection("comments").doc(editId).update({ text: editInput.value.trim() });
   bootstrap.Modal.getInstance(editModalEl).hide();
   loadComments(true);
 }
 
-// 刪除留言
 async function deleteComment(id) {
   if (!currentUser) return;
   const doc = await db.collection("comments").doc(id).get();
   if (doc.exists && doc.data().uid === currentUser.uid) {
     await db.collection("comments").doc(id).delete();
     document.getElementById(`comment-${id}`).remove();
-  } else {
-    showEmailError("你只能刪除自己的留言！");
   }
 }
 
