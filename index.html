@@ -168,7 +168,7 @@ h2::after, h3::after {
   <section id="comment-section" class="mb-5" style="max-width: 800px; margin: auto;">
     <h3 class="mb-4">💬 留言板</h3>
 
-    <div id="loginArea" class="card p-4 shadow-sm mb-4 text-center">
+    <div id="loginArea" class="card p-4 shadow-sm mb-3 text-center">
       <p class="text-muted">歡迎來到我的日記網站，請先登入以發表留言</p>
       <div>
         <button class="btn btn-danger me-2" onclick="googleLogin()">
@@ -177,6 +177,16 @@ h2::after, h3::after {
         <button class="btn btn-outline-secondary" onclick="openEmailModal('login')">
           <i class="bi bi-envelope"></i> Email 登入
         </button>
+      </div>
+    </div>
+
+    <div id="quickBlessing" class="mb-4 p-3 border rounded shadow-sm text-center bg-white">
+      <h6 class="text-muted small mb-3">✈️ 送給小宏的新加坡旅行祝福 (免登入)</h6>
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="postQuickComment('✈️ 一路順風！')">✈️ 一路順風</button>
+        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="postQuickComment('🇸🇬 新加坡玩得開心！')">🇸🇬 玩得開心</button>
+        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="postQuickComment('📸 期待你的美照！')">📸 期待美照</button>
+        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="postQuickComment('🍗 吃遍新加坡美食！')">🍗 吃遍美食</button>
       </div>
     </div>
 
@@ -203,15 +213,14 @@ h2::after, h3::after {
         <span class="text-muted small"><span id="count">0</span> / 500</span>
         <div>
           <button class="btn btn-sm btn-outline-secondary me-1" onclick="uploadImage()">
-            <i class="bi bi-image"></i> 插入圖片
+            <i class="bi bi-image"></i> 圖片
           </button>
           <button class="btn btn-primary px-4" onclick="postComment()">送出留言</button>
         </div>
       </div>
     </div>
 
-    <div id="comments" class="mt-4">
-      </div>
+    <div id="comments" class="mt-4"></div>
 
     <button id="loadMoreBtn" class="btn btn-outline-secondary w-100 mt-3" onclick="loadComments()">
       載入更多留言
@@ -242,7 +251,7 @@ h2::after, h3::after {
           <input type="text" id="modalNameInput" class="form-control form-control-lg" placeholder="輸入您的暱稱">
         </div>
         <div id="uploadProgress" class="progress d-none mt-3" style="height: 8px;">
-          <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+          <div class="progress-bar progress-bar-striped progress-bar-animated w-100 bg-success"></div>
         </div>
       </div>
       <div class="modal-footer bg-light">
@@ -255,7 +264,7 @@ h2::after, h3::after {
 
 <div class="modal fade" id="editModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-4">
+    <div class="modal-content p-4 shadow border-0">
       <h5 class="mb-3 fw-bold">編輯留言內容</h5>
       <textarea id="editInput" class="form-control mb-3" rows="5"></textarea>
       <div class="d-flex gap-2">
