@@ -1,5 +1,5 @@
 // ==========================================
-// index.js V4.1 - 小宏的留言板 (終極修復版)
+// index.js V4.1 - 小宏的留言板 
 // ==========================================
 
 // 1. 初始化 Firebase
@@ -7,12 +7,12 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 let currentUser = null;
 
-// --- 【重要：請修改此處】 ---
+
 
 const emailModalEl = document.getElementById("emailModal");
 
 
-const ADMIN_UID = "FIREBASE_UID_貼在這裡"; 
+const ADMIN_UID = "mKU5cngfmNXyXupfM9XAc8MqgNU2"; 
 
 // --- 【安全設定】髒話黑名單 ---
 const FORBIDDEN_WORDS = ["白痴", "垃圾", "靠", "死", "fuck", "shit" , "北七" , "笨蛋"];
@@ -307,7 +307,7 @@ async function submitEmailAuth() {
   }
 }
 // -----------------------
-// 功能：修復版圖片上傳
+// 功能：圖片上傳
 // -----------------------
 async function uploadImage() {
     // 1. 抓到那個隱藏的選檔案按鈕
@@ -323,25 +323,25 @@ async function uploadImage() {
 
         // 檢查大小
         if (file.size > 5 * 1024 * 1024) {
-            alert("小宏，這張照片太大了，請選 5MB 以下的喔！");
+            alert("這張照片太大了，請選 5MB 以下的喔！");
             return;
         }
 
         // 準備傳到 Cloudinary
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "你的_PRESET_名稱"); // ⚠️ 這裡要填你的設定
+        formData.append("upload_preset", "guest-upload"); 
 
         try {
             welcomeAnimation("圖片正在飛向雲端... ☁️");
-            const res = await fetch("https://api.cloudinary.com/v1_1/你的_CLOUD_NAME/image/upload", {
+            const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
                 method: "POST",
                 body: formData
             });
             const data = await res.json();
 
             if (data.secure_url) {
-                // 4. 把網址變成 Markdown 語法塞進你的留言框
+                // 4. 把網址變成 Markdown 語法塞進留言框
                 const input = document.getElementById("commentInput");
                 input.value += `\n![圖片](${data.secure_url})\n`;
                 
