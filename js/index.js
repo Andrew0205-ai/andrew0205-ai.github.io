@@ -218,3 +218,89 @@ auth.onAuthStateChanged(user => {
     updateUI();
     loadComments(true);
 });
+// -----------------------
+// 功能：Email 登入視窗邏輯
+// -----------------------
+
+// 開啟視窗並切換模式 
+function openEmailModal(mode) {
+  const title = document.getElementById("emailModalTitle");
+  const nameRow = document.getElementById("nameRow");
+  const passRow = document.getElementById("passwordRow");
+  const avatarRow = document.getElementById("avatarRow");
+  const errorEl = document.getElementById("emailError");
+
+  // 初始化狀態
+  errorEl.classList.add("d-none");
+  errorEl.innerText = "";
+  
+  // 記錄目前模式，方便送出時判斷
+  emailModalEl.dataset.mode = mode;
+
+  if (mode === 'login') {
+    title.innerText = "Email 登入";
+    nameRow.style.display = "none";
+    passRow.style.display = "block";
+    avatarRow.style.display = "none";
+  } else if (mode === 'signup') {
+    title.innerText = "新用戶註冊";
+    nameRow.style.display = "block";
+    passRow.style.display = "block";
+    avatarRow.style.display = "block";
+  } else if (mode === 'reset') {
+    title.innerText = "重設密碼";
+    nameRow.style.display = "none";
+    passRow.style.display = "none";
+    avatarRow.style.display = "none";
+  }
+
+  const modal = new bootstrap.Modal(document.getElementById('emailModal'));
+  modal.show();
+}
+
+// 處理送出按鈕
+async function submitEmailAuth() {
+  const mode = emailModalEl.dataset.mode;
+  const email = document.getElementById("emailInput").value.trim();
+  const password = document.getElementById("passwordInput").value;
+  const name = document.getElementById("nameInput").value.trim();
+  const errorEl = document.getElementById("emailError");
+
+  if (!email) return alert("請輸入 Email");
+
+  try {
+    if (mode === 'login') {
+      // 登入
+      await auth.signInWithEmailAndPassword(email, password);
+    } else if (mode === 'signup') {
+      // 註冊
+      if (password.length < 6) throw new Error("密碼至少需要 6 位數");
+      const res = await auth.createUserWithEmailAndPassword(email, password);
+      
+      // 如果有填暱稱，更新 Profile
+      if (name) {
+        await res.user.updateProfile({ displayName: name });
+      }
+      // 如果有選頭像，處理上傳 (可接 Cloudinary)
+      const avatarFile = document.getElementById("avatarInput").files[0];
+      if (avatarFile) {
+        // 這裡可以呼叫你之前的 Cloudinary 上傳邏輯
+        // const url = await uploadToCloudinary(avatarFile);
+        // await res.user.updateProfile({ photoURL: url });
+      }
+    } else if (mode === 'reset') {
+      // 忘記密碼
+      await auth.sendPasswordResetEmail(email);
+      alert("密碼重設信件已寄出，請檢查您的信箱。");
+    }
+
+    // 成功後關閉視窗
+    bootstrap.Modal.getInstance(document.getElementById('emailModal')).hide();
+    welcomeAnimation(mode === 'signup' ? "歡迎加入！" : "登入成功！");
+    
+  } catch (error) {
+    errorEl.classList.remove("d-none");
+    errorEl.innerText = error.message;
+  }
+}
+
