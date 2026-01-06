@@ -1,20 +1,20 @@
 // ==========================================
-// index.js V4.0 - 小宏的留言板 (最強防禦版)
+// index.js V4.1 - 小宏的留言板 (終極修復版)
 // ==========================================
 
+// 1. 初始化 Firebase
 const auth = firebase.auth();
 const db = firebase.firestore();
 let currentUser = null;
 
-// --- 【重要設定】管理員 UID ---
-// 登入後在 Console 輸入 firebase.auth().currentUser.uid 取得並貼在此處
-const ADMIN_UID = "mKU5cngfmNXyXupfM9XAc8MqgNU2"; 
+// --- 【重要：請修改此處】 ---
+// 請填入你自己的 UID，這樣你才能刪除別人的惡作劇留言
+const ADMIN_UID = "你的_FIREBASE_UID_貼在這裡"; 
 
-// --- 【安全設定】髒話過濾器 ---
+// --- 【安全設定】髒話黑名單 ---
 const FORBIDDEN_WORDS = ["白痴", "垃圾", "靠", "死", "fuck", "shit"];
 
 // 2. 匿名者身分證 (LocalStorage)
-// 用來確保匿名者只能編輯/刪除「自己這台電腦」發出的留言
 let myTempId = localStorage.getItem('myTempId') || 'temp_' + Math.random().toString(36).substr(2, 9);
 localStorage.setItem('myTempId', myTempId);
 
@@ -43,7 +43,7 @@ function timeAgo(ts) {
 }
 
 // -----------------------
-// 功能：發布留言 (核心邏輯)
+// 功能：發布留言 (一般 & 快捷)
 // -----------------------
 async function postQuickComment(msg) {
     if (isCooldown) return;
@@ -65,7 +65,7 @@ async function saveComment(text, isQuick) {
     isCooldown = true;
     const data = {
         uid: currentUser ? currentUser.uid : "anonymous",
-        authorTempId: currentUser ? null : myTempId, // 匿名者標記
+        authorTempId: currentUser ? "member" : myTempId, // 匿名者存入專屬臨時 ID
         name: currentUser ? (currentUser.displayName || "朋友") : "路過的匿名朋友",
         avatar: currentUser ? (currentUser.photoURL || "") : "https://cdn-icons-png.flaticon.com/512/1144/1144760.png",
         text: text,
@@ -80,10 +80,10 @@ async function saveComment(text, isQuick) {
         }
         welcomeAnimation("留言成功！💖");
         loadComments(true);
-        // 3秒冷卻時間防止洗版
         setTimeout(() => { isCooldown = false; }, 3000);
     } catch (e) {
-        console.error("發布失敗", e);
+        console.error("發布失敗，請檢查 Firestore Rules:", e);
+        alert("發布失敗，可能是權限不足，請檢查資料庫 Rules 設定。");
         isCooldown = false;
     }
 }
@@ -105,7 +105,7 @@ async function loadComments(reset = false) {
         const d = doc.data();
         const id = doc.id;
         
-        // 權限判斷：1.你是管理員(小宏) 2.你是該留言登入主人 3.你是該匿名留言發布者
+        // 權限判斷：1. 管理員 2. 登入的主人 3. 匿名發布者(比對 LocalStorage)
         const canManage = (currentUser && currentUser.uid === ADMIN_UID) || 
                           (currentUser && currentUser.uid === d.uid) || 
                           (!currentUser && d.authorTempId === myTempId);
@@ -114,7 +114,7 @@ async function loadComments(reset = false) {
             <div class="d-flex mb-4" id="comment-${id}">
                 <img src="${d.avatar || 'images/andrew.png'}" width="50" height="50" class="rounded-circle me-3 border shadow-sm">
                 <div class="flex-grow-1 border-bottom pb-3">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <strong>
                             ${d.name} 
                             ${d.uid === ADMIN_UID ? '<span class="admin-badge">板主</span>' : ''}
@@ -124,8 +124,8 @@ async function loadComments(reset = false) {
                     <div class="mt-2 text-dark">${marked.parse(DOMPurify.sanitize(d.text))}</div>
                     ${canManage ? `
                         <div class="mt-2">
-                            <span class="text-primary cursor-pointer me-3 small" onclick="editComment('${id}')"><i class="bi bi-pencil"></i> 編輯</span>
-                            <span class="text-danger cursor-pointer small" onclick="deleteComment('${id}')"><i class="bi bi-trash"></i> 刪除</span>
+                            <span class="text-primary cursor-pointer me-3 small" onclick="editComment('${id}')">編輯</span>
+                            <span class="text-danger cursor-pointer small" onclick="deleteComment('${id}')">刪除</span>
                         </div>` : ""}
                 </div>
             </div>`;
@@ -134,60 +134,64 @@ async function loadComments(reset = false) {
 }
 
 // -----------------------
-// 功能：管理員/作者刪除與編輯
+// 功能：刪除與編輯
 // -----------------------
 async function deleteComment(id) {
     if (!confirm("確定要移除這則留言嗎？")) return;
-    await db.collection("comments").doc(id).delete();
-    document.getElementById(`comment-${id}`).remove();
-    welcomeAnimation("留言已移除");
+    try {
+        await db.collection("comments").doc(id).delete();
+        document.getElementById(`comment-${id}`).remove();
+        welcomeAnimation("已成功刪除");
+    } catch (e) {
+        alert("刪除失敗，權限不足。");
+    }
 }
 
 let editId = null;
 function editComment(id) {
     editId = id;
-    const commentEl = document.querySelector(`#comment-${id} .mt-2`);
-    // 這裡簡單處理，實際可彈出 Modal
-    const oldText = commentEl.innerText;
-    document.getElementById("editInput").value = oldText;
-    new bootstrap.Modal(document.getElementById('editModal')).show();
+    // 取得原本純文字內容 (避開 Markdown 標籤)
+    db.collection("comments").doc(id).get().then(doc => {
+        document.getElementById("editInput").value = doc.data().text;
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    });
 }
 
 async function saveEdit() {
     const newText = document.getElementById("editInput").value.trim();
     if (!newText || !editId) return;
-    await db.collection("comments").doc(editId).update({ text: newText });
-    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-    loadComments(true);
-}
-
-// -----------------------
-// 功能：使用者介面切換 (Auth)
-// -----------------------
-function updateUI() {
-    const loginArea = document.getElementById("loginArea");
-    const userArea = document.getElementById("userArea");
-    const commentArea = document.getElementById("commentArea");
-
-    if (currentUser) {
-        loginArea.classList.add("d-none");
-        userArea.classList.remove("d-none");
-        commentArea.classList.remove("d-none");
-        document.getElementById("userName").textContent = currentUser.displayName || currentUser.email;
-        document.getElementById("userAvatar").src = currentUser.photoURL || "images/andrew.png";
-    } else {
-        loginArea.classList.remove("d-none");
-        userArea.classList.add("d-none");
-        commentArea.classList.add("d-none");
+    try {
+        await db.collection("comments").doc(editId).update({ text: newText });
+        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+        loadComments(true);
+        welcomeAnimation("修改成功");
+    } catch (e) {
+        alert("修改失敗");
     }
 }
 
 // -----------------------
-// 其他基礎功能 (登入、登出、動畫)
+// 功能：Auth 狀態與 UI
 // -----------------------
+function updateUI() {
+    if (currentUser) {
+        document.getElementById("loginArea").classList.add("d-none");
+        document.getElementById("userArea").classList.remove("d-none");
+        document.getElementById("commentArea").classList.remove("d-none");
+        document.getElementById("userName").textContent = currentUser.displayName || currentUser.email;
+        document.getElementById("userAvatar").src = currentUser.photoURL || "images/andrew.png";
+    } else {
+        document.getElementById("loginArea").classList.remove("d-none");
+        document.getElementById("userArea").classList.add("d-none");
+        document.getElementById("commentArea").classList.add("d-none");
+    }
+}
+
 async function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    await auth.signInWithPopup(provider);
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithPopup(provider);
+    } catch (e) { alert("登入失敗"); }
 }
 
 function logout() {
