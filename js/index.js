@@ -306,4 +306,54 @@ async function submitEmailAuth() {
     errorEl.innerText = error.message;
   }
 }
+// -----------------------
+// 功能：修復版圖片上傳
+// -----------------------
+async function uploadImage() {
+    // 1. 抓到那個隱藏的選檔案按鈕
+    const fileInput = document.getElementById("imageInput");
+    
+    // 2. 模擬點擊它，讓手機或電腦跳出選相片視窗
+    fileInput.click(); 
+
+    // 3. 當你選好照片後，觸發這個動作
+    fileInput.onchange = async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        // 檢查大小
+        if (file.size > 5 * 1024 * 1024) {
+            alert("小宏，這張照片太大了，請選 5MB 以下的喔！");
+            return;
+        }
+
+        // 準備傳到 Cloudinary
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "你的_PRESET_名稱"); // ⚠️ 這裡要填你的設定
+
+        try {
+            welcomeAnimation("圖片正在飛向雲端... ☁️");
+            const res = await fetch("https://api.cloudinary.com/v1_1/你的_CLOUD_NAME/image/upload", {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+
+            if (data.secure_url) {
+                // 4. 把網址變成 Markdown 語法塞進你的留言框
+                const input = document.getElementById("commentInput");
+                input.value += `\n![圖片](${data.secure_url})\n`;
+                
+                // 5. 更新字數顯示
+                document.getElementById("count").textContent = input.value.length;
+                welcomeAnimation("圖片上傳成功！📸");
+            }
+        } catch (e) {
+            console.error("上傳失敗", e);
+            alert("上傳失敗，請檢查 Cloudinary 的 Cloud Name 和 Preset 是否填對！");
+        }
+    };
+}
+
 
