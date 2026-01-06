@@ -8,11 +8,14 @@ const db = firebase.firestore();
 let currentUser = null;
 
 // --- 【重要：請修改此處】 ---
-// 請填入你自己的 UID，這樣你才能刪除別人的惡作劇留言
-const ADMIN_UID = "你的_FIREBASE_UID_貼在這裡"; 
+
+const emailModalEl = document.getElementById("emailModal");
+
+
+const ADMIN_UID = "FIREBASE_UID_貼在這裡"; 
 
 // --- 【安全設定】髒話黑名單 ---
-const FORBIDDEN_WORDS = ["白痴", "垃圾", "靠", "死", "fuck", "shit"];
+const FORBIDDEN_WORDS = ["白痴", "垃圾", "靠", "死", "fuck", "shit" , "北七" , "笨蛋"];
 
 // 2. 匿名者身分證 (LocalStorage)
 let myTempId = localStorage.getItem('myTempId') || 'temp_' + Math.random().toString(36).substr(2, 9);
