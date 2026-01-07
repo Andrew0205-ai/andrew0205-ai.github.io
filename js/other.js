@@ -88,7 +88,7 @@ function showSnowflakes(count) {
     for (let i = 0; i < count; i++) {
         const snowflake = document.createElement("div");
         snowflake.className = "snowflake";
-        snowflake.textContent = "❄";
+        snowflake.textContent = "❄️";
         
         const startLeft = Math.random() * 100; 
         const duration = Math.random() * 5 + 5; 
