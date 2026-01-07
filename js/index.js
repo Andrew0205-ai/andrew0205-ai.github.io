@@ -6,7 +6,7 @@ const db = firebase.firestore();
 let currentUser = null;
 
 const ADMIN_UID = "mKU5cngfmNXyXupfM9XAc8MqgNU2";
-const FORBIDDEN_WORDS = ["白痴","垃圾","靠","死","fuck","shit","北七","笨蛋"];
+const FORBIDDEN_WORDS = ["白痴","垃圾","靠","死","fuck","shit","北七","笨蛋","廢物"];
 let myTempId = localStorage.getItem('myTempId') || 'temp_' + Math.random().toString(36).substr(2,9);
 localStorage.setItem('myTempId', myTempId);
 
@@ -59,10 +59,10 @@ async function saveComment(text,isQuick){
         if(doc.exists){
             const data=doc.data();
             userData.name=data.name||"朋友";
-            userData.avatar=data.avatar||"images/andrew.png";
+            userData.avatar=data.avatar||"images/default-avatar.png";
         } else {
             userData.name=currentUser.displayName||"朋友";
-            userData.avatar=currentUser.photoURL||"images/andrew.png";
+            userData.avatar=currentUser.photoURL||"images/default-avatar.png";
         }
         userData.uid=currentUser.uid;
     }
@@ -216,7 +216,7 @@ async function saveProfileChanges(){
             name, avatar:avatarUrl, updatedAt:firebase.firestore.FieldValue.serverTimestamp()
         },{merge:true});
 
-        showToast("資料已更新 💜");
+        showToast("資料已更新!");
         profileModal.hide();
         updateUserCommentsUI(currentUser.uid,name,avatarUrl);
         document.getElementById("userName").textContent=name;
@@ -254,7 +254,7 @@ function updateUI(){
         userArea.classList.remove("d-none");
         commentArea.classList.remove("d-none");
         document.getElementById("userName").textContent=currentUser.displayName||"新朋友";
-        document.getElementById("userAvatar").src=currentUser.photoURL||"images/andrew.png";
+        document.getElementById("userAvatar").src=currentUser.photoURL||"images/default-avatar.png";
     } else {
         loginArea.classList.remove("d-none");
         userArea.classList.add("d-none");
