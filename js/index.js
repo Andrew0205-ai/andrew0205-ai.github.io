@@ -405,7 +405,7 @@ function saveProfileChanges() {
         if (progress) progress.classList.add("d-none");
         document.getElementById("userName").textContent = newName;
         profileModal.hide();
-        alert("更新成功，小宏！");
+        alert("更新成功！");
     }, 1000);
 }
 
