@@ -355,5 +355,74 @@ async function uploadImage() {
         }
     };
 }
+// ===============================
+// 個人資料與 Modal 控制
+// ===============================
+
+// 初始化 Bootstrap Modal 實例
+let profileModal;
+document.addEventListener('DOMContentLoaded', () => {
+    const modalEl = document.getElementById('profileModal');
+    if (modalEl) {
+        profileModal = new bootstrap.Modal(modalEl);
+    }
+});
+
+// 開啟更新資料視窗
+function openProfileModal() {
+    if (profileModal) {
+        // 如果有 Firebase 使用者資訊，可以在這裡預填入
+        const currentName = document.getElementById("userName")?.textContent;
+        const nameInput = document.getElementById("modalNameInput");
+        if (nameInput && currentName !== "載入中...") {
+            nameInput.value = currentName;
+        }
+        profileModal.show();
+    } else {
+        console.error("找不到 profileModal 元素");
+    }
+}
+
+// 儲存更新邏輯
+function saveProfileChanges() {
+    const newName = document.getElementById("modalNameInput").value;
+    const progress = document.getElementById("uploadProgress");
+
+    if (!newName.trim()) {
+        alert("請輸入暱稱！");
+        return;
+    }
+
+    // 顯示進度條 (模擬上傳)
+    if (progress) progress.classList.remove("d-none");
+
+    // 這裡通常會呼叫 Firebase 的 updateProfile
+    // 範例邏輯：
+    console.log("正在更新使用者名稱為:", newName);
+
+    // 模擬成功後關閉
+    setTimeout(() => {
+        if (progress) progress.classList.add("d-none");
+        document.getElementById("userName").textContent = newName;
+        profileModal.hide();
+        alert("更新成功，小宏！");
+    }, 1000);
+}
+
+// 處理 Modal 內的圖片預覽
+const modalFileBtn = document.getElementById("modalFileBtn");
+if (modalFileBtn) {
+    modalFileBtn.addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById("modalPreviewImg").src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
 
 
