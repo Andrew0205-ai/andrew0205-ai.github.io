@@ -110,7 +110,7 @@ async function loadComments(reset=false){
             <img src="${d.avatar}" width="50" height="50" class="rounded-circle me-3 border shadow-sm">
             <div class="flex-grow-1 border-bottom pb-3">
                 <div class="d-flex justify-content-between align-items-center">
-                    <strong>${d.name} ${d.uid===ADMIN_UID?'<span class="badge bg-danger">板主</span>':''}</strong>
+                    <strong>${d.name} ${d.uid===ADMIN_UID?'':''}</strong>
                     <small class="text-muted">${d.timestamp?new Date(d.timestamp.toDate()).toLocaleString():'剛剛'}</small>
                 </div>
                 <div class="mt-2 text-dark">${marked.parse(DOMPurify.sanitize(d.text))}</div>
