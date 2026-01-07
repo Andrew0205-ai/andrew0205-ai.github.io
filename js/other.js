@@ -123,7 +123,7 @@ function updateFestival() {
         
         // 1/1~1/5 不下雪，之後模擬冬季氛圍
         if (!(month === 1 && day <= 5)) {
-            showSnowflakes(20);
+            showSnowflakes(35);
         }
     } else {
         // 平時狀態
