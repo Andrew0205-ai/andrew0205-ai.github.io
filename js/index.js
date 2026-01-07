@@ -367,3 +367,42 @@ document.addEventListener("DOMContentLoaded", () => {
         backBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     }
 });
+async function submitEmailAuth() {
+    const email = document.getElementById("emailInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+    const name = document.getElementById("nameInput").value.trim();
+    const avatarFile = document.getElementById("avatarInput").files[0];
+    const emailError = document.getElementById("emailError");
+
+    emailError.classList.add("d-none");
+
+    // 先判斷模式
+    const modalTitle = document.getElementById("emailModalTitle").textContent;
+    try {
+        if (modalTitle.includes("登入")) {
+            await auth.signInWithEmailAndPassword(email, password);
+            showToast("登入成功！");
+            bootstrap.Modal.getInstance(document.getElementById("emailModal")).hide();
+        } else if (modalTitle.includes("註冊")) {
+            const res = await auth.createUserWithEmailAndPassword(email, password);
+            let avatarUrl = null;
+            if (avatarFile) avatarUrl = await uploadAvatarToCloudinary(avatarFile);
+            await db.collection("users").doc(res.user.uid).set({
+                name: name || "新朋友",
+                avatar: avatarUrl || "images/andrew.png",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            showToast("註冊成功！");
+            bootstrap.Modal.getInstance(document.getElementById("emailModal")).hide();
+        } else if (modalTitle.includes("重設")) {
+            await auth.sendPasswordResetEmail(email);
+            showToast("重設密碼信件已送出 ✉️");
+            bootstrap.Modal.getInstance(document.getElementById("emailModal")).hide();
+        }
+    } catch (err) {
+        console.error(err);
+        emailError.textContent = err.message;
+        emailError.classList.remove("d-none");
+    }
+}
+
