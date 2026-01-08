@@ -763,3 +763,34 @@ try {
 }
 
 }
+
+
+
+
+// =======================
+// 頭像即時預覽 & 同步更新
+// =======================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const fileInput = document.getElementById("modalFileBtn");
+  const previewImg = document.getElementById("modalPreviewImg");
+
+  if (!fileInput || !previewImg) return;
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    // 即時預覽
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImg.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // 強制清空舊頭像快取，確保會重新上傳
+    profileAvatarUrl = null;
+
+    showToast("已選擇新頭像 👀");
+  });
+});
