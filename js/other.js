@@ -58,6 +58,7 @@ const marqueeMessages = [
     "🛠️ 網站留言板功能已完成",
     "🇸🇬 正在規劃寒假新加坡城市探索之旅",
     "📢 最新公告：節慶版面已上線！"
+    "🌍本日成語：A miss is as good as a mile. 差之毫厘，失之千里。"
 ];
 
 let marqueeIndex = 0;
