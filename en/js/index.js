@@ -247,7 +247,7 @@ snap.forEach(doc => {
 
                     <strong>${d.name} ${d.uid === ADMIN_UID ? '<span class="badge bg-danger">Owner</span>' : ''}</strong>
 
-                    <small class="text-muted">${d.timestamp ? new Date(d.timestamp.toDate()).toLocaleString() : 'Less than 1 minute'}</small>
+                    <small class="text-muted">${d.timestamp ? new Date(d.timestamp.toDate()).toLocaleString() : 'Now'}</small>
 
                 </div>
 
