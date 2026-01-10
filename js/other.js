@@ -46,7 +46,7 @@ function copyGameID() {
     if (!gameID) return;
     const idText = gameID.textContent;
     navigator.clipboard.writeText(idText).then(() => {
-        alert("小宏：已複製遊戲 ID " + idText + "，快來夢想小鎮找我玩！");
+            showToast("已複製ID:K3Q92B，快來夢想小鎮來和我玩！");
     });
 }
 
