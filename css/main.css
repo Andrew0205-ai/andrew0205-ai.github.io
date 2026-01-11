@@ -1,3 +1,13 @@
+/* 強制顯示 badge，避免被其他樣式蓋掉 */
+.badge {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+  position: relative;
+  z-index: 5;
+}
 body {
   background-color: #f5f5f5;
   font-family: "Noto Sans TC", sans-serif;
