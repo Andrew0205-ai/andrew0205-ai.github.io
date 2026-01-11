@@ -1,4 +1,4 @@
- const text = `Hello, I’m Andrew!
+ const text = `Hello, I'm Andrew!
 I am a curious elementary school student who is passionate about exploring many things in daily life. I enjoy observing how cities change and studying how transportation systems operate, especially MRT systems, trains, and light rail. Whether it’s route planning, station design, announcements, or carriage layouts, I carefully observe and analyze them.
 Besides transportation, I also enjoy building websites on my own. By using HTML, CSS, and a little JavaScript, I gradually create my own small projects. Every time a feature works successfully, it gives me a great sense of achievement. I also love drawing and playing the piano — music helps me relax, improve my focus, and develop a sense of rhythm.
 This website is a space that I personally designed and maintain. It records my learning journey, creative ideas, and daily experiences. I also hope to connect and share with friends who are interested in transportation, music, or website creation.
