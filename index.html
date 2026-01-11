@@ -8,21 +8,18 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <style>
-/* 修正 badge 在手機換行時背景長度不足問題 */
+/* ✅ Badge 手機顯示修正 + 強制可見 */
 .badge {
-  display: inline-flex !important;
+  display: inline-flex !important;     /* 關鍵：讓背景自動包住文字 */
   align-items: center;
-  white-space: normal !important;   /* 允許自動換行 */
+  white-space: normal !important;
   text-align: center;
   line-height: 1.4;
   max-width: 100%;
   word-break: break-word;
-}
-/* 強制顯示 badge，避免被其他樣式蓋掉 */
-.badge {
+
   opacity: 1 !important;
   visibility: visible !important;
-  display: inline-block !important;
   background-color: #ffc107 !important;
   color: #212529 !important;
   position: relative;
