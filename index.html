@@ -8,20 +8,28 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <style>
-/* ✅ Badge 手機顯示修正 + 強制可見 */
+/* ✅ Badge 固定單行 + 自動縮放 + 容器自適應 */
 .badge {
-  display: inline-flex !important;     /* 關鍵：讓背景自動包住文字 */
+  display: inline-flex !important;
   align-items: center;
-  white-space: normal !important;
-  text-align: center;
-  line-height: 1.4;
+  justify-content: center;
+
+  white-space: nowrap !important;     /* 永不換行 */
   max-width: 100%;
-  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  padding: 8px 14px !important;
+  border-radius: 999px;
+
+  font-size: clamp(0.75rem, 2.8vw, 1rem);  /* 螢幕小自動縮字 */
+  line-height: 1.2;
+
+  background-color: #ffc107 !important;
+  color: #212529 !important;
 
   opacity: 1 !important;
   visibility: visible !important;
-  background-color: #ffc107 !important;
-  color: #212529 !important;
   position: relative;
   z-index: 5;
 }
