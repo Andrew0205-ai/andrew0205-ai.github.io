@@ -8,6 +8,16 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <style>
+/* 強制顯示 badge，避免被其他樣式蓋掉 */
+.badge {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+  position: relative;
+  z-index: 5;
+}
     /* 橫幅樣式 */
     #christmasBanner {
       background: linear-gradient(90deg, #1e7e34, #198754);
