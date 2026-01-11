@@ -8,30 +8,27 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <style>
-/* ✅ Badge 固定單行 + 自動縮放 + 容器自適應 */
-.badge {
-  display: inline-flex !important;
+.custom-badge {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  white-space: nowrap !important;     /* 永不換行 */
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* ⭐ 拉長容器 */
+  min-width: 420px;      /* 桌機最小寬度（可以再加大） */
+  max-width: 95vw;       /* 手機不超過螢幕寬度 */
 
-  padding: 8px 14px !important;
+  padding: 12px 24px;
+
+  /* ⭐ 不換行 */
+  white-space: nowrap;
+
+  /* ⭐ 文字自動縮放 */
+  font-size: clamp(14px, 2.5vw, 18px);
+
+  /* 視覺 */
+  background: orange;   /* orange */
+  color: white;
   border-radius: 999px;
-
-  font-size: clamp(0.75rem, 2.8vw, 1rem);  /* 螢幕小自動縮字 */
-  line-height: 1.2;
-
-  background-color: #ffc107 !important;
-  color: #212529 !important;
-
-  opacity: 1 !important;
-  visibility: visible !important;
-  position: relative;
-  z-index: 5;
 }
     /* 橫幅樣式 */
     #christmasBanner {
@@ -168,7 +165,9 @@ h2::after, h3::after {
           <h3 class="card-title fw-bold display-6">寒假出發：新加坡城市探索</h3>
           <p class="card-text fs-5">「從台中的街頭，到獅城的盛景。這是我第一次在網站宣告：我要出國旅行啦！」</p>
           <p class="card-text">
-            <span class="badge rounded-pill bg-warning text-dark px-3 py-2">📌 預計撰寫：旅遊日記、景點筆記、美食探索</span>
+ <span class="badge custom-badge">
+  📌 預計撰寫：旅遊日記、景點筆記、美食探索
+</span>
           </p>
           <div class="mt-3">
              <a href="mailto:andrewwork03295@gmail.com?subject=新加坡旅遊攻略" class="btn btn-outline-light fw-bold px-4">跟我分享新加坡攻略</a>
