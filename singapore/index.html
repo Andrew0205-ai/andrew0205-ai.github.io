@@ -7,9 +7,10 @@
 
   <link href="../css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
+
   <style>
-     /* ❄️ 雪花容器 */
-    #snow-container {
+    /* ===== 全螢幕動畫容器 ===== */
+    #effect-container {
       position: fixed;
       top: 0;
       left: 0;
@@ -20,40 +21,61 @@
       z-index: 9999;
     }
 
-    /* ❄️ 雪花本體 */
+    /* ===== 雪花 ===== */
     .snowflake {
       position: absolute;
       top: -20px;
-      color: white;
       user-select: none;
-      animation-name: fallAndSway;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
+      animation: snowFall linear infinite;
     }
 
-    @keyframes fallAndSway {
-      0% { transform: translateY(0) translateX(0) rotate(0deg); }
-      25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
-      50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
-      75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
-      100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
+    @keyframes snowFall {
+      0%   { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    /* ===== 雲 ===== */
+    .cloud {
+      position: absolute;
+      top: 10%;
+      opacity: 0.8;
+      animation: cloudMove linear infinite;
+      font-size: 48px;
+    }
+
+    @keyframes cloudMove {
+      0%   { transform: translateX(-20%); }
+      100% { transform: translateX(120vw); }
+    }
+
+    /* ===== 飛機 ===== */
+    .plane {
+      position: absolute;
+      top: 20%;
+      animation: planeFly linear infinite;
+      font-size: 32px;
+    }
+
+    @keyframes planeFly {
+      0%   { transform: translateX(-10vw) translateY(0); }
+      100% { transform: translateX(110vw) translateY(-10vh); }
     }
   </style>
 </head>
 <body>
-    <div id="snow-container"></div>
+
+<div id="effect-container"></div>
 
 <!-- 導覽列 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
   <div class="container">
-<a class="navbar-brand fw-bold" href="../index.html">小宏的部落格</a>
+    <a class="navbar-brand fw-bold" href="../index.html">小宏的部落格</a>
   </div>
 </nav>
 
 <!-- 主要內容 -->
 <div class="container my-5" style="max-width: 900px;">
 
-  <!-- 主標題 -->
   <h1 class="fw-bold mb-3">🇸🇬 新加坡城市探索</h1>
 
   <p class="text-muted fs-5 mb-4">
@@ -65,16 +87,12 @@
     ✈️ 目前尚未出發，內容將於旅程前後逐步更新。
   </div>
 
-  <!-- 內容區塊 -->
   <div class="row g-3 mt-4">
-
     <div class="col-md-6">
       <div class="card h-100 shadow-sm">
         <div class="card-body">
           <h5 class="fw-bold">📌 出發前</h5>
-          <p class="text-muted mb-0">
-            心情、期待、準備事項，慢慢整理中。
-          </p>
+          <p class="text-muted mb-0">心情、期待、準備事項，慢慢整理中。</p>
         </div>
       </div>
     </div>
@@ -83,49 +101,76 @@
       <div class="card h-100 shadow-sm">
         <div class="card-body">
           <h5 class="fw-bold">🕓 旅程紀錄</h5>
-          <p class="text-muted mb-0">
-            旅途中將更新照片與簡短日記。
-          </p>
+          <p class="text-muted mb-0">旅途中將更新照片與簡短日記。</p>
         </div>
       </div>
     </div>
-
   </div>
 
 </div>
 
-<!-- Footer -->
 <footer class="bg-success text-white text-center py-3">
-  <span id="footerText">© 2026 小宏工作室</span>
+  © 2026 小宏工作室
 </footer>
+
 <script>
   // ===============================
-// 雪花特效
-// ===============================
-function showSnowflakes(count) {
-    if (!snowContainer) return;
-    snowContainer.innerHTML = "";
+  // 狀態設定
+  // ===============================
+  const IN_SINGAPORE = false;
+  //const IN_SINGAPORE = true;
+
+
+
+  const effectContainer = document.getElementById("effect-container");
+  const month = new Date().getMonth() + 1;
+  const isWinter = [12, 1, 2].includes(month);
+
+  // ===============================
+  // 雪花
+  // ===============================
+  function startSnow(count) {
     for (let i = 0; i < count; i++) {
-        const snowflake = document.createElement("div");
-        snowflake.className = "snowflake";
-        snowflake.textContent = "❄️";
-        
-        const startLeft = Math.random() * 100; 
-        const duration = Math.random() * 5 + 5; 
-        const delay = Math.random() * 5;
-        const size = Math.random() * 10 + 10;
-
-        snowflake.style.left = `${startLeft}vw`;
-        snowflake.style.animationDuration = `${duration}s`;
-        snowflake.style.animationDelay = `-${delay}s`;
-        snowflake.style.fontSize = `${size}px`;
-        snowflake.style.opacity = Math.random();
-
-        snowContainer.appendChild(snowflake);
+      const snow = document.createElement("div");
+      snow.className = "snowflake";
+      snow.textContent = "❄️";
+      snow.style.left = Math.random() * 100 + "vw";
+      snow.style.fontSize = Math.random() * 12 + 12 + "px";
+      snow.style.animationDuration = Math.random() * 5 + 5 + "s";
+      effectContainer.appendChild(snow);
     }
-}
+  }
 
+  // ===============================
+  // 熱帶動畫（雲 + 飛機）
+  // ===============================
+  function startTropical() {
+    for (let i = 0; i < 3; i++) {
+      const cloud = document.createElement("div");
+      cloud.className = "cloud";
+      cloud.textContent = "☁️";
+      cloud.style.top = 10 + i * 15 + "%";
+      cloud.style.animationDuration = 30 + i * 10 + "s";
+      effectContainer.appendChild(cloud);
+    }
+
+    const plane = document.createElement("div");
+    plane.className = "plane";
+    plane.textContent = "✈️";
+    plane.style.animationDuration = "25s";
+    effectContainer.appendChild(plane);
+  }
+
+  // ===============================
+  // 判斷啟動哪個效果
+  // ===============================
+  if (isWinter && !IN_SINGAPORE) {
+    startSnow(30);
+  } else {
+    startTropical();
+  }
 </script>
-<script src="js/bootstrap.bundle.min.js"></script>
+
+<script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
