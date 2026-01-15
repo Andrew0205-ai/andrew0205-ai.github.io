@@ -1,13 +1,6 @@
-/* 強制顯示 badge，避免被其他樣式蓋掉 */
-.badge {
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: inline-block !important;
-  background-color: #ffc107 !important;
-  color: #212529 !important;
-  position: relative;
-  z-index: 5;
-}
+/* ================================
+   🌟 全域樣式
+   ================================ */
 body {
   background-color: #f5f5f5;
   font-family: "Noto Sans TC", sans-serif;
@@ -25,53 +18,66 @@ body {
   50% { opacity: 0; }
 }
 
-/* 留言卡片（Bootstrap Card 裡面再微調） */
-.comment-card {
-  border-left: 4px solid #2e7d32;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.comment-card .avatar {
-  float: left;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
-}
-
-.comment-card::after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-.comment-footer {
-  text-align: right;
-  font-size: 0.8rem;
-  color: #aaa;
-}
-
 /* 返回頂部 */
 #backToTop {
   border-radius: 50%;
 }
-/* -------------------------------------- */
-/* 🌟 基本排列 */
-/* -------------------------------------- */
-#badgeList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 10px;
+
+/* --------------------------------------
+   🎄 橫幅
+   -------------------------------------- */
+#christmasBanner {
+  background: linear-gradient(90deg, #1e7e34, #198754);
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-/* 外框：3D 翻牌容器 */
-.badge {
+/* ❄️ 雪花容器 */
+#snow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+/* ❄️ 雪花本體 */
+.snowflake {
+  position: absolute;
+  top: -20px;
+  color: white;
+  user-select: none;
+  animation-name: fallAndSway;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fallAndSway {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); }
+  25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
+  50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
+  75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
+  100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
+}
+
+/* 打字機效果的標題後綴 */
+h2::after, h3::after {
+  content: var(--after-icon);
+}
+
+/* --------------------------------------
+   🌟 3D 翻牌 badge
+   -------------------------------------- */
+.badge-3d {
   width: 120px;
   height: 50px;
-  perspective: 800px; /* 3D 視角 */
+  perspective: 800px;
   position: relative;
   cursor: pointer;
   animation: badgePop 0.6s ease-out forwards;
@@ -79,7 +85,7 @@ body {
   opacity: 0;
 }
 
-/* 內層：正反面都在裡面 */
+/* 內層正反面 */
 .badge-inner {
   width: 100%;
   height: 100%;
@@ -89,63 +95,56 @@ body {
 }
 
 /* 滑鼠懸浮 → 3D 翻牌 */
-.badge:hover .badge-inner {
+.badge-3d:hover .badge-inner {
   transform: rotateY(180deg);
 }
 
-/* 正面 */
+/* 正面 / 反面 */
 .badge-front,
 .badge-back {
   position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 10px;
   font-weight: bold;
   font-size: 1em;
   color: #333;
-
   box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
-/* 正面：金色漸層 */
 .badge-front {
   background: linear-gradient(135deg, #ffdd57, #ffb700);
 }
 
-/* 反面：黑色像 Steam 顏色 */
 .badge-back {
   background: #333;
   color: #ffd700;
   transform: rotateY(180deg);
 }
 
-/* -------------------------------------- */
-/* 🌟 彈跳出場動畫（搭配 JS delay） */
-/* -------------------------------------- */
+/* 彈跳動畫 */
 @keyframes badgePop {
-  0% {
-    transform: scale(0.4) rotate(-8deg);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.2) rotate(3deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(0);
-  }
+  0% { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
 }
 
-/* -------------------------------------- */
-/* 🌟 金光粒子特效 */
-/* -------------------------------------- */
-.badge::after {
+/* ✨ 金光粒子特效 */
+.badge-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  position: relative;
+  z-index: 5;
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.badge-visible::after {
   content: "✨";
   position: absolute;
   top: -10px;
@@ -155,39 +154,66 @@ body {
   animation: sparkle 1.4s infinite ease-in-out;
 }
 
-/* 隨機閃爍金光 */
 @keyframes sparkle {
   0% { opacity: 0; transform: scale(1); }
   50% { opacity: 0.9; transform: scale(1.4) rotate(10deg); }
   100% { opacity: 0; transform: scale(1); }
 }
 
-/* -------------------------------------- */
-/* 🌟 Steam-style 成就提示框 */
-/* -------------------------------------- */
-#achievementToast {
-  position: fixed;
-  bottom: 30px;
-  right: -350px;
-  width: 300px;
-  padding: 15px;
-  background: rgba(30,30,30,0.9);
+/* --------------------------------------
+   🌟 自定義 badge
+   -------------------------------------- */
+.badge-red,
+.custom-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.badge-red {
+  min-width: 80px;
+  max-width: 90vw;
+  padding: 2px 22px;
+  font-size: clamp(12px, 3vw, 16px);
+}
+
+.custom-badge {
+  min-width: 420px;
+  max-width: 95vw;
+  padding: 12px 24px;
+  font-size: clamp(14px, 2.5vw, 18px);
+  background: orange;
   color: white;
-  border-left: 6px solid gold;
-  border-radius: 8px;
-  font-size: 1em;
-  z-index: 9999;
-  transition: right 0.6s ease-out;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-#achievementToast.show {
-  right: 20px;
+/* --------------------------------------
+   🌟 新加坡區塊特效
+   -------------------------------------- */
+.travel-card {
+  transition: transform 0.3s ease;
+  border-radius: 20px !important;
 }
-/* ================================
-   ✨ 留言卡片整體樣式（Messenger Style）
-   ================================ */
 
+.travel-card:hover {
+  transform: scale(1.01);
+}
+
+.travel-img {
+  filter: brightness(0.6);
+  height: 350px;
+  object-fit: cover;
+}
+
+.sing {
+  text-decoration: none;
+  color: white;
+}
+
+/* --------------------------------------
+   🌟 留言板
+   -------------------------------------- */
 .comment-card {
   background: #e8ffe8;
   border-radius: 16px;
@@ -234,8 +260,6 @@ body {
   margin-top: 5px;
 }
 
-
-/* ✂️ 刪除按鈕 */
 .delete-comment-btn {
   background: #ff4d4d;
   border: none;
@@ -251,15 +275,13 @@ body {
   background: #cc0000;
 }
 
+/* 留言動畫 */
+@keyframes commentFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(12px); } to { transform: translateY(0); } }
 
-/* ================================
-   ✨ 動畫
-   ================================ */
-
-@keyframes commentFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* --------------------------------------
+   🌟 跑馬燈
+   -------------------------------------- */
 .marquee-wrapper {
   overflow: hidden;
   background-color: green;
@@ -279,118 +301,25 @@ body {
   100% { transform: translateX(-100%); }
 }
 
-
-
-@keyframes slideUp {
-  from { transform: translateY(12px); }
-  to { transform: translateY(0); }
-}
-
-
-
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
-}
-  .badge-red {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 80px;     /* ⭐ 短文字不用太長 */
-  max-width: 90vw;
-
-  padding: 2px 22px;
-  white-space: nowrap;
-
-  font-size: clamp(12px, 3vw, 16px);
-  border-radius: 999px;
-}
-
-.custom-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  /* ⭐ 拉長容器 */
-  min-width: 420px;      /* 桌機最小寬度（可以再加大） */
-  max-width: 95vw;       /* 手機不超過螢幕寬度 */
-
-  padding: 12px 24px;
-
-  /* ⭐ 不換行 */
-  white-space: nowrap;
-
-  /* ⭐ 文字自動縮放 */
-  font-size: clamp(14px, 2.5vw, 18px);
-
-  /* 視覺 */
-  background: orange;   /* orange */
+/* --------------------------------------
+   🌟 Steam-style 成就提示框
+   -------------------------------------- */
+#achievementToast {
+  position: fixed;
+  bottom: 30px;
+  right: -350px;
+  width: 300px;
+  padding: 15px;
+  background: rgba(30,30,30,0.9);
   color: white;
-  border-radius: 999px;
-}
-    /* 橫幅樣式 */
-    #christmasBanner {
-      background: linear-gradient(90deg, #1e7e34, #198754);
-      color: white;
-      text-align: center;
-      padding: 8px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-
-    /* ❄️ 雪花容器 */
-    #snow-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 9999;
-    }
-
-    /* ❄️ 雪花本體 */
-    .snowflake {
-      position: absolute;
-      top: -20px;
-      color: white;
-      user-select: none;
-      animation-name: fallAndSway;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-    }
-
-    @keyframes fallAndSway {
-      0% { transform: translateY(0) translateX(0) rotate(0deg); }
-      25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
-      50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
-      75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
-      100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
-    }
-
-h2::after, h3::after {
-  content: var(--after-icon);
+  border-left: 6px solid gold;
+  border-radius: 8px;
+  font-size: 1em;
+  z-index: 9999;
+  transition: right 0.6s ease-out;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-    /* ✈️ 新加坡區塊特效 */
-    .travel-card {
-      transition: transform 0.3s ease;
-      border-radius: 20px !important;
-    }
-    .travel-card:hover {
-      transform: scale(1.01);
-    }
-    .travel-img {
-      filter: brightness(0.6);
-      height: 350px;
-      object-fit: cover;
-    }
-  .sing {
-    text-decoration:none;
-    color:white;
-  }
+#achievementToast.show {
+  right: 20px;
+}
