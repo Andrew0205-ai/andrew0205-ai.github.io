@@ -5,10 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🇸🇬 新加坡城市探索｜小宏的部落格</title>
 
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+     /* ❄️ 雪花容器 */
+    #snow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    /* ❄️ 雪花本體 */
+    .snowflake {
+      position: absolute;
+      top: -20px;
+      color: white;
+      user-select: none;
+      animation-name: fallAndSway;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fallAndSway {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); }
+      25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
+      50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
+      75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
+      100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+    <div id="snow-container"></div>
 
 <!-- 導覽列 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
@@ -65,7 +98,34 @@
 <footer class="bg-success text-white text-center py-3">
   <span id="footerText">© 2026 小宏工作室</span>
 </footer>
+<script>
+  // ===============================
+// 雪花特效
+// ===============================
+function showSnowflakes(count) {
+    if (!snowContainer) return;
+    snowContainer.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+        const snowflake = document.createElement("div");
+        snowflake.className = "snowflake";
+        snowflake.textContent = "❄️";
+        
+        const startLeft = Math.random() * 100; 
+        const duration = Math.random() * 5 + 5; 
+        const delay = Math.random() * 5;
+        const size = Math.random() * 10 + 10;
 
+        snowflake.style.left = `${startLeft}vw`;
+        snowflake.style.animationDuration = `${duration}s`;
+        snowflake.style.animationDelay = `-${delay}s`;
+        snowflake.style.fontSize = `${size}px`;
+        snowflake.style.opacity = Math.random();
+
+        snowContainer.appendChild(snowflake);
+    }
+}
+
+</script>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
