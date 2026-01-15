@@ -12,12 +12,10 @@
 
 ## 技術架構
 
-- **前端**：HTML, CSS, JavaScript
-- **資料庫**：Firebase（留言板資料儲存）
+- **前端**：HTML, CSS, JS
+- **資料庫**：Firebase（留言板資料儲存）、 Cloudinary (圖片儲存)
 
-## 網站預覽
 
-<img src="https://i.meee.com.tw/JYVlKzJ.png" alt="網站預覽" width="600">
 
 ## 使用方式
 
