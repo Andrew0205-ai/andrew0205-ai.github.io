@@ -146,11 +146,17 @@ h2::after, h3::after {
   object-fit: cover;
 }
 
-.sing {
-  text-decoration: none;
+a.sing,
+a.sing:link,
+a.sing:visited,
+a.sing:hover,
+a.sing:active,
+a.sing:focus {
+  text-decoration: none !important;
   color: white;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
-
 /* --------------------------------------
    🌟 留言板
    -------------------------------------- */
