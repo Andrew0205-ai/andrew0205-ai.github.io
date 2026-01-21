@@ -116,7 +116,7 @@ function updateFestival() {
     // 1-2月新年與寒假出國季
     else if (month === 1 || month === 2) {
         if (bannerText) {
-            bannerText.textContent = (month === 1 && day < 20) 
+            bannerText.textContent = (month === 1 && day < 28) 
                 ? `🧧 ${year} 新年快樂！準備出發去新加坡囉 ✈️` 
                 : `🦁 小宏的新加坡城市探索進行中！🇸🇬`;
         }
