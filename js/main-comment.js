@@ -436,3 +436,12 @@ auth.onAuthStateChanged(user => {
 document.addEventListener("DOMContentLoaded", () => {
     loadComments(true);
 });
+async function logout() {
+    try {
+        await auth.signOut();
+        showToast("已成功登出 👋");
+    } catch (err) {
+        console.error(err);
+        showToast("登出失敗", "danger");
+    }
+}
