@@ -269,3 +269,29 @@ a.sing:focus {
 #achievementToast.show {
   right: 20px;
 }
+
+
+
+
+    /* 連結高對比 */
+    .link-strong {
+      color: #2e7d32;
+      text-decoration: underline;
+    }
+
+    /* 編輯 / 刪除 高對比 */
+    .action-edit {
+      color: #0d47a1;
+      cursor: pointer;
+    }
+
+    .action-delete {
+      color: #b71c1c;
+      cursor: pointer;
+    }
+
+    /* Email */
+    .contact-link {
+      color: #0d47a1;
+      text-decoration: underline;
+    }
