@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>小宏的部落格｜音樂、程式與生活探索</title>
-  <meta name="description" content="小宏的個人部落格，分享音樂學習、程式設計、旅遊紀錄與生活點滴，包含新加坡旅遊專區與互動留言板。">
-
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <title>小宏的部落格 | 音樂、程式與生活探索</title>
+  
+  <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+  
+  
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -19,43 +16,38 @@
     gtag('js', new Date());
     gtag('config', 'G-3NGHCWH7TP');
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" defer></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-
 <body>
-  <a href="#about-section" class="visually-hidden-focusable">跳到主要內容</a>
+  <div id="snow-container"></div>
 
-  <div id="snow-container" aria-hidden="true"></div>
-
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3 shadow-sm" aria-label="主選單">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3 shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">小宏的部落格</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="切換選單">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="#contact-section">聯絡我</a></li>
-          <li class="nav-item"><a class="nav-link" href="name.html" target="_blank" rel="noopener">電子名片</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank" rel="noopener">我的日記</a></li>
-          <li class="nav-item"><a class="nav-link" href="singapore/index.html">新加坡專區</a></li>
+          <li class="nav-item"><a class="nav-link" href="name.html" target="_blank">🪪 電子名片</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://andrew0205blogs.blogspot.com/?m=1" target="_blank">📖 我的日記</a></li>
+          <li class="nav-item"><a class="nav-link" href="singapore/index.html">🇸🇬 新加坡專區</a></li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">我的遊戲 ID</a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">我的遊戲 ID</a>
             <ul class="dropdown-menu">
-              <li><h2 class="dropdown-header fs-6">遊戲名稱</h2></li>
-              <li><a class="dropdown-item" href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank" rel="noopener">夢想小鎮</a></li>
-              <li><h2 class="dropdown-header fs-6">玩家名稱</h2></li>
+              <li><h6 class="dropdown-header">遊戲名稱</h6></li>
+              <li><a class="dropdown-item" href="https://share.google/dzhZ67jZlUOGWXsEk" target="_blank">夢想小鎮</a></li>
+              <li><h6 class="dropdown-header">玩家名稱</h6></li>
               <li><span class="dropdown-item-text">小宏鎮</span></li>
-              <li><h2 class="dropdown-header fs-6">遊戲 ID</h2></li>
+              <li><h6 class="dropdown-header">遊戲 ID</h6></li>
               <li class="px-3 pb-2">
                 <p class="mb-1 fw-bold">ID：<span id="gameID">K3Q92B</span></p>
-                <button class="btn btn-success btn-sm" onclick="copyGameID()" aria-label="複製遊戲 ID">複製 ID</button>
+                <button onclick="copyGameID()" class="btn btn-success btn-sm">複製 ID</button>
               </li>
             </ul>
           </li>
@@ -63,78 +55,241 @@
       </div>
     </div>
   </nav>
-
-  <div id="christmasBanner" role="status" aria-live="polite">
-    <span id="bannerText">正在載入節慶祝福...</span>
-  </div>
-
-  <div class="marquee-wrapper" aria-hidden="true">
+  <div id="christmasBanner">
+  <span id="bannerText">正在加載節慶祝福...</span>
+</div>
+  <div class="marquee-wrapper">
     <div class="marquee" id="marquee">
       <span id="marqueeText"></span>
     </div>
   </div>
 
-  <main class="container mt-5">
+
+  <div class="container mt-5">
     <section id="about-section" class="mb-5">
-      <h1 class="mb-3">關於我</h1>
-      <div class="row g-3">
+      <h2 class="mb-3">關於我</h2>
+      <div class="row align-items-start g-3">
         <div class="col-md-7">
-          <span id="typing-text" aria-live="polite"></span>
-          <span class="cursor" id="cursor" aria-hidden="true"></span>
+          <span id="typing-text"></span><span class="cursor" id="cursor"></span>
         </div>
         <div class="col-md-5 text-center">
-          <img src="images/andrew.png" id="avatar"
-               class="img-fluid rounded shadow-sm mx-auto d-block"
-               alt="小宏的個人頭像">
+          <img src="images/andrew.png" id="avatar" class="img-fluid rounded shadow-sm mx-auto d-block" alt="頭像">
         </div>
       </div>
     </section>
 
     <section id="travel-announcement" class="mb-5">
       <h2 class="mb-4">最新動態</h2>
-      <a href="singapore/index.html" class="text-decoration-none">
-        <article class="card bg-dark text-white border-0 shadow-lg overflow-hidden">
-          <img src="https://a.travel-assets.com/findyours-php/viewfinder/images/res70/542000/542607-singapore.jpg"
-               class="card-img" alt="新加坡城市夜景">
-          <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
-            <h3 class="fw-bold display-6">寒假出發：新加坡城市探索</h3>
-            <p class="fs-5">從台中的街頭，到獅城的盛景。</p>
-            <span class="badge custom-badge">旅遊日記・景點筆記・美食探索</span>
-          </div>
-        </article>
+      <a href="singapore/index.html">
+      <div class="card bg-dark text-white border-0 shadow-lg overflow-hidden travel-card">
+        <img src="https://a.travel-assets.com/findyours-php/viewfinder/images/res70/542000/542607-singapore.jpg" 
+             class="card-img travel-img" alt="Singapore View">
+        <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
+          <h3 class="card-title fw-bold display-6 sing ">寒假出發：新加坡城市探索</h3>
+          <p class="card-text fs-5 sing">「從台中的街頭，到獅城的盛景。這是我第一次在網站宣告：我要出國旅行啦！」</p>
+          <p class="card-text">
+ <span class="badge custom-badge">
+  📌 預計撰寫：旅遊日記、景點筆記、美食探索
+</span>
+          </p>
+
+        </div>
+      </div>
       </a>
     </section>
 
-    <section id="featured-posts" class="mb-5">
-      <h2 class="mb-3">推薦文章</h2>
-      <div class="row g-3">
-        <div class="col-md-6 col-lg-4">
-          <article class="card shadow-sm h-100">
-            <div class="card-body d-flex flex-column">
-              <h3 class="card-title fs-5">鋼琴演奏</h3>
-              <p class="card-text">一個月的練習成果分享。</p>
-              <a href="https://andrew0205blogs.blogspot.com/2025/12/blog-post.html"
-                 class="btn btn-success mt-auto" aria-label="閱讀鋼琴演奏文章">閱讀完整內容</a>
-            </div>
-          </article>
+   <section id="featured-posts" class="mb-5">
+  <h2 class="mb-3">推薦文章</h2>
+
+  <div class="row g-3">
+    <!-- 卡片 1 -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">🎹 鋼琴演奏！</h5>
+          <p class="card-text">我花了一個月練鋼琴，終於練好了！</p>
+          <a href="https://andrew0205blogs.blogspot.com/2025/12/blog-post.html"
+             class="btn btn-success mt-auto">
+            閱讀完整內容
+          </a>
         </div>
       </div>
+    </div>
+
+    <!-- 卡片 2 -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">🇸🇬 新加坡旅遊日記：精彩預告！</h5>
+          <p class="card-text">即將分享新加坡旅遊的精彩點滴，敬請期待！</p>
+          <a href="https://andrew0205blogs.blogspot.com/2026/01/blog-post.html"
+             class="btn btn-success mt-auto">
+            閱讀完整內容
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<div class="container mt-5 pb-5">
+    <section id="comment-section" style="max-width: 800px; margin: auto;">
+        <h3 class="mb-4">💬留言板</h3>
+
+        <div id="loginArea" class="card p-4 shadow-sm mb-3 text-center">
+            <p class="text-muted small">登入後可設定頭像，與小宏進行更多互動！</p>
+            <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-danger btn-sm px-3 shadow-sm" onclick="googleLogin()">
+                    <i class="bi bi-google"></i> Google 登入
+                </button>
+                <button class="btn btn-outline-secondary btn-sm px-3 shadow-sm" onclick="openEmailModal('login')">
+                    <i class="bi bi-envelope"></i> Email 登入
+                </button>
+            </div>
+        </div>
+
+        <div id="quickBlessing" class="mb-4 p-4 card shadow-sm text-center bg-white border">
+            <h6 class="text-muted small mb-3 fw-bold">✈️ 新加坡旅行快捷祝福 (免登入)</h6>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <button class="btn btn-sm px-3 py-2 blessing-btn" onclick="postQuickComment('✈️ 一路順風！')">✈️ 一路順風</button>
+                <button class="btn btn-sm px-3 py-2 blessing-btn" onclick="postQuickComment('🇸🇬 玩得開心！')">🇸🇬 玩得開心</button>
+                <button class="btn btn-sm px-3 py-2 blessing-btn" onclick="postQuickComment('📸 期待美照！')">📸 期待美照</button>
+                <button class="btn btn-sm px-3 py-2 blessing-btn" onclick="postQuickComment('🍗 吃遍美食！')">🍗 吃遍美食</button>
+            </div>
+        </div>
+
+        <div id="userArea" class="d-none mb-4 text-center p-4 card shadow-sm bg-white">
+            <div class="position-relative d-inline-block">
+                <img id="userAvatar" src="images/andrew.png" width="90" height="90" 
+                     class="rounded-circle mb-3 border border-4 border-light shadow-sm cursor-pointer" 
+                     onclick="openProfileModal()" title="更換資料">
+            </div>
+            <h4 class="fw-bold mb-3"><span id="userName">載入中...</span></h4>
+            <div>
+                <button class="btn btn-sm btn-outline-primary px-3 me-2" onclick="openProfileModal()">編輯資料</button>
+                <button class="btn btn-sm btn-link text-danger text-decoration-none" onclick="logout()">登出</button>
+            </div>
+        </div>
+
+        <div id="commentArea" class="d-none card p-3 shadow-sm mb-4">
+            <textarea id="commentInput" class="form-control border-0 bg-light mb-2" rows="4" maxlength="500" placeholder="分享你的想法... (支援 Markdown)"></textarea>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small"><span id="count">0</span> / 500</span>
+<button class="btn btn-sm btn-outline-secondary me-1" onclick="uploadImage()">
+    <i class="bi bi-image"></i> 圖片
+</button>
+
+                <button class="btn btn-primary btn-sm px-4 shadow-sm fw-bold" onclick="postComment()">送出留言</button>
+            </div>
+        </div>
+
+        <div id="comments" class="mt-4"></div>
+        
+        <button id="loadMoreBtn" class="btn btn-white w-100 mt-3 shadow-sm py-2 bg-white border" onclick="loadComments()">
+            <i class="bi bi-arrow-down-short"></i> 載入更多
+        </button>
     </section>
-  </main>
+</div>
 
-  <footer class="bg-success text-white text-center py-3">
-    <p class="mb-0">© 2026 小宏工作室</p>
-  </footer>
+<div class="modal fade" id="profileModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold">更新個人資料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <img id="modalPreviewImg" src="images/andrew.png" class="rounded-circle img-thumbnail mb-3" style="width: 110px; height: 110px; object-fit: cover;">
+                <div class="mb-4">
+                    <label class="btn btn-sm btn-outline-primary">
+                        選擇新頭像 <input type="file" id="modalFileBtn" hidden accept="image/*">
+                    </label>
+                </div>
+                <div class="text-start">
+                    <label class="form-label small fw-bold">顯示名稱</label>
+                    <input type="text" id="modalNameInput" class="form-control" placeholder="你的名字">
+                </div>
+                <div id="uploadProgress" class="progress d-none mt-3" style="height: 6px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated w-100 bg-success"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-success px-4" onclick="saveProfileChanges()">儲存</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-  <noscript>
-    <p class="text-center text-danger mt-3">
-      本網站需要啟用 JavaScript 才能使用留言與互動功能。
-    </p>
-  </noscript>
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 border-0 shadow">
+            <h5 class="mb-3 fw-bold">修改留言內容</h5>
+            <textarea id="editInput" class="form-control mb-3 bg-light" rows="4"></textarea>
+            <div class="d-flex gap-2">
+                <button class="btn btn-light flex-grow-1" data-bs-dismiss="modal">取消</button>
+                <button class="btn btn-success flex-grow-1" onclick="saveEdit()">確認修改</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-  <script src="js/bootstrap.bundle.min.js"></script>
+<div class="modal fade" id="emailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 border-0 shadow">
+            <h5 class="mb-4 fw-bold text-center text-primary" id="emailModalTitle">Email 登入</h5>
+            <div id="emailError" class="alert alert-danger d-none small"></div>
+            <input id="emailInput" class="form-control mb-2" placeholder="Email 地址">
+            <div id="passwordRow"><input id="passwordInput" type="password" class="form-control mb-2" placeholder="密碼"></div>
+            <div id="nameRow" style="display:none"><input id="nameInput" class="form-control mb-2" placeholder="暱稱"></div>
+            <div id="avatarRow" style="display:none">
+                <label class="small text-muted mb-1">頭像 (選填)</label>
+                <input id="avatarInput" type="file" class="form-control mb-2" accept="image/*">
+            </div>
+            <button class="btn btn-primary w-100 py-2 mt-2 shadow-sm" onclick="submitEmailAuth()">送出</button>
+            <div class="text-center mt-3 small">
+                <a href="javascript:void(0)" class="text-decoration-none mx-1" onclick="openEmailModal('login')">登入</a>|
+                <a href="javascript:void(0)" class="text-decoration-none mx-1" onclick="openEmailModal('signup')">註冊</a>|
+                <a href="javascript:void(0)" class="text-decoration-none mx-1" onclick="openEmailModal('reset')">忘記密碼</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="file" id="imageInput" accept="image/*" hidden>
+<!-- Toast 容器 -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11000">
+  <div id="toastContainer"></div>
+</div>
+  <div class="container">
+    <section id="contact-section" class="mb-4">
+      <h3>📬 聯絡我</h3>
+      <p>電子郵件：<a href="mailto:andrewwork03295@gmail.com">andrewwork03295@gmail.com</a></p>
+    </section>
+    
+    <section id="update-section" class="text-muted mb-4">
+      🕓 最後更新日期：<span id="lastUpdate"></span>
+    </section>
+  </div>
+
+  <button id="backToTop" class="btn btn-success position-fixed bottom-0 end-0 m-3">⬆️</button>
+<footer class="bg-success text-white text-center ">
+  <span id="footerText">© 2026 小宏工作室</span>
+</footer>
+
+  <noscript>⚠️ 本網站需要啟用 JavaScript 才能正常使用留言功能。</noscript>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="./js/firebase-config.js"></script>
+  <script src="./js/main-comment.js"></script>
+  <script src="js/badge-index.js"></script>
   <script src="js/type.js"></script>
   <script src="js/lan.js"></script>
   <script src="js/other.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
