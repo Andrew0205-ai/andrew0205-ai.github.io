@@ -3,15 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"content="小宏的部落格，分享音樂練習、程式學習與生活紀錄，包含鋼琴演奏、旅遊與個人創作。">
-
-
+  <meta name="description" content="小宏的部落格，分享音樂練習、程式學習與生活紀錄，包含鋼琴演奏、旅遊與個人創作。">
   <title>小宏的部落格 | 音樂、程式與生活探索</title>
-  
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
-  
-    
+
+
+  <!-- 延遲載入 Bootstrap 主 CSS -->
+  <link rel="preload" href="css/bootstrap.min.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link href="css/bootstrap.min.css" rel="stylesheet"></noscript>
+
+  <!-- 延遲載入其他非關鍵 CSS (bootstrap-icons) -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+
+  <!-- 追蹤與 JS -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -21,10 +25,8 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" defer></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  
-
 </head>
+
 <body>
   <div id="snow-container"></div>
 
