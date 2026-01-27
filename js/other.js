@@ -136,3 +136,7 @@ function updateFestival() {
 
 // 啟動節慶判定
 updateFestival();
+//======================================
+document.getElementById("footerText").textContent =
+  `© ${new Date().getFullYear()} 小宏工作室`;
+
