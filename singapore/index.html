@@ -89,11 +89,11 @@
     這個專區將記錄我出發前的準備、旅途中的點滴，以及回來後的整理與回顧。
   </p>
 
-<div
-  id="trip-status"
-  class="alert rounded-4">
-</div>
+  <!-- 旅程狀態 -->
+  <div id="trip-status" class="alert rounded-4"></div>
 
+  <!-- 日記連結 -->
+  <div id="daily-logs" class="mt-4"></div>
 
   <div class="row g-3 mt-4">
     <div class="col-md-6">
@@ -122,27 +122,21 @@
 </footer>
 
 <script>
+  // ===============================
+  // 自動判斷是否在新加坡
+  // ===============================
+  const today = new Date();
+  const startDate = new Date(2026, 0, 29); // 1/29
+  const endDate   = new Date(2026, 1, 1);  // 2/1
+  const IN_SINGAPORE = today >= startDate && today <= endDate;
 
   // ===============================
-  // 狀態設定
+  // 雪花與熱帶動畫
   // ===============================
- // ===============================
-// 自動判斷是否在新加坡
-// ===============================
-const today = new Date(); // 取得今天
-const startDate = new Date(2026, 0, 29); // 月份從 0 開始，0 = 一月
-const endDate   = new Date(2026, 1, 1);  // 2/1
-
-// 如果今天在範圍內，就算在新加坡
-const IN_SINGAPORE = today >= startDate && today <= endDate;
-
   const effectContainer = document.getElementById("effect-container");
-  const month = new Date().getMonth() + 1;
+  const month = today.getMonth() + 1;
   const isWinter = [12, 1, 2].includes(month);
 
-  // ===============================
-  // 雪花
-  // ===============================
   function startSnow(count) {
     for (let i = 0; i < count; i++) {
       const snow = document.createElement("div");
@@ -155,9 +149,6 @@ const IN_SINGAPORE = today >= startDate && today <= endDate;
     }
   }
 
-  // ===============================
-  // 熱帶動畫（雲 + 飛機）
-  // ===============================
   function startTropical() {
     for (let i = 0; i < 3; i++) {
       const cloud = document.createElement("div");
@@ -175,28 +166,44 @@ const IN_SINGAPORE = today >= startDate && today <= endDate;
     effectContainer.appendChild(plane);
   }
 
-  // ===============================
-  // 判斷啟動哪個效果
-  // ===============================
   if (isWinter && !IN_SINGAPORE) {
     startSnow(30);
   } else {
     startTropical();
   }
+
   // ===============================
-// 旅程狀態文字切換
-// ===============================
-const statusBox = document.getElementById("trip-status");
+  // 旅程狀態文字切換
+  // ===============================
+  const statusBox = document.getElementById("trip-status");
+  if (IN_SINGAPORE) {
+    statusBox.classList.add("alert-success");
+    statusBox.textContent = "🇸🇬 已抵達新加坡，旅程進行中。";
+  } else {
+    statusBox.classList.add("alert-warning");
+    statusBox.textContent = "✈️ 目前尚未出發，內容將於旅程前後逐步更新。";
+  }
 
-if (IN_SINGAPORE) {
-  statusBox.classList.add("alert-success");
-  statusBox.textContent = "🇸🇬 已抵達新加坡，旅程進行中。";
-} else {
-  statusBox.classList.add("alert-warning");
-  statusBox.textContent = "✈️ 目前尚未出發，內容將於旅程前後逐步更新。";
-}
+  // ===============================
+  // 每日日記自動生成
+  // ===============================
+  const dailyLogs = [
+    { date: "2026-01-29", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-1.html" },
+    { date: "2026-01-30", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-2.html" },
+    { date: "2026-01-31", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-3.html" }
+  ];
 
+  const logsContainer = document.getElementById("daily-logs");
 
+  dailyLogs.forEach(log => {
+    const logDate = new Date(log.date + "T00:00:00");
+    if (today >= logDate) {
+      const logDiv = document.createElement("div");
+      logDiv.className = "alert alert-info rounded-4 mb-3";
+      logDiv.innerHTML = `📅 ${log.date} 日記已發布：<a href="${log.url}" target="_blank">點此查看</a>`;
+      logsContainer.appendChild(logDiv);
+    }
+  });
 </script>
 
 <script src="../js/bootstrap.bundle.min.js"></script>
