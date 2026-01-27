@@ -89,9 +89,11 @@
     這個專區將記錄我出發前的準備、旅途中的點滴，以及回來後的整理與回顧。
   </p>
 
-  <div class="alert alert-warning rounded-4">
-    ✈️ 目前尚未出發，內容將於旅程前後逐步更新。
-  </div>
+<div
+  id="trip-status"
+  class="alert rounded-4">
+</div>
+
 
   <div class="row g-3 mt-4">
     <div class="col-md-6">
@@ -174,6 +176,19 @@
   } else {
     startTropical();
   }
+  // ===============================
+// 旅程狀態文字切換
+// ===============================
+const statusBox = document.getElementById("trip-status");
+
+if (IN_SINGAPORE) {
+  statusBox.classList.add("alert-success");
+  statusBox.textContent = "🇸🇬 已抵達新加坡，旅程進行中。";
+} else {
+  statusBox.classList.add("alert-warning");
+  statusBox.textContent = "✈️ 目前尚未出發，內容將於旅程前後逐步更新。";
+}
+
 </script>
 
 </script>
