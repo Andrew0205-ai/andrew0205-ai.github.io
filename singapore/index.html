@@ -126,8 +126,15 @@
   // ===============================
   // 狀態設定
   // ===============================
-  const IN_SINGAPORE = false;
-  // const IN_SINGAPORE = true;
+ // ===============================
+// 自動判斷是否在新加坡
+// ===============================
+const today = new Date(); // 取得今天
+const startDate = new Date(2026, 0, 29); // 月份從 0 開始，0 = 一月
+const endDate   = new Date(2026, 1, 1);  // 2/1
+
+// 如果今天在範圍內，就算在新加坡
+const IN_SINGAPORE = today >= startDate && today <= endDate;
 
   const effectContainer = document.getElementById("effect-container");
   const month = new Date().getMonth() + 1;
