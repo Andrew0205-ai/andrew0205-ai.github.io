@@ -88,16 +88,16 @@
 
   function addEnergy() {
     const today = new Date().toDateString();
-    if (dailyCount >= 50) {
-      document.getElementById("msg").textContent = "今天勇氣分數已達 50 次上限！明天再加吧！";
+    if (dailyCount >= 5000) {
+      document.getElementById("msg").textContent = "今天勇氣分數已達 5000 次上限！明天再加吧！";
       return;
     }
     dailyCount++;
-    let add = prompt("輸入要增加的勇氣分數（1~20）：");
+    let add = prompt("輸入要增加的勇氣分數（1~20000）：");
     if (add === null) return;
     add = parseInt(add);
     if (isNaN(add) || add < 1) { alert("請輸入有效數字"); dailyCount--; return; }
-    if (add > 20) { alert("單次最多 20 分！"); dailyCount--; return; }
+    if (add > 20000) { alert("單次最多 20000 分！"); dailyCount--; return; }
 
     const record = confirm("你要紀錄這次加分事件嗎？");
     energy += add;
