@@ -118,7 +118,7 @@ function updateFestival() {
         if (bannerText) {
             bannerText.textContent = (month === 1 && day < 28) 
                 ? `🧧 ${year} 新年快樂！準備出發去新加坡囉 ✈️` 
-                : `🦁 小宏的新加坡城市探索進行中！🇸🇬`;
+                : `🦁 已平安抵台!🇸🇬`;
         }
         if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #d4a017, #b8860b)";
         
