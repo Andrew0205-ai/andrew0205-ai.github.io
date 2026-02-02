@@ -176,12 +176,10 @@
   // 旅程狀態文字切換
   // ===============================
   const statusBox = document.getElementById("trip-status");
-  if (IN_SINGAPORE) {
+
     statusBox.classList.add("alert-success");
-    statusBox.textContent = "🇸🇬 已抵達新加坡，旅程進行中。";
-  } else {
-    statusBox.classList.add("alert-warning");
-    statusBox.textContent = "✈️ 目前尚未出發，內容將於旅程前後逐步更新。";
+    statusBox.textContent = "😀已平安返回台灣，將於稍後發布日記及照片。";
+ 
   }
 
   // ===============================
