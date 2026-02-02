@@ -17,20 +17,44 @@
   <!-- Lightbox CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
 
-  <!-- 自訂 CSS -->
   <style>
+  main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
 
-    main {
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-    }
-  </style>
+  .gallery {
+    display: grid;
+    /* 針對 640x480 調整寬度，確保在大螢幕或手機上都能漂亮排列 */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .gallery a {
+    display: block;
+    overflow: hidden;
+    border-radius: 8px; /* 圓角看起來比較現代 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    background-color: #f8f9fa;
+  }
+
+  /* 滑鼠移上去稍微放大，很有互動感 */
+  .gallery a:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+
+  .gallery img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 4 / 3; /* 強制維持 4:3，防止載入前跳動 */
+    object-fit: cover;
+  }
+</style>
 </head>
 <body>
 
