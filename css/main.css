@@ -228,35 +228,35 @@ a.sing:focus {
 /* --------------------------------------
  🌟 跑馬燈
    -------------------------------------- */
-/* 容器：限制顯示範圍 */
+/* 1. 最外層：負責固定背景色，並隱藏超出範圍的內容 */
 .marquee-wrapper {
-  width: 100%;
-  overflow: hidden; /* 超出範圍的文字隱藏 */
-  background: #f8f9fa; /* 根據你網誌風格調整顏色 */
-  border-bottom: 1px solid #ddd;
+    width: 100%;
+    background-color: green; /* 背景色留在這裡，才不會跟著滑走 */
+    color: white;
+    padding: 10px 0;
+    overflow: hidden; /* 隱藏右邊進場前與左邊退場後的文字 */
+    box-sizing: border-box;
 }
 
-/* 跑馬燈主體：設定動畫 */
+/* 2. 中間層：負責動畫 */
 .marquee {
-  display: inline-block;
-  white-space: nowrap; /* 強制文字不換行 */
-  padding-left: 100%; /* 讓文字起始位置在容器的最右側邊緣外 */
-  animation: scroll-left 15s linear infinite; /* 15秒跑一次，線性速度，無限循環 */
+    display: inline-block;
+    white-space: nowrap; /* ⭐ 關鍵：強制文字絕對不換行 */
+    padding-left: 100%;  /* 讓起點在容器最右邊邊界外 */
+    animation: marquee-animation 15s linear infinite;
 }
 
-/* 定義滑動動畫 */
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%); /* 往左滑動直到文字完全消失 */
-  }
+/* 3. 文字層：確保它是行內塊 */
+#marqueeText {
+    display: inline-block;
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 
-/* 選項：當滑鼠移上去時暫停，方便閱讀 */
-.marquee-wrapper:hover .marquee {
-  animation-play-state: paused;
+/* 4. 動畫：從 translateX(0) 開始是因為 padding-left 已經把文字推到右邊了 */
+@keyframes marquee-animation {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
 }
 /* --------------------------------------
    🌟 Steam-style 成就提示框
