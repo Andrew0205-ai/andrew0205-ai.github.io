@@ -228,25 +228,35 @@ a.sing:focus {
 /* --------------------------------------
  🌟 跑馬燈
    -------------------------------------- */
-
-.marquee-container {
-    width: 100%;
-    overflow: hidden; /* 隱藏右邊預備進場和左邊退場的文字 */
-    white-space: nowrap;
-    background-color: green;
-    color: white;
-    padding: 10px 0;
+/* 容器：限制顯示範圍 */
+.marquee-wrapper {
+  width: 100%;
+  overflow: hidden; /* 超出範圍的文字隱藏 */
+  background: #f8f9fa; /* 根據你網誌風格調整顏色 */
+  border-bottom: 1px solid #ddd;
 }
 
-#marqueeText {
-    display: inline-block;
-    padding-left: 100%; /* 初始位置在最右邊界外 */
-    animation: marquee-animation 10s linear infinite;
+/* 跑馬燈主體：設定動畫 */
+.marquee {
+  display: inline-block;
+  white-space: nowrap; /* 強制文字不換行 */
+  padding-left: 100%; /* 讓文字起始位置在容器的最右側邊緣外 */
+  animation: scroll-left 15s linear infinite; /* 15秒跑一次，線性速度，無限循環 */
 }
 
-@keyframes marquee-animation {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
+/* 定義滑動動畫 */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%); /* 往左滑動直到文字完全消失 */
+  }
+}
+
+/* 選項：當滑鼠移上去時暫停，方便閱讀 */
+.marquee-wrapper:hover .marquee {
+  animation-play-state: paused;
 }
 /* --------------------------------------
    🌟 Steam-style 成就提示框
