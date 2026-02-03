@@ -58,27 +58,24 @@ const marqueeMessages = [
     "🛠️ 網站留言板功能已完成",
     "🇸🇬 正在規劃寒假新加坡城市探索之旅",
     "📢 最新公告：節慶版面已上線！",
-    "🌍本月成語：A miss is as good as a mile. 差之毫厘，失之千里。"
+    "🌍本月成語：Never put off what you can do today until tomorrow."
 ];
 
 let marqueeIndex = 0;
 const marqueeText = document.getElementById("marqueeText");
 
-function showNextMarquee() {
-    if (!marqueeText) return;
-    // 簡單淡出切換
-    marqueeText.style.opacity = 0;
-    setTimeout(() => {
-        marqueeText.textContent = marqueeMessages[marqueeIndex];
-        marqueeIndex = (marqueeIndex + 1) % marqueeMessages.length;
-        marqueeText.style.opacity = 1;
-    }, 500);
+function updateMarquee() {
+    marqueeText.textContent = marqueeMessages[marqueeIndex];
+    marqueeIndex = (marqueeIndex + 1) % marqueeMessages.length;
 }
 
-if (marqueeText) {
-    showNextMarquee();
-    setInterval(showNextMarquee, 8000);
-}
+// 當動畫結束一輪時，更換下一段文字
+marqueeText.addEventListener('animationiteration', () => {
+    updateMarquee();
+});
+
+// 初始觸發一次
+updateMarquee();
 
 // ===============================
 // 6. 節慶與雪花特效
