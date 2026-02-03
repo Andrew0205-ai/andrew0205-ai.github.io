@@ -241,7 +241,7 @@ a.sing:focus {
 /* 2. 中間層：負責動畫 */
 .marquee {
     display: inline-block;
-    white-space: nowrap; /* ⭐ 關鍵：強制文字絕對不換行 */
+    white-space: nowrap; /* 關鍵：強制文字絕對不換行 */
     padding-left: 100%;  /* 讓起點在容器最右邊邊界外 */
     animation: marquee-animation 15s linear infinite;
 }
@@ -250,7 +250,6 @@ a.sing:focus {
 #marqueeText {
     display: inline-block;
     font-size: 1.1rem;
-    font-weight: bold;
 }
 
 /* 4. 動畫：從 translateX(0) 開始是因為 padding-left 已經把文字推到右邊了 */
