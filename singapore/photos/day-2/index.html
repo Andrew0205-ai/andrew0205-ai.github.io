@@ -59,17 +59,18 @@
 <body>
 
 <header>
-<!-- 導覽列 -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="../../../index.html">小宏的部落格</a>
-  </div>
-</nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="../../../index.html">小宏的部落格</a>
+    </div>
+  </nav>
 </header>
-  <main>
-    <h1 class="fw-bold mb-3">🇸🇬 新加坡 Day 2 照片</h1>
-    <div class="gallery">
-      <div class="diary-gallery">
+
+<main>
+  <h1 class="fw-bold mb-3">🇸🇬 新加坡 Day 2 照片</h1>
+  
+  <div class="gallery">
+    <div class="diary-gallery">
   <a href="https://i.ibb.co/Kp0nvmck/100-2981.jpg" data-lightbox="gallery-2026" data-title="100-2981"><img src="https://i.ibb.co/Kp0nvmck/100-2981.jpg" alt="100-2981" loading="lazy"></a>
   <a href="https://i.ibb.co/tTThNyvJ/100-2982.jpg" data-lightbox="gallery-2026" data-title="100-2982"><img src="https://i.ibb.co/tTThNyvJ/100-2982.jpg" alt="100-2982" loading="lazy"></a>
   <a href="https://i.ibb.co/9m18mTbc/100-2983.jpg" data-lightbox="gallery-2026" data-title="100-2983"><img src="https://i.ibb.co/9m18mTbc/100-2983.jpg" alt="100-2983" loading="lazy"></a>
@@ -147,18 +148,24 @@
   <a href="https://i.ibb.co/xSRwNvNX/100-3059.jpg" data-lightbox="gallery-2026" data-title="100-3059"><img src="https://i.ibb.co/xSRwNvNX/100-3059.jpg" alt="100-3059" loading="lazy"></a>
   <a href="https://i.ibb.co/bMyWFSpN/100-3060.jpg" data-lightbox="gallery-2026" data-title="100-3060"><img src="https://i.ibb.co/bMyWFSpN/100-3060.jpg" alt="100-3060" loading="lazy"></a>
 </div>
+  </div>
 
-    </div>
-  </main>
-  <footer class="bg-success text-white text-center py-3">
+<footer class="bg-success text-white text-center py-3">
   © 2026 小宏工作室
 </footer>
 
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
-  <!-- Lightbox JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script>
+  lightbox.option({
+    'albumLabel': "第 %1 張，共 %2 張",
+    'wrapAround': true, // 讓照片到最後一張後可以循環回第一張
+    'fadeDuration': 300,
+    'resizeDuration': 300
+  })
+</script>
+
 
 </body>
 </html>
