@@ -258,19 +258,26 @@ function editComment(id){
 }
 
 async function saveEdit(){
-    const text=document.getElementById("editInput").value.trim();
+    const text = document.getElementById("editInput").value.trim();
     if(!text) return showToast("留言不可空白！","danger");
-    try{
-        await db.collection("comments").doc(currentEditId).update({text});
-        const el = document.getElementById(`comment-${currentEditId}`);
-        el.querySelector("div.mt-2").innerHTML = marked.parse(DOMPurify.sanitize(text));
+    try {
+        await db.collection("comments").doc(currentEditId).update({ text });
+        
+        // 抓取特定 ID 的留言內容區域
+        const commentEl = document.getElementById(`comment-${currentEditId}`);
+        // 找到該留言內專門放內容的那個 div (排除掉頭像和 metadata)
+        const contentDiv = commentEl.querySelector(".mt-2:not(.small)"); 
+        
+        if (contentDiv) {
+            contentDiv.innerHTML = transformLinks(marked.parse(DOMPurify.sanitize(text)));
+        }
+        
         bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
         showToast("留言已更新 ✏️");
-    }catch(e){
+    } catch(e) {
         showToast("更新失敗","danger");
     }
 }
-
 async function uploadImage(){
     const fileInput = document.getElementById("imageInput");
     fileInput.click();
