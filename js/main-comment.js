@@ -133,8 +133,8 @@ async function loadComments(reset=false){
     snap.forEach(doc=>{
         const d=doc.data();
         const id=doc.id;
-        const canManage = (currentUser && (currentUser.uid===ADMIN_UID||currentUser.uid===d.uid))||
-                          (!currentUser && d.authorTempId===myTempId);
+    const canManage = (currentUser && (currentUser.uid===ADMIN_UID||currentUser.uid===d.uid))||
+                          d.authorTempId===myTempId;
         const safeHtml = transformLinks(marked.parse(DOMPurify.sanitize(d.text)));
         const html = `
         <div class="d-flex mb-4" id="comment-${id}" data-uid="${d.uid}" aria-label="留言: ${d.text}">
@@ -406,7 +406,7 @@ function updateUI(){
     }else{
         loginArea.classList.remove("d-none");
         userArea.classList.add("d-none");
-        commentArea.classList.add("d-none");
+        commentArea.classList.remove("d-none");
     }
 }
 
