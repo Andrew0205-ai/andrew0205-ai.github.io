@@ -393,6 +393,32 @@ document.addEventListener("DOMContentLoaded",()=>{
 // ==========================================
 // 9. Auth 監聽 & UI 更新
 // ==========================================
+// ==========================================
+// Google 登入功能
+// ==========================================
+async function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        
+        // 檢查使用者是否已存在於資料庫，若無則建立
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        if (!userDoc.exists) {
+            await db.collection("users").doc(user.uid).set({
+                name: user.displayName || "新朋友",
+                avatar: user.photoURL || "images/andrew.png",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        showToast(`歡迎回來，${user.displayName}！✨`);
+    } catch (error) {
+        console.error("Google 登入失敗:", error);
+        showToast("登入失敗，請稍後再試。", "danger");
+    }
+}
+
 function updateUI(){
     const loginArea=document.getElementById("loginArea");
     const userArea=document.getElementById("userArea");
