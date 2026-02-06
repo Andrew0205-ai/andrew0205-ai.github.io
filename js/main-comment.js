@@ -491,42 +491,43 @@ async function saveProfileChanges() {
  * 切換 Email 登入視窗的顯示模式 (login / signup / reset)
  * @param {string} mode 
  */
+/**
+ * 切換 Email 登入視窗的顯示模式
+ */
 function openEmailModal(mode = 'login') {
-    // 取得元件
+    const modalEl = document.getElementById('emailModal');
+    
+    // --- 1. 先處理內容切換 ---
     const emailModalTitle = document.getElementById("emailModalTitle");
     const nameRow = document.getElementById("nameRow");
     const avatarRow = document.getElementById("avatarRow");
     const passwordRow = document.getElementById("passwordRow");
-    const emailError = document.getElementById("emailError");
 
-    // 清除錯誤訊息
-    if (emailError) {
-        emailError.classList.add("d-none");
-        emailError.innerText = "";
-    }
-
-    // 根據模式調整 UI
     if (mode === 'signup') {
         emailModalTitle.innerText = "註冊新帳號";
-        nameRow.style.display = "block";
-        avatarRow.style.display = "block";
-        passwordRow.style.display = "block";
+        if(nameRow) nameRow.style.display = "block";
+        if(avatarRow) avatarRow.style.display = "block";
+        if(passwordRow) passwordRow.style.display = "block";
     } else if (mode === 'reset') {
         emailModalTitle.innerText = "重設密碼";
-        nameRow.style.display = "none";
-        avatarRow.style.display = "none";
-        passwordRow.style.display = "none"; // 忘記密碼只需要 Email
+        if(nameRow) nameRow.style.display = "none";
+        if(avatarRow) avatarRow.style.display = "none";
+        if(passwordRow) passwordRow.style.display = "none";
     } else {
-        // 預設為 login
         emailModalTitle.innerText = "Email 登入";
-        nameRow.style.display = "none";
-        avatarRow.style.display = "none";
-        passwordRow.style.display = "block";
+        if(nameRow) nameRow.style.display = "none";
+        if(avatarRow) avatarRow.style.display = "none";
+        if(passwordRow) passwordRow.style.display = "block";
     }
 
-    // 顯示 Modal (使用 Bootstrap 5 語法)
-    const myModal = new bootstrap.Modal(document.getElementById('emailModal'));
-    myModal.show();
+    // --- 2. 關鍵修復：檢查視窗是否已經在顯示中 ---
+    // 檢查元素是否有 'show' 類別，如果有，代表視窗已經開了，我們就不再執行 show()
+    const isVisible = modalEl.classList.contains('show');
+
+    if (!isVisible) {
+        const myModal = new bootstrap.Modal(modalEl);
+        myModal.show();
+    }
 }
 /**
  * 處理 Email 認證提交 (登入 / 註冊 / 重設密碼)
