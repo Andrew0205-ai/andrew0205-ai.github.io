@@ -1,16 +1,39 @@
-/* ================================
-   🌟 全域樣式
-   ================================ */
+/* ==========================================
+   🎨 1. CSS 變數定義 (解決背景色卡死問題)
+   ========================================== */
+:root {
+  --app-bg: #f5f5f5;
+  --text-main: #333333;
+  --comment-card-bg: #e8ffe8;
+  --comment-text-bg: #ffffff;
+  --comment-title-color: #1a4d1a;
+  --banner-gradient: linear-gradient(90deg, #1e7e34, #198754);
+}
+
+[data-bs-theme="dark"] {
+  --app-bg: #121212;
+  --text-main: #e0e0e0;
+  --comment-card-bg: #1a2a1a;
+  --comment-text-bg: #252525;
+  --comment-title-color: #85d19a;
+  --banner-gradient: linear-gradient(90deg, #145524, #0f5132);
+}
+
+/* ==========================================
+   🌟 2. 全域樣式
+   ========================================== */
 body {
-  background-color: #f5f5f5;
+  background-color: var(--app-bg) !important;
+  color: var(--text-main);
   font-family: "Noto Sans TC", sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* 打字機游標 */
 .cursor {
   display: inline-block;
   width: 6px;
-  background-color: #333;
+  background-color: var(--text-main);
   animation: blink 0.7s infinite;
 }
 
@@ -24,10 +47,10 @@ body {
 }
 
 /* --------------------------------------
-   🎄 橫幅
+   🎄 橫幅與雪花
    -------------------------------------- */
 #christmasBanner {
-  background: linear-gradient(90deg, #1e7e34, #198754);
+  background: var(--banner-gradient);
   color: white;
   text-align: center;
   padding: 8px;
@@ -35,7 +58,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ❄️ 雪花容器 */
 #snow-container {
   position: fixed;
   top: 0;
@@ -47,7 +69,6 @@ body {
   z-index: 9999;
 }
 
-/* ❄️ 雪花本體 */
 .snowflake {
   position: absolute;
   top: -20px;
@@ -65,13 +86,6 @@ body {
   75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
   100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
 }
-
-/* 打字機效果的標題後綴 */
-h2::after, h3::after {
-  content: var(--after-icon);
-}
-
-
 
 /* ✨ 金光粒子特效 */
 .badge-visible {
@@ -101,10 +115,9 @@ h2::after, h3::after {
 }
 
 /* --------------------------------------
-   🌟 自定義 badge
+   🌟 自定義組件 (Badge & Cards)
    -------------------------------------- */
-.badge-red,
-.custom-badge {
+.badge-red, .custom-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -114,7 +127,6 @@ h2::after, h3::after {
 
 .badge-red {
   min-width: 80px;
-  max-width: 90vw;
   padding: 2px 22px;
   font-size: clamp(12px, 3vw, 16px);
 }
@@ -128,40 +140,34 @@ h2::after, h3::after {
   color: white;
 }
 
-/* --------------------------------------
-   🌟 新加坡區塊特效
-   -------------------------------------- */
+/* 新加坡區塊 */
 .travel-card {
   transition: transform 0.3s ease;
   border-radius: 20px !important;
+  overflow: hidden;
 }
 
-.travel-card:hover {
-  transform: scale(1.01);
+[data-bs-theme="dark"] .travel-card {
+  border: 1px solid #333;
+  background-color: #1e1e1e;
 }
+
+.travel-card:hover { transform: scale(1.01); }
 
 .travel-img {
   filter: brightness(0.6);
   height: 350px;
   object-fit: cover;
+  transition: filter 0.3s;
 }
 
-a.sing,
-a.sing:link,
-a.sing:visited,
-a.sing:hover,
-a.sing:active,
-a.sing:focus {
-  text-decoration: none !important;
-  color: white;
-  border-bottom: none !important;
-  box-shadow: none !important;
-}
+[data-bs-theme="dark"] .travel-img { filter: brightness(0.8); }
+
 /* --------------------------------------
-   🌟 留言板
+   🌟 留言板 (核心)
    -------------------------------------- */
 .comment-card {
-  background: #e8ffe8;
+  background: var(--comment-card-bg);
   border-radius: 16px;
   padding: 12px 15px;
   margin-bottom: 15px;
@@ -169,15 +175,8 @@ a.sing:focus {
   animation: commentFadeIn 0.45s ease-out, slideUp 0.4s ease-out;
 }
 
-.comment-card .comment-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
 .comment-card .avatar {
-  width: 42px;
-  height: 42px;
+  width: 42px; height: 42px;
   border-radius: 50%;
   margin-right: 10px;
   border: 2px solid #85d19a;
@@ -185,80 +184,53 @@ a.sing:focus {
 
 .comment-card .user-name-title {
   font-size: 15px;
-  color: #1a4d1a;
+  color: var(--comment-title-color);
 }
 
 .comment-text {
-  background: white;
+  background: var(--comment-text-bg);
+  color: var(--text-main);
   padding: 10px 14px;
   margin: 8px 0;
   border-radius: 12px;
   border-left: 4px solid #4caf50;
   line-height: 1.6;
-  font-size: 15px;
-}
-
-.comment-footer {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #555;
-  margin-top: 5px;
 }
 
 .delete-comment-btn {
   background: #ff4d4d;
-  border: none;
   color: white;
+  border: none;
   padding: 5px 10px;
-  font-size: 12px;
   border-radius: 6px;
-  cursor: pointer;
   transition: 0.2s;
 }
 
-.delete-comment-btn:hover {
-  background: #cc0000;
-}
-
-/* 留言動畫 */
-@keyframes commentFadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(12px); } to { transform: translateY(0); } }
-
 /* --------------------------------------
- 🌟 跑馬燈
+   🌟 跑馬燈
    -------------------------------------- */
-/* 1. 最外層：負責固定背景色，並隱藏超出範圍的內容 */
 .marquee-wrapper {
-    width: 100%;
-    background-color: green; /* 背景色留在這裡，才不會跟著滑走 */
-    color: white;
-    padding: 10px 0;
-    overflow: hidden; /* 隱藏右邊進場前與左邊退場後的文字 */
-    box-sizing: border-box;
+  width: 100%;
+  background-color: green;
+  color: white;
+  padding: 10px 0;
+  overflow: hidden;
 }
 
-/* 2. 中間層：負責動畫 */
 .marquee {
-    display: inline-block;
-    white-space: nowrap; /* 關鍵：強制文字絕對不換行 */
-    padding-left: 100%;  /* 讓起點在容器最右邊邊界外 */
-    animation: marquee-animation 15s linear infinite;
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: marquee-animation 15s linear infinite;
 }
 
-/* 3. 文字層：確保它是行內塊 */
-#marqueeText {
-    display: inline-block;
-    font-size: 1.1rem;
-}
-
-/* 4. 動畫：從 translateX(0) 開始是因為 padding-left 已經把文字推到右邊了 */
 @keyframes marquee-animation {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
+
 /* --------------------------------------
-   🌟 Steam-style 成就提示框
+   🌟 Steam 成就提示
    -------------------------------------- */
 #achievementToast {
   position: fixed;
@@ -270,96 +242,14 @@ a.sing:focus {
   color: white;
   border-left: 6px solid gold;
   border-radius: 8px;
-  font-size: 1em;
   z-index: 9999;
   transition: right 0.6s ease-out;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-#achievementToast.show {
-  right: 20px;
-}
+#achievementToast.show { right: 20px; }
 
-
-
-
-    /* 連結高對比 */
-    .link-strong {
-      color: #2e7d32;
-      text-decoration: underline;
-    }
-
-    /* 編輯 / 刪除 高對比 */
-    .action-edit {
-      color: #0d47a1;
-      cursor: pointer;
-    }
-
-    .action-delete {
-      color: #b71c1c;
-      cursor: pointer;
-    }
-
-    /* Email */
-    .contact-link {
-      color: #0d47a1;
-      text-decoration: underline;
-    }
-/* ==========================================
-   🌙 深色模式自定義補丁 (Bootstrap 5.3)
-   ========================================== */
-[data-bs-theme="dark"] {
-  /* 1. 背景微調 */
-  body {
-    background-color: #121212;
-    color: #e0e0e0;
-  }
-
-  /* 2. 留言板顏色調整 (原本是淺綠色，深色模式改為深灰綠) */
-  .comment-card {
-    background: #1a2a1a; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  }
-
-  .comment-text {
-    background: #252525;
-    color: #e0e0e0;
-    border-left: 4px solid #2e7d32;
-  }
-
-  .comment-card .user-name-title {
-    color: #85d19a;
-  }
-
-  .comment-footer {
-    color: #aaa;
-  }
-
-  /* 3. 跑馬燈與橫幅 (稍微降低亮度，避免太刺眼) */
-  #christmasBanner, .marquee-wrapper {
-    background: linear-gradient(90deg, #145524, #0f5132) !important;
-  }
-
-  /* 4. 連結顏色 (原本的高對比綠色在深色下太暗，改淺一點) */
-  .link-strong {
-    color: #81c784;
-  }
-
-  .action-edit {
-    color: #64b5f6;
-  }
-
-  .action-delete {
-    color: #e57373;
-  }
-
-  /* 5. 打字機游標顏色 */
-  .cursor {
-    background-color: #e0e0e0;
-  }
-}
 /* --------------------------------------
-   🌓 導覽列切換按鈕微調
+   🌓 模式切換按鈕
    -------------------------------------- */
 #themeToggle {
   transition: all 0.3s ease;
@@ -371,16 +261,21 @@ a.sing:focus {
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
-/* 當在深色模式時，按鈕的懸停效果稍微改變 */
 [data-bs-theme="dark"] #themeToggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 10px rgba(129, 199, 132, 0.5); /* 淡淡的綠光 */
+  box-shadow: 0 0 10px rgba(129, 199, 132, 0.5);
 }
-[data-bs-theme="dark"] .travel-img {
-  filter: brightness(0.8); /* 深色模式下讓照片亮一點點 */
+
+/* --------------------------------------
+   🔗 連結高對比
+   -------------------------------------- */
+.link-strong { 
+  color: #2e7d32; 
+  text-decoration: underline; 
 }
-/* 加入這段到 [data-bs-theme="dark"] 補丁內 */
-[data-bs-theme="dark"] .travel-card {
-  border: 1px solid #333; /* 在黑底增加一點邊界感，讓卡片不消失 */
-  background-color: #1e1e1e;
-}
+[data-bs-theme="dark"] .link-strong { color: #81c784; }
+
+.action-edit { color: #0d47a1; cursor: pointer; }
+[data-bs-theme="dark"] .action-edit { color: #64b5f6; }
+
+.action-delete { color: #b71c1c; cursor: pointer; }
+[data-bs-theme="dark"] .action-delete { color: #e57373; }
