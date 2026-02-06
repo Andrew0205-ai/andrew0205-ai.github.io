@@ -194,7 +194,8 @@ async function loadComments(reset = false) {
         console.error("載入失敗：", err);
         showToast("系統載入異常，請重新整理", "danger");
     }
-}, containerId, isReply = false) {
+}
+function renderSingleComment(d, containerId, isReply = false) {
     const container = document.getElementById(containerId);
     if(!container) return;
 
