@@ -497,7 +497,7 @@ async function saveProfileChanges() {
 /**
  * 切換 Email 登入視窗的顯示模式 (修正版)
  */
-function openEmailModal(mode = 'login') {
+async function openEmailModal(mode = 'login') {
     const modalEl = document.getElementById('emailModal');
     
     // 1. 取得或建立實例 (getInstance 是關鍵)
@@ -535,7 +535,7 @@ function openEmailModal(mode = 'login') {
         modalInstance.show();
     }
 }
-}
+
 /**
  * 處理 Email 認證提交 (登入 / 註冊 / 重設密碼)
  */
