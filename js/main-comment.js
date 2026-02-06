@@ -384,6 +384,27 @@ document.addEventListener("DOMContentLoaded",()=>{
             document.getElementById("count").textContent=this.value.length;
         });
     }
+    // 在 DOMContentLoaded 裡面補上這段
+const modalFileBtn = document.getElementById("modalFileBtn");
+if (modalFileBtn) {
+    modalFileBtn.addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // 限制大小檢查，保護你的 Cloudinary 額度
+            if (file.size > 5 * 1024 * 1024) {
+                showToast("圖片太大囉（超過 5MB），請換一張！", "danger");
+                this.value = ""; // 清空選取
+                return;
+            }
+            // 本地預覽：不用上傳就能先看到圖片
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById("modalPreviewImg").src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
     const backBtn = document.getElementById("backToTop");
     if(backBtn) backBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
 });
