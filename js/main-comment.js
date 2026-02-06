@@ -129,7 +129,13 @@ async function saveComment(text, isQuick){
         isCooldown = false;
     }
 }
-
+// ==========================================
+// 快捷留言功能
+// ==========================================
+async function postQuickComment(msg) {
+    if (isCooldown) return; // 如果在冷卻中就不要跑
+    saveComment(msg, true);  // 呼叫原本的儲存功能，第二個參數 true 代表是快捷留言
+}
 // ==========================================
 // 4. 載入與渲染 (巢狀結構)
 // ==========================================
