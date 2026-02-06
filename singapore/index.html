@@ -66,6 +66,42 @@
       0%   { transform: translateX(-10vw) translateY(0); }
       100% { transform: translateX(110vw) translateY(-10vh); }
     }
+
+    .day-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .day-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .day-card .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.45));
+    }
+
+    .day-card .overlay .date {
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .day-card .overlay .label {
+      font-size: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -92,12 +128,53 @@
   <!-- 旅程狀態 -->
   <div id="trip-status" class="alert rounded-4"></div>
 
-  <!-- 日記連結 -->
-  <div id="daily-logs" class="mt-4"></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-01-29 照片已發布：<a href="photos/day-1" target="_blank">點此查看</a></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-01-30 照片已發布：<a href="photos/day-2" target="_blank">點此查看</a></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-01-31 照片已發布：<a href="photos/day-3" target="_blank">點此查看</a></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-02-01 照片已發布：<a href="photos/day-4" target="_blank">點此查看</a></div>
+  <!-- 每日專屬頁面 -->
+  <div class="row g-4 mt-2">
+    <div class="col-12 col-md-6 col-lg-3">
+      <a class="text-decoration-none" href="day-1/">
+        <div class="day-card">
+          <img src="https://i.ibb.co/CpdBFQbk/100-2811.jpg" alt="2026-01-29 新加坡第 1 天">
+          <div class="overlay">
+            <div class="date">2026-01-29</div>
+            <div class="label">Day-1</div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a class="text-decoration-none" href="day-2/">
+        <div class="day-card">
+          <img src="https://i.ibb.co/CpdBFQbk/100-2811.jpg" alt="2026-01-30 新加坡第 2 天">
+          <div class="overlay">
+            <div class="date">2026-01-30</div>
+            <div class="label">Day-2</div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a class="text-decoration-none" href="day-3/">
+        <div class="day-card">
+          <img src="https://i.ibb.co/W4vzVD93/100-2821.jpg" alt="2026-01-31 新加坡第 3 天">
+          <div class="overlay">
+            <div class="date">2026-01-31</div>
+            <div class="label">Day-3</div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a class="text-decoration-none" href="day-4/">
+        <div class="day-card">
+          <img src="https://i.ibb.co/BHXDZWBD/100-2823.jpg" alt="2026-02-01 新加坡第 4 天">
+          <div class="overlay">
+            <div class="date">2026-02-01</div>
+            <div class="label">Day-4</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
 
   
 </div>
@@ -166,26 +243,6 @@
  
   
 
-  // ===============================
-  // 每日日記自動生成
-  // ===============================
-  const dailyLogs = [
-    { date: "2026-01-29", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-1.html" },
-    { date: "2026-01-30", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-2.html" },
-    { date: "2026-01-31", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-3.html" }
-  ];
-
-  const logsContainer = document.getElementById("daily-logs");
-
-  dailyLogs.forEach(log => {
-    const logDate = new Date(log.date + "T00:00:00");
-    if (today >= logDate) {
-      const logDiv = document.createElement("div");
-      logDiv.className = "alert alert-info rounded-4 mb-3";
-      logDiv.innerHTML = `📅 ${log.date} 日記已發布：<a href="${log.url}" target="_blank">點此查看</a>`;
-      logsContainer.appendChild(logDiv);
-    }
-  });
 </script>
 
 <script src="../js/bootstrap.bundle.min.js"></script>
