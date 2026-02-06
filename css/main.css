@@ -1,326 +1,127 @@
 /* ==========================================
-   🎨 1. CSS 變數定義 (解決背景色卡死問題)
+   🎨 1. CSS 變數定義 (智慧色調控制中心)
    ========================================== */
 :root {
   --app-bg: #f5f5f5;
   --text-main: #333333;
+  --card-bg: #ffffff;           /* 修正卡片背景 */
+  --input-bg: #f8f9fa;         /* 修正輸入框背景 */
   --comment-card-bg: #e8ffe8;
-  --comment-text-bg: #ffffff;
+  --comment-text-bg: #ffffff;   /* 淺色留言背景 */
   --comment-title-color: #1a4d1a;
   --banner-gradient: linear-gradient(90deg, #1e7e34, #198754);
+  --border-color: #dee2e6;
 }
 
 [data-bs-theme="dark"] {
   --app-bg: #121212;
   --text-main: #e0e0e0;
+  --card-bg: #1e1e1e;           /* 深色卡片背景 */
+  --input-bg: #2b2b2b;         /* 深色輸入框背景 */
   --comment-card-bg: #1a2a1a;
-  --comment-text-bg: #252525;
+  --comment-text-bg: #252525;   /* 深色留言背景，解決看不見的問題 */
   --comment-title-color: #85d19a;
   --banner-gradient: linear-gradient(90deg, #145524, #0f5132);
+  --border-color: #333333;
 }
 
 /* ==========================================
-   🌟 2. 全域樣式
+   🌟 2. 全域樣式與主體
    ========================================== */
 body {
   background-color: var(--app-bg) !important;
   color: var(--text-main);
   font-family: "Noto Sans TC", sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-/* 打字機游標 */
-.cursor {
-  display: inline-block;
-  width: 6px;
-  background-color: var(--text-main);
-  animation: blink 0.7s infinite;
+/* 修正卡片與區塊背景 (對應你的 #quickBlessing, #userArea) */
+#quickBlessing, #userArea, .card {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-main);
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
+/* 修正輸入框 (解決刺眼問題) */
+#commentInput {
+  background-color: var(--input-bg) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color) !important;
 }
-
-/* 返回頂部 */
-#backToTop {
-  border-radius: 50%;
-}
+#commentInput::placeholder { color: #888; }
 
 /* --------------------------------------
-   🎄 橫幅與雪花
+   🎄 橫幅、雪花與特效
    -------------------------------------- */
-#christmasBanner {
-  background: var(--banner-gradient);
-  color: white;
-  text-align: center;
-  padding: 8px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-#snow-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 9999;
-}
-
-.snowflake {
-  position: absolute;
-  top: -20px;
-  color: white;
-  user-select: none;
-  animation-name: fallAndSway;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
+#christmasBanner { background: var(--banner-gradient); color: white; text-align: center; padding: 8px; font-weight: 500; }
+#snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+.snowflake { position: absolute; top: -20px; color: white; animation: fallAndSway linear infinite; }
 
 @keyframes fallAndSway {
   0% { transform: translateY(0) translateX(0) rotate(0deg); }
-  25% { transform: translateY(25vh) translateX(20px) rotate(90deg); }
-  50% { transform: translateY(50vh) translateX(-20px) rotate(180deg); }
-  75% { transform: translateY(75vh) translateX(20px) rotate(270deg); }
   100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
 }
 
-/* ✨ 金光粒子特效 */
-.badge-visible {
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: inline-block !important;
-  position: relative;
-  z-index: 5;
-  background-color: #ffc107 !important;
-  color: #212529 !important;
-}
+/* 打字機與金光徽章 */
+.cursor { display: inline-block; width: 6px; background-color: var(--text-main); animation: blink 0.7s infinite; }
+@keyframes blink { 50% { opacity: 0; } }
 
-.badge-visible::after {
-  content: "✨";
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  font-size: 1.2em;
-  opacity: 0;
-  animation: sparkle 1.4s infinite ease-in-out;
-}
-
-@keyframes sparkle {
-  0% { opacity: 0; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.4) rotate(10deg); }
-  100% { opacity: 0; transform: scale(1); }
-}
+.badge-visible { position: relative; background-color: #ffc107 !important; color: #212529 !important; }
+.badge-visible::after { content: "✨"; position: absolute; top: -10px; right: -10px; animation: sparkle 1.4s infinite; }
+@keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.4); } }
 
 /* --------------------------------------
-   🌟 自定義組件 (Badge & Cards)
-   -------------------------------------- */
-.badge-red, .custom-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  border-radius: 999px;
-}
-
-.badge-red {
-  min-width: 80px;
-  padding: 2px 22px;
-  font-size: clamp(12px, 3vw, 16px);
-}
-
-.custom-badge {
-  min-width: 420px;
-  max-width: 95vw;
-  padding: 12px 24px;
-  font-size: clamp(14px, 2.5vw, 18px);
-  background: orange;
-  color: white;
-}
-
-/* 新加坡區塊 */
-.travel-card {
-  transition: transform 0.3s ease;
-  border-radius: 20px !important;
-  overflow: hidden;
-}
-
-[data-bs-theme="dark"] .travel-card {
-  border: 1px solid #333;
-  background-color: #1e1e1e;
-}
-
-.travel-card:hover { transform: scale(1.01); }
-
-.travel-img {
-  filter: brightness(0.6);
-  height: 350px;
-  object-fit: cover;
-  transition: filter 0.3s;
-}
-
-[data-bs-theme="dark"] .travel-img { filter: brightness(0.8); }
-
-/* --------------------------------------
-   🌟 留言板 (核心)
+   🌟 留言板組件 (解決白底白字問題)
    -------------------------------------- */
 .comment-card {
   background: var(--comment-card-bg);
-  border-radius: 16px;
-  padding: 12px 15px;
-  margin-bottom: 15px;
+  border-radius: 16px; padding: 12px 15px; margin-bottom: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  animation: commentFadeIn 0.45s ease-out, slideUp 0.4s ease-out;
 }
 
-.comment-card .avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  margin-right: 10px;
-  border: 2px solid #85d19a;
-}
-
-.comment-card .user-name-title {
-  font-size: 15px;
-  color: var(--comment-title-color);
-}
+.comment-card .user-name-title { color: var(--comment-title-color); font-weight: bold; }
 
 .comment-text {
-  background: var(--comment-text-bg);
-  color: var(--text-main);
-  padding: 10px 14px;
-  margin: 8px 0;
-  border-radius: 12px;
-  border-left: 4px solid #4caf50;
-  line-height: 1.6;
+  background: var(--comment-text-bg) !important;
+  color: var(--text-main) !important;
+  padding: 10px 14px; margin: 8px 0; border-radius: 12px;
+  border-left: 4px solid #4caf50; line-height: 1.6;
 }
 
-.delete-comment-btn {
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 6px;
+.comment-footer { font-size: 12px; opacity: 0.8; }
+
+/* --------------------------------------
+   🇸🇬 快捷互動按鈕
+   -------------------------------------- */
+.blessing-btn {
+  background-color: var(--input-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
   transition: 0.2s;
 }
+.blessing-btn:hover { background-color: #4caf50; color: white; }
 
 /* --------------------------------------
-   🌟 跑馬燈
+   🌓 其他組件 (跑馬燈、Steam 提示、按鈕)
    -------------------------------------- */
-.marquee-wrapper {
-  width: 100%;
-  background-color: green;
-  color: white;
-  padding: 10px 0;
-  overflow: hidden;
-}
+.marquee-wrapper { width: 100%; background-color: green; color: white; padding: 10px 0; overflow: hidden; }
+.marquee { display: inline-block; white-space: nowrap; animation: marquee-animation 15s linear infinite; }
+@keyframes marquee-animation { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-.marquee {
-  display: inline-block;
-  white-space: nowrap;
-  padding-left: 100%;
-  animation: marquee-animation 15s linear infinite;
-}
-
-@keyframes marquee-animation {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-/* --------------------------------------
-   🌟 Steam 成就提示
-   -------------------------------------- */
 #achievementToast {
-  position: fixed;
-  bottom: 30px;
-  right: -350px;
-  width: 300px;
-  padding: 15px;
-  background: rgba(30,30,30,0.9);
-  color: white;
-  border-left: 6px solid gold;
-  border-radius: 8px;
-  z-index: 9999;
-  transition: right 0.6s ease-out;
+  position: fixed; bottom: 30px; right: -350px; width: 300px; padding: 15px;
+  background: rgba(30,30,30,0.9); color: white; border-left: 6px solid gold;
+  transition: right 0.6s ease-out; z-index: 9999;
 }
-
 #achievementToast.show { right: 20px; }
 
-/* --------------------------------------
-   🌓 模式切換按鈕
-   -------------------------------------- */
-#themeToggle {
-  transition: all 0.3s ease;
-  border-width: 1.5px;
-}
+#themeToggle:hover { transform: translateY(-1px); box-shadow: 0 0 8px rgba(255, 255, 255, 0.4); }
+[data-bs-theme="dark"] #themeToggle:hover { box-shadow: 0 0 10px rgba(129, 199, 132, 0.5); }
 
-#themeToggle:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-}
-
-[data-bs-theme="dark"] #themeToggle:hover {
-  box-shadow: 0 0 10px rgba(129, 199, 132, 0.5);
-}
-
-/* --------------------------------------
-   🔗 連結高對比
-   -------------------------------------- */
-.link-strong { 
-  color: #2e7d32; 
-  text-decoration: underline; 
-}
+/* 連結與操作 */
+.link-strong { color: #2e7d32; text-decoration: underline; }
 [data-bs-theme="dark"] .link-strong { color: #81c784; }
-
 .action-edit { color: #0d47a1; cursor: pointer; }
 [data-bs-theme="dark"] .action-edit { color: #64b5f6; }
-
 .action-delete { color: #b71c1c; cursor: pointer; }
 [data-bs-theme="dark"] .action-delete { color: #e57373; }
-/* ==========================================
-   🌙 針對特定卡片與輸入框的深色修正
-   ========================================== */
-[data-bs-theme="dark"] {
-  /* 1. 快捷互動與使用者區域 (移除 bg-white 的影響) */
-  #quickBlessing, #userArea {
-    background-color: #1e1e1e !important; /* 深灰色背景 */
-    border-color: #333 !important;
-    color: #e0e0e0;
-  }
-
-  /* 2. 修正輸入框 (移除 bg-light 的影響) */
-  #commentInput {
-    background-color: #2b2b2b !important; /* 深色輸入框 */
-    color: #ffffff !important;           /* 白色文字 */
-    border: 1px solid #444 !important;
-  }
-
-  /* 修正 placeholder 顏色 */
-  #commentInput::placeholder {
-    color: #888;
-  }
-
-  /* 3. 快捷按鈕 (自定義顏色) */
-  .blessing-btn {
-    background-color: #2d4d2d;
-    color: #85d19a;
-    border: 1px solid #3d6d3d;
-  }
-
-  .blessing-btn:hover {
-    background-color: #3d6d3d;
-    color: #ffffff;
-  }
-
-  /* 4. 使用者區域的標題修正 */
-  #userArea h4, #quickBlessing h4 {
-    color: #ffffff !important;
-  }
-}
-
-/* 讓 transition 更絲滑 */
-#commentInput, #quickBlessing, #userArea {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
