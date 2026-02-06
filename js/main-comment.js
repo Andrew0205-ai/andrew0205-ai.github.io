@@ -135,18 +135,17 @@ async function saveComment(text, isQuick){
 // ==========================================
 // 4. 載入與渲染 (巢狀結構)
 // ==========================================
-
 async function loadComments(reset = false) {
     const commentsEl = document.getElementById("comments");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
 
     if (reset) {
         lastVisible = null;
-        commentsEl.innerHTML = ""; // 重置時才清空
+        commentsEl.innerHTML = ""; 
     }
 
     try {
-        // 先抓主留言
+        // 1. 先抓主留言
         let query = db.collection("comments")
                       .where("parentId", "==", null)
                       .orderBy("timestamp", "desc")
@@ -158,19 +157,21 @@ async function loadComments(reset = false) {
         
         if (snap.empty) {
             if (loadMoreBtn) loadMoreBtn.style.display = "none";
+            // 如果是重新整理但沒留言，顯示提示
+            if (reset) commentsEl.innerHTML = '<p class="text-center text-muted my-5">目前還沒有留言喔，來當第一個吧！</p>';
             return;
         }
 
         lastVisible = snap.docs[snap.docs.length - 1];
 
-        // 改用非阻塞方式處理，確保每一則主留言都能先出來
-        snap.forEach(async (doc) => {
+        // 2. 使用 for...of 確保按順序一個一個渲染，不會打架
+        for (const doc of snap.docs) {
             const d = { ...doc.data(), id: doc.id };
             
             // 渲染主留言
             renderSingleComment(d, "comments", false);
             
-            // 異步抓取回覆，不擋住後面的主留言載入
+            // 3. 抓取該留言下的回覆
             const replySnap = await db.collection("comments")
                                       .where("parentId", "==", d.id)
                                       .orderBy("timestamp", "asc")
@@ -180,16 +181,17 @@ async function loadComments(reset = false) {
                 const rd = { ...rDoc.data(), id: rDoc.id };
                 renderSingleComment(rd, `replies-${d.id}`, true);
             });
-        });
+        }
 
-        // 顯示按鈕
+        // 4. 正確顯示/隱藏載入更多按鈕
         if (loadMoreBtn) {
+            // 如果抓到的數量小於 10，代表後面沒資料了
             loadMoreBtn.style.display = (snap.docs.length < 10) ? "none" : "block";
         }
 
     } catch (err) {
         console.error("載入失敗：", err);
-        showToast("系統載入異常，請重新整理", "danger");
+        showToast("系統載入異常，請檢查索引設定", "danger");
     }
 }
 function renderSingleComment(d, containerId, isReply = false) {
