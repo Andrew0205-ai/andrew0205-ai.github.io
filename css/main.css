@@ -4,25 +4,27 @@
 :root {
   --app-bg: #f5f5f5;
   --text-main: #333333;
-  --card-bg: #ffffff;           /* 修正卡片背景 */
-  --input-bg: #f8f9fa;         /* 修正輸入框背景 */
+  --card-bg: #ffffff;
+  --input-bg: #f8f9fa;
   --comment-card-bg: #e8ffe8;
-  --comment-text-bg: #ffffff;   /* 淺色留言背景 */
+  --comment-text-bg: #ffffff;
   --comment-title-color: #1a4d1a;
   --banner-gradient: linear-gradient(90deg, #1e7e34, #198754);
   --border-color: #dee2e6;
+  --marquee-bg: #1e7e34; /* 跑馬燈底色 */
 }
 
 [data-bs-theme="dark"] {
   --app-bg: #121212;
   --text-main: #e0e0e0;
-  --card-bg: #1e1e1e;           /* 深色卡片背景 */
-  --input-bg: #2b2b2b;         /* 深色輸入框背景 */
+  --card-bg: #1e1e1e;
+  --input-bg: #2b2b2b;
   --comment-card-bg: #1a2a1a;
-  --comment-text-bg: #252525;   /* 深色留言背景，解決看不見的問題 */
+  --comment-text-bg: #252525;
   --comment-title-color: #85d19a;
   --banner-gradient: linear-gradient(90deg, #145524, #0f5132);
   --border-color: #333333;
+  --marquee-bg: #0f5132;
 }
 
 /* ==========================================
@@ -32,17 +34,18 @@ body {
   background-color: var(--app-bg) !important;
   color: var(--text-main);
   font-family: "Noto Sans TC", sans-serif;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
 }
 
-/* 修正卡片與區塊背景 (對應你的 #quickBlessing, #userArea) */
+/* 修正卡片與區塊背景 */
 #quickBlessing, #userArea, .card {
   background-color: var(--card-bg) !important;
   border-color: var(--border-color) !important;
   color: var(--text-main);
 }
 
-/* 修正輸入框 (解決刺眼問題) */
+/* 修正輸入框 */
 #commentInput {
   background-color: var(--input-bg) !important;
   color: var(--text-main) !important;
@@ -53,13 +56,34 @@ body {
 /* --------------------------------------
    🎄 橫幅、雪花與特效
    -------------------------------------- */
-#christmasBanner { background: var(--banner-gradient); color: white; text-align: center; padding: 8px; font-weight: 500; }
-#snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
-.snowflake { position: absolute; top: -20px; color: white; animation: fallAndSway linear infinite; }
+#christmasBanner { 
+  background: var(--banner-gradient); 
+  color: white; 
+  text-align: center; 
+  padding: 8px; 
+  font-weight: 500; 
+}
+
+#snow-container { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  pointer-events: none; 
+  z-index: 9999; 
+}
+
+.snowflake { 
+  position: absolute; 
+  top: -20px; 
+  color: white; 
+  animation: fallAndSway linear infinite; 
+}
 
 @keyframes fallAndSway {
   0% { transform: translateY(0) translateX(0) rotate(0deg); }
-  100% { transform: translateY(105vh) translateX(0) rotate(360deg); }
+  100% { transform: translateY(105vh) translateX(20px) rotate(360deg); }
 }
 
 /* 打字機與金光徽章 */
@@ -71,11 +95,13 @@ body {
 @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.4); } }
 
 /* --------------------------------------
-   🌟 留言板組件 (解決白底白字問題)
+   🌟 留言板組件
    -------------------------------------- */
 .comment-card {
   background: var(--comment-card-bg);
-  border-radius: 16px; padding: 12px 15px; margin-bottom: 15px;
+  border-radius: 16px; 
+  padding: 12px 15px; 
+  margin-bottom: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
@@ -84,15 +110,65 @@ body {
 .comment-text {
   background: var(--comment-text-bg) !important;
   color: var(--text-main) !important;
-  padding: 10px 14px; margin: 8px 0; border-radius: 12px;
-  border-left: 4px solid #4caf50; line-height: 1.6;
+  padding: 10px 14px; 
+  margin: 8px 0; 
+  border-radius: 12px;
+  border-left: 4px solid #4caf50; 
+  line-height: 1.6;
 }
 
 .comment-footer { font-size: 12px; opacity: 0.8; }
 
 /* --------------------------------------
-   🇸🇬 快捷互動按鈕
+   🌓 跑馬燈 (終極修正版)
    -------------------------------------- */
+.marquee-wrapper {
+  width: 100%;
+  background: var(--marquee-bg); /* 使用主題綠色 */
+  color: white;
+  padding: 10px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  /* 關鍵修復：用 padding-left 確保起點在最右側 */
+  padding-left: 100%; 
+  min-width: 100%;
+  animation: marquee-animation 18s linear infinite;
+  will-change: transform;
+}
+
+/* 滑鼠移入時暫停，方便小宏的朋友們閱讀 */
+.marquee-wrapper:hover .marquee {
+  animation-play-state: paused;
+  cursor: pointer;
+}
+
+@keyframes marquee-animation {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* --------------------------------------
+   🎮 Steam 提示與按鈕
+   -------------------------------------- */
+#achievementToast {
+  position: fixed; 
+  bottom: 30px; 
+  right: -350px; 
+  width: 300px; 
+  padding: 15px;
+  background: rgba(30,30,30,0.9); 
+  color: white; 
+  border-left: 6px solid gold;
+  transition: right 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  z-index: 9999;
+}
+#achievementToast.show { right: 20px; }
+
 .blessing-btn {
   background-color: var(--input-bg);
   color: var(--text-main);
@@ -101,67 +177,18 @@ body {
 }
 .blessing-btn:hover { background-color: #4caf50; color: white; }
 
-/* --------------------------------------
-   🌓 其他組件 (跑馬燈、Steam 提示、按鈕)
-   -------------------------------------- */
-.marquee-wrapper {
-  width: 100%;
-  background-color: #2e7d32; /* 稍微深一點的綠色，質感較佳 */
-  color: white;
-  padding: 10px 0;
-  overflow: hidden;
-  position: relative; /* 確保內容定位穩定 */
-}
-
-.marquee {
-  display: inline-block;
-  white-space: nowrap;
-  padding-left: 100%; /* 讓第一則訊息從右側邊界開始 */
-  animation: marquee-animation 20s linear infinite; /* 稍微放慢一點，比較好閱讀 */
-}
-
-@keyframes marquee-animation {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-/* 滑鼠懸停時暫停，方便讀者閱讀重要公告 */
-.marquee-wrapper:hover .marquee {
-  animation-play-state: paused;
-  cursor: pointer;
-}
-
-#achievementToast {
-  position: fixed; bottom: 30px; right: -350px; width: 300px; padding: 15px;
-  background: rgba(30,30,30,0.9); color: white; border-left: 6px solid gold;
-  transition: right 0.6s ease-out; z-index: 9999;
-}
-#achievementToast.show { right: 20px; }
-
-#themeToggle:hover { transform: translateY(-1px); box-shadow: 0 0 8px rgba(255, 255, 255, 0.4); }
-[data-bs-theme="dark"] #themeToggle:hover { box-shadow: 0 0 10px rgba(129, 199, 132, 0.5); }
-
 /* 連結與操作 */
 .link-strong { color: #2e7d32; text-decoration: underline; }
 [data-bs-theme="dark"] .link-strong { color: #81c784; }
-.action-edit { color: #0d47a1; cursor: pointer; }
-[data-bs-theme="dark"] .action-edit { color: #64b5f6; }
-.action-delete { color: #b71c1c; cursor: pointer; }
-[data-bs-theme="dark"] .action-delete { color: #e57373; }
+
 /* ==========================================
-   🎯 終極修復：強制擊敗 Bootstrap .text-dark
+   🎯 終極修復：強制擊敗 Bootstrap 衝突
    ========================================= */
 [data-bs-theme="dark"] .comment-text.text-dark,
-[data-bs-theme="dark"] .comment-text * {
+[data-bs-theme="dark"] .comment-text *,
+[data-bs-theme="dark"] .text-dark {
   color: var(--text-main) !important;
   --bs-text-opacity: 1 !important;
 }
 
-/* 如果你的留言 HTML 結構裡有直接寫 text-dark，這行能徹底解決 */
-[data-bs-theme="dark"] .text-dark {
-  color: var(--text-main) !important;
-}
+
