@@ -77,7 +77,6 @@ async function postComment(){
 function prepareReply(parentId, parentName) {
     currentParentId = parentId;
     const input = document.getElementById("commentInput");
-    input.value = `@${parentName} `;
     input.focus();
     showToast(`正在回覆 ${parentName}... 💬`);
     
