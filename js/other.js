@@ -51,15 +51,15 @@ function copyGameID() {
 }
 
 // ===============================
-// 5. 跑馬燈邏輯
+// 5. 跑馬燈邏輯 (優化版)
 // ===============================
 const marqueeMessages = [
-  "📢公告:由於系統更新，之前的留言都被刪光了😭😭😭敬請見諒!!!",
+  "📢 公告：系統更新完成，新的留言板功能已上線！",
   "🎹 最近在練：Clementi Op.36 No.1",
-  "🛠️ 網站留言板功能已完成",
-  "🇸🇬 正在規劃寒假新加坡城市探索之旅",
+  "🇸🇬 新加坡之旅圓滿結束！整理照片中...", // 更新旅遊狀態
+  "🛠️ 歡迎大家到留言板跟我交流",
   "📢 最新公告：節慶版面已上線！",
-  "🌍 本月成語：Never put off what you can do today until tomorrow."
+  "🌍 本月金句：Never put off what you can do today until tomorrow."
 ];
 
 let marqueeIndex = 0;
@@ -67,15 +67,18 @@ const marqueeText = document.getElementById("marqueeText");
 const marqueeElement = document.getElementById("marquee");
 
 function updateMarquee() {
-  marqueeText.textContent = marqueeMessages[marqueeIndex];
-  marqueeIndex = (marqueeIndex + 1) % marqueeMessages.length;
+  if (marqueeText) {
+    marqueeText.textContent = marqueeMessages[marqueeIndex];
+    marqueeIndex = (marqueeIndex + 1) % marqueeMessages.length;
+  }
 }
 
-// 監聽動畫結束事件：每當文字跑完一輪（從左邊消失），就換下一句
-marqueeElement.addEventListener('animationiteration', updateMarquee);
-
-// 初始化第一則訊息
-updateMarquee();
+// 確保元素存在再掛載監聽器
+if (marqueeElement) {
+  marqueeElement.addEventListener('animationiteration', updateMarquee);
+  // 初始化第一則訊息
+  updateMarquee();
+}
 // ===============================
 // 6. 節慶與雪花特效
 // ===============================
