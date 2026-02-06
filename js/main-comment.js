@@ -287,6 +287,38 @@ async function uploadImage(){
         }
     };
 }
+// ==========================================
+// 額外補充：Cloudinary 大頭貼上傳函式
+// ==========================================
+async function uploadAvatarToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "guest-upload"); // 請確認你的 Cloudinary 後台設定為 guest-upload
+
+    try {
+        // 你的 Cloudinary Cloud Name 是 df0hlwcrd
+        const res = await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res.ok) throw new Error("上傳失敗");
+
+        const data = await res.json();
+
+        // 💡 優化技巧：利用 Cloudinary 的 URL 參數自動裁切成正方形並縮圖
+        // 我們把路徑中的 /upload/ 替換成 /upload/w_200,h_200,c_fill,g_face,q_auto,f_auto/
+        // w_200,h_200: 縮小成 200x200
+        // c_fill: 自動填充
+        // g_face: 自動偵測臉部中心（這對大頭貼超有用！）
+        const optimizedUrl = data.secure_url.replace("/upload/", "/upload/w_200,h_200,c_fill,g_face,q_auto,f_auto/");
+        
+        return optimizedUrl;
+    } catch (err) {
+        console.error("Cloudinary Upload Error:", err);
+        throw err;
+    }
+}
 
 // ==========================================
 // 6. 使用者管理與 Auth
