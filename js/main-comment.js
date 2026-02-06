@@ -345,3 +345,82 @@ document.addEventListener("DOMContentLoaded",()=>{
     const backBtn = document.getElementById("backToTop");
     if(backBtn) backBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
 });
+// ==========================================
+// 1. 打開個人資料彈窗
+// ==========================================
+async function openProfileModal() {
+    if (!currentUser) return showToast("請先登入才能修改資料喔！", "danger");
+    
+    const previewImg = document.getElementById("modalPreviewImg");
+    const nameInput = document.getElementById("modalNameInput");
+    
+    try {
+        const doc = await db.collection("users").doc(currentUser.uid).get();
+        if (doc.exists) {
+            const data = doc.data();
+            nameInput.value = data.name || "";
+            previewImg.src = data.avatar || "images/andrew.png";
+        } else {
+            nameInput.value = currentUser.displayName || "";
+            previewImg.src = currentUser.photoURL || "images/andrew.png";
+        }
+        
+        // 顯示 Modal
+        const profileModal = new bootstrap.Modal(document.getElementById("profileModal"));
+        profileModal.show();
+    } catch (err) {
+        console.error(err);
+        showToast("讀取資料失敗", "danger");
+    }
+}
+
+// ==========================================
+// 2. 儲存個人資料變動
+// ==========================================
+async function saveProfileChanges() {
+    if (!currentUser) return;
+    
+    const nameInput = document.getElementById("modalNameInput");
+    const fileInput = document.getElementById("modalFileBtn");
+    const progress = document.getElementById("uploadProgress");
+    const newName = nameInput.value.trim();
+    
+    if (!newName) return showToast("名稱不能空白喔！", "danger");
+
+    try {
+        progress.classList.remove("d-none"); // 顯示進度條
+        let avatarUrl = document.getElementById("modalPreviewImg").src; // 預設使用目前的圖片
+        
+        // 如果有選新檔案，才上傳到 Cloudinary
+        if (fileInput.files[0]) {
+            avatarUrl = await uploadAvatarToCloudinary(fileInput.files[0]);
+        }
+        
+        // 更新 Firestore 中的使用者資料
+        await db.collection("users").doc(currentUser.uid).set({
+            name: newName,
+            avatar: avatarUrl,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        // 同步更新當前 UI 上的頭像與名字
+        document.getElementById("userName").textContent = newName;
+        document.getElementById("userAvatar").src = avatarUrl;
+        
+        showToast("資料更新成功！💖");
+        
+        // 隱藏 Modal
+        const modalEl = document.getElementById("profileModal");
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        modalInstance.hide();
+        
+        // 重新載入留言讓名字更新
+        loadComments(true);
+
+    } catch (err) {
+        console.error(err);
+        showToast("儲存失敗，請再試一次。", "danger");
+    } finally {
+        progress.classList.add("d-none"); // 隱藏進度條
+    }
+}
