@@ -162,30 +162,35 @@ async function loadComments(reset = false) {
 
         lastVisible = snap.docs[snap.docs.length - 1];
 
-        // 使用 for...of 確保順序
-        for (const doc of snap.docs) {
-            const d = { ...doc.data(), id: doc.id };
-            
-            // 1. 先渲染主留言
-            renderSingleComment(d, "comments", false);
-            
-            // 2. 抓取該留言下的回覆
-            const replySnap = await db.collection("comments")
-                                      .where("parentId", "==", d.id)
-                                      .orderBy("timestamp", "asc")
-                                      .get();
-            
-            // 3. 渲染回覆（加一個小檢查確保容器存在）
-            replySnap.forEach(rDoc => {
-                const rd = { ...rDoc.data(), id: rDoc.id };
-                const replyContainer = document.getElementById(`replies-${d.id}`);
-                if (replyContainer) {
-                    renderSingleComment(rd, `replies-${d.id}`, true);
-                }
-            });
-        }
+        // --- 優化重點：並行抓取 ---
+        
+        // 1. 先把主留言的資料整理出來，並先渲染到畫面（讓使用者先看到東西）
+        const mainComments = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        mainComments.forEach(d => renderSingleComment(d, "comments", false));
 
-        // 4. 所有留言渲染完後，再決定按鈕要不要出現
+        // 2. 準備所有的「抓取回覆」任務，但不立即執行
+        const replyPromises = mainComments.map(d => 
+            db.collection("comments")
+              .where("parentId", "==", d.id)
+              .orderBy("timestamp", "asc")
+              .get()
+              .then(replySnap => ({ parentId: d.id, replySnap }))
+        );
+
+        // 3. 使用 Promise.all 同時發送所有請求
+        const allRepliesResults = await Promise.all(replyPromises);
+
+        // 4. 當所有回覆都抓回來後，一次性渲染到對應的容器
+        allRepliesResults.forEach(({ parentId, replySnap }) => {
+            const replyContainer = document.getElementById(`replies-${parentId}`);
+            if (replyContainer && !replySnap.empty) {
+                replySnap.forEach(rDoc => {
+                    const rd = { ...rDoc.data(), id: rDoc.id };
+                    renderSingleComment(rd, `replies-${parentId}`, true);
+                });
+            }
+        });
+
         if (loadMoreBtn) {
             loadMoreBtn.style.display = (snap.docs.length < 10) ? "none" : "block";
         }
