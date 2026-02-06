@@ -92,12 +92,8 @@
   <!-- 旅程狀態 -->
   <div id="trip-status" class="alert rounded-4"></div>
 
-  <!-- 日記連結 -->
-  <div id="daily-logs" class="mt-4"></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-01-29 照片已發布：<a href="photos/day-1" target="_blank">點此查看</a></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-01-30 照片已發布：<a href="photos/day-2" target="_blank">點此查看</a></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-01-31 照片已發布：<a href="photos/day-3" target="_blank">點此查看</a></div>
-  <div class="alert alert-info rounded-4 mb-3">📅 2026-02-01 照片已發布：<a href="photos/day-4" target="_blank">點此查看</a></div>
+  <!-- 每日專屬頁面 -->
+  <div id="daily-pages" class="mt-4"></div>
 
   
 </div>
@@ -167,23 +163,24 @@
   
 
   // ===============================
-  // 每日日記自動生成
+  // 每日專屬頁面
   // ===============================
-  const dailyLogs = [
-    { date: "2026-01-29", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-1.html" },
-    { date: "2026-01-30", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-2.html" },
-    { date: "2026-01-31", url: "https://andrew0205blogs.blogspot.com/2026/01/sg-3.html" }
+  const dailyPages = [
+    { date: "2026-01-29", page: "day-1/" },
+    { date: "2026-01-30", page: "day-2/" },
+    { date: "2026-01-31", page: "day-3/" },
+    { date: "2026-02-01", page: "day-4/" }
   ];
 
-  const logsContainer = document.getElementById("daily-logs");
+  const pagesContainer = document.getElementById("daily-pages");
 
-  dailyLogs.forEach(log => {
-    const logDate = new Date(log.date + "T00:00:00");
-    if (today >= logDate) {
-      const logDiv = document.createElement("div");
-      logDiv.className = "alert alert-info rounded-4 mb-3";
-      logDiv.innerHTML = `📅 ${log.date} 日記已發布：<a href="${log.url}" target="_blank">點此查看</a>`;
-      logsContainer.appendChild(logDiv);
+  dailyPages.forEach(page => {
+    const pageDate = new Date(page.date + "T00:00:00");
+    if (today >= pageDate) {
+      const pageDiv = document.createElement("div");
+      pageDiv.className = "alert alert-info rounded-4 mb-3";
+      pageDiv.innerHTML = `📅 ${page.date} 每日專屬頁面：<a href="${page.page}">點此查看</a>`;
+      pagesContainer.appendChild(pageDiv);
     }
   });
 </script>
