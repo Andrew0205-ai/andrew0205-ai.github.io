@@ -125,3 +125,16 @@ body {
 [data-bs-theme="dark"] .action-edit { color: #64b5f6; }
 .action-delete { color: #b71c1c; cursor: pointer; }
 [data-bs-theme="dark"] .action-delete { color: #e57373; }
+/* ==========================================
+   🎯 終極修復：強制擊敗 Bootstrap .text-dark
+   ========================================= */
+[data-bs-theme="dark"] .comment-text.text-dark,
+[data-bs-theme="dark"] .comment-text * {
+  color: var(--text-main) !important;
+  --bs-text-opacity: 1 !important;
+}
+
+/* 如果你的留言 HTML 結構裡有直接寫 text-dark，這行能徹底解決 */
+[data-bs-theme="dark"] .text-dark {
+  color: var(--text-main) !important;
+}
