@@ -5,7 +5,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 let currentUser = null;
 const ADMIN_UID = "mKU5cngfmNXyXupfM9XAc8MqgNU2";
-const FORBIDDEN_WORDS = ["白痴","垃圾","靠","死","fuck","shit","北七","笨蛋"];
+const FORBIDDEN_WORDS = ["白痴","垃圾","死","fuck","shit","北七","笨蛋"];
 let myTempId = localStorage.getItem('myTempId') || 'temp_' + Math.random().toString(36).substr(2,9);
 localStorage.setItem('myTempId', myTempId);
 let lastVisible = null;
@@ -426,4 +426,3 @@ async function logout(){
         console.error(err);
         showToast("登出失敗","danger");
     }
-}
