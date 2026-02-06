@@ -162,26 +162,30 @@ async function loadComments(reset = false) {
 
         lastVisible = snap.docs[snap.docs.length - 1];
 
-        // 重點：改用 for...of 確保按順序一個一個顯示
+        // 使用 for...of 確保順序
         for (const doc of snap.docs) {
             const d = { ...doc.data(), id: doc.id };
             
-            // 1. 渲染主留言
+            // 1. 先渲染主留言
             renderSingleComment(d, "comments", false);
             
-            // 2. 等待抓取回覆
+            // 2. 抓取該留言下的回覆
             const replySnap = await db.collection("comments")
                                       .where("parentId", "==", d.id)
                                       .orderBy("timestamp", "asc")
                                       .get();
             
+            // 3. 渲染回覆（加一個小檢查確保容器存在）
             replySnap.forEach(rDoc => {
                 const rd = { ...rDoc.data(), id: rDoc.id };
-                renderSingleComment(rd, `replies-${d.id}`, true);
+                const replyContainer = document.getElementById(`replies-${d.id}`);
+                if (replyContainer) {
+                    renderSingleComment(rd, `replies-${d.id}`, true);
+                }
             });
         }
 
-        // 顯示載入更多按鈕
+        // 4. 所有留言渲染完後，再決定按鈕要不要出現
         if (loadMoreBtn) {
             loadMoreBtn.style.display = (snap.docs.length < 10) ? "none" : "block";
         }
@@ -190,8 +194,7 @@ async function loadComments(reset = false) {
         console.error("載入失敗：", err);
         showToast("系統載入異常，請重新整理", "danger");
     }
-}
-function renderSingleComment(d, containerId, isReply = false) {
+}, containerId, isReply = false) {
     const container = document.getElementById(containerId);
     if(!container) return;
 
