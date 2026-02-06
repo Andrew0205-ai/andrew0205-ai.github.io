@@ -1,5 +1,5 @@
 // ==========================================
-// 1. 初始化 Firebase 與環境變數
+// 1. 初始化 Firebase 與環境變數 
 // ==========================================
 const auth = firebase.auth();
 const db = firebase.firestore();
