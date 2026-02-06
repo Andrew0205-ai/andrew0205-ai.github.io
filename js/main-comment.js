@@ -1,5 +1,5 @@
 // ==========================================
-// 1. 初始化與全域變數
+// 1. 初始化 Firebase 與環境變數
 // ==========================================
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -11,10 +11,10 @@ localStorage.setItem('myTempId', myTempId);
 
 let lastVisible = null;
 let isCooldown = false;
-let currentParentId = null; // 新增：記錄目前正在回覆哪一則留言
+let currentParentId = null; // 紀錄目前正在回覆哪一則留言
 
 // ==========================================
-// 2. 工具函式 (Toast, 檢查, 連結轉換)
+// 2. 工具函式 (Toast, 內容檢查, 連結跳轉)
 // ==========================================
 function showToast(msg, type="success") {
     let container = document.getElementById("toastContainer");
@@ -63,7 +63,7 @@ function transformLinks(html){
 }
 
 // ==========================================
-// 3. 留言發布邏輯 (支援回覆)
+// 3. 留言發布與回覆邏輯
 // ==========================================
 async function postComment(){
     const input = document.getElementById("commentInput");
@@ -73,15 +73,17 @@ async function postComment(){
     saveComment(text, false);
 }
 
-// 準備回覆功能
 function prepareReply(parentId, parentName) {
     currentParentId = parentId;
     const input = document.getElementById("commentInput");
     input.focus();
-    showToast(`正在回覆 ${parentName}... 💬`);
-    
-    // 如果有取消按鈕可以顯示，讓使用者反悔
     input.placeholder = `正在回覆 ${parentName}...`;
+    showToast(`正在回覆 ${parentName}... 💬`);
+}
+
+async function postQuickComment(msg){
+    if(isCooldown) return;
+    saveComment(msg, true);
 }
 
 async function saveComment(text, isQuick){
@@ -107,7 +109,7 @@ async function saveComment(text, isQuick){
         name: userData.name,
         avatar: userData.avatar,
         text: text,
-        parentId: currentParentId || null, // 關鍵：記錄父留言 ID
+        parentId: currentParentId || null,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
@@ -119,7 +121,7 @@ async function saveComment(text, isQuick){
             input.placeholder = "說點什麼吧...";
             document.getElementById("count").textContent = "0";
         }
-        currentParentId = null; // 重設回覆 ID
+        currentParentId = null;
         showToast("發布成功！💖");
         loadComments(true);
         setTimeout(() => { isCooldown = false; }, 3000);
@@ -129,48 +131,67 @@ async function saveComment(text, isQuick){
         isCooldown = false;
     }
 }
-// ==========================================
-// 快捷留言功能
-// ==========================================
-async function postQuickComment(msg) {
-    if (isCooldown) return; // 如果在冷卻中就不要跑
-    saveComment(msg, true);  // 呼叫原本的儲存功能，第二個參數 true 代表是快捷留言
-}
+
 // ==========================================
 // 4. 載入與渲染 (巢狀結構)
 // ==========================================
-async function loadComments(reset=false){
-    let query = db.collection("comments").orderBy("timestamp", "asc"); // 回覆功能建議用正序，或抓全部後前端排序
-    
-    const snap = await query.get();
+async function loadComments(reset = false) {
     const commentsEl = document.getElementById("comments");
-    if(reset) { commentsEl.innerHTML = ""; }
-    if(snap.empty) return;
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
 
-    const allComments = [];
-    snap.forEach(doc => allComments.push({ id: doc.id, ...doc.data() }));
+    if (reset) {
+        lastVisible = null;
+        commentsEl.innerHTML = "";
+    }
 
-    // 區分主留言與回覆
-    const mainComments = allComments.filter(c => !c.parentId);
-    const replies = allComments.filter(c => c.parentId);
+    // 只抓取主留言
+    let query = db.collection("comments")
+                  .where("parentId", "==", null)
+                  .orderBy("timestamp", "desc")
+                  .limit(10);
 
-    // 先渲染主留言
-    mainComments.forEach(c => renderSingleComment(c, "comments"));
-    
-    // 再將回覆插入對應的主留言下方
-    replies.forEach(r => {
-        const replyContainerId = `replies-${r.parentId}`;
-        // 確保父容器存在
-        if(document.getElementById(replyContainerId)){
-            renderSingleComment(r, replyContainerId, true);
+    if (!reset && lastVisible) query = query.startAfter(lastVisible);
+
+    try {
+        const snap = await query.get();
+        if (snap.empty) {
+            if (loadMoreBtn) loadMoreBtn.style.display = "none";
+            return;
         }
-    });
+
+        lastVisible = snap.docs[snap.docs.length - 1];
+
+        for (const doc of snap.docs) {
+            const d = { ...doc.data(), id: doc.id };
+            renderSingleComment(d, "comments", false);
+            
+            // 抓取該留言下的回覆
+            const replySnap = await db.collection("comments")
+                                      .where("parentId", "==", d.id)
+                                      .orderBy("timestamp", "asc")
+                                      .get();
+            
+            replySnap.forEach(rDoc => {
+                const rd = { ...rDoc.data(), id: rDoc.id };
+                renderSingleComment(rd, `replies-${d.id}`, true);
+            });
+        }
+
+        if (snap.docs.length < 10 && loadMoreBtn) loadMoreBtn.style.display = "none";
+        else if (loadMoreBtn) loadMoreBtn.style.display = "block";
+
+    } catch (err) {
+        console.error("載入失敗：", err);
+    }
 }
 
 function renderSingleComment(d, containerId, isReply = false) {
     const container = document.getElementById(containerId);
+    if(!container) return;
+
     const canManage = (currentUser && (currentUser.uid===ADMIN_UID || currentUser.uid===d.uid)) ||
                       (!currentUser && d.authorTempId===myTempId);
+    
     const safeHtml = transformLinks(marked.parse(DOMPurify.sanitize(d.text)));
     
     const html = `
@@ -197,34 +218,86 @@ function renderSingleComment(d, containerId, isReply = false) {
 }
 
 // ==========================================
-// 5. 編輯 / 刪除 / 使用者管理 (維持原樣)
+// 5. 編輯 / 刪除 / 圖片上傳
 // ==========================================
-// ... 這裡保留你原本的 deleteComment, editComment, saveEdit, uploadAvatarToCloudinary 等功能 ...
-// ... 以及你的 Auth 監聽邏輯 ...
-
 async function deleteComment(id){
-    if(!confirm("確定要刪除此留言嗎？（這將不會刪除其下的回覆）")) return;
+    if(!confirm("確定要刪除此留言嗎？")) return;
     try{
         await db.collection("comments").doc(id).delete();
-        document.getElementById(`comment-${id}`).remove();
+        const el = document.getElementById(`comment-${id}`);
+        if(el) el.remove();
         showToast("留言已刪除 🗑️");
     }catch(e){
         showToast("刪除失敗","danger");
     }
 }
 
-// ==========================================
-// 6. 初始化執行
-// ==========================================
-auth.onAuthStateChanged(user=>{
-    currentUser=user;
-    updateUI();
-    loadComments(true);
-});
+let currentEditId=null;
+function editComment(id){
+    const el = document.getElementById(`comment-${id}`);
+    const text = el.querySelector("div.mt-2").innerText;
+    currentEditId=id;
+    document.getElementById("editInput").value=text;
+    const modal = new bootstrap.Modal(document.getElementById("editModal"));
+    modal.show();
+}
 
-async function logout(){
-    await auth.signOut();
-    showToast("已成功登出 👋");
+async function saveEdit(){
+    const text=document.getElementById("editInput").value.trim();
+    if(!text) return showToast("留言不可空白！","danger");
+    try{
+        await db.collection("comments").doc(currentEditId).update({text});
+        const el = document.getElementById(`comment-${currentEditId}`);
+        el.querySelector("div.mt-2").innerHTML = marked.parse(DOMPurify.sanitize(text));
+        bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+        showToast("留言已更新 ✏️");
+    }catch(e){
+        showToast("更新失敗","danger");
+    }
+}
+
+async function uploadImage(){
+    const fileInput = document.getElementById("imageInput");
+    fileInput.click();
+    fileInput.onchange = async ()=>{
+        const file=fileInput.files[0];
+        if(!file || file.size>5*1024*1024) return showToast("檔案太大！請選擇 5MB 以下。","danger");
+        const formData=new FormData();
+        formData.append("file",file);
+        formData.append("upload_preset","guest-upload");
+        try{
+            showToast("圖片傳送中... ☁️");
+            const res=await fetch("https://api.cloudinary.com/v1_1/df0hlwcrd/image/upload",{method:"POST",body:formData});
+            const data=await res.json();
+            const input=document.getElementById("commentInput");
+            input.value+=`\n![圖片](${data.secure_url})\n`;
+            showToast("圖片上傳成功！📸");
+        }catch(e){
+            showToast("上傳失敗","danger");
+        }
+    };
+}
+
+// ==========================================
+// 6. 使用者管理與 Auth
+// ==========================================
+async function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        if (!userDoc.exists) {
+            await db.collection("users").doc(user.uid).set({
+                name: user.displayName || "新朋友",
+                avatar: user.photoURL || "images/defult-avatar.png",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        showToast(`歡迎回來，${user.displayName}！✨`);
+    } catch (error) {
+        showToast("登入失敗", "danger");
+    }
 }
 
 function updateUI(){
@@ -236,10 +309,39 @@ function updateUI(){
         userArea.classList.remove("d-none");
         commentArea.classList.remove("d-none");
         document.getElementById("userName").textContent=currentUser.displayName||"新朋友";
-        document.getElementById("userAvatar").src=currentUser.photoURL||"images/andrew.png";
+        document.getElementById("userAvatar").src=currentUser.photoURL||"images/defult-avatar.png";
     }else{
         loginArea.classList.remove("d-none");
         userArea.classList.add("d-none");
         commentArea.classList.add("d-none");
     }
 }
+
+auth.onAuthStateChanged(user=>{
+    currentUser=user;
+    updateUI();
+    loadComments(true);
+});
+
+async function logout(){
+    try{
+        await auth.signOut();
+        showToast("已成功登出 👋");
+    }catch(err){
+        showToast("登出失敗","danger");
+    }
+}
+
+// ==========================================
+// 7. 初始化執行
+// ==========================================
+document.addEventListener("DOMContentLoaded",()=>{
+    const commentInput = document.getElementById("commentInput");
+    if(commentInput){
+        commentInput.addEventListener("input",function(){
+            document.getElementById("count").textContent=this.value.length;
+        });
+    }
+    const backBtn = document.getElementById("backToTop");
+    if(backBtn) backBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+});
