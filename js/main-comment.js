@@ -135,25 +135,27 @@ async function saveComment(text, isQuick){
 // ==========================================
 // 4. 載入與渲染 (巢狀結構)
 // ==========================================
+
 async function loadComments(reset = false) {
     const commentsEl = document.getElementById("comments");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
 
     if (reset) {
         lastVisible = null;
-        commentsEl.innerHTML = "";
+        commentsEl.innerHTML = ""; // 重置時才清空
     }
 
-    // 只抓取主留言
-    let query = db.collection("comments")
-                  .where("parentId", "==", null)
-                  .orderBy("timestamp", "desc")
-                  .limit(10);
-
-    if (!reset && lastVisible) query = query.startAfter(lastVisible);
-
     try {
+        // 先抓主留言
+        let query = db.collection("comments")
+                      .where("parentId", "==", null)
+                      .orderBy("timestamp", "desc")
+                      .limit(10);
+
+        if (!reset && lastVisible) query = query.startAfter(lastVisible);
+
         const snap = await query.get();
+        
         if (snap.empty) {
             if (loadMoreBtn) loadMoreBtn.style.display = "none";
             return;
@@ -161,11 +163,14 @@ async function loadComments(reset = false) {
 
         lastVisible = snap.docs[snap.docs.length - 1];
 
-        for (const doc of snap.docs) {
+        // 改用非阻塞方式處理，確保每一則主留言都能先出來
+        snap.forEach(async (doc) => {
             const d = { ...doc.data(), id: doc.id };
+            
+            // 渲染主留言
             renderSingleComment(d, "comments", false);
             
-            // 抓取該留言下的回覆
+            // 異步抓取回覆，不擋住後面的主留言載入
             const replySnap = await db.collection("comments")
                                       .where("parentId", "==", d.id)
                                       .orderBy("timestamp", "asc")
@@ -175,16 +180,18 @@ async function loadComments(reset = false) {
                 const rd = { ...rDoc.data(), id: rDoc.id };
                 renderSingleComment(rd, `replies-${d.id}`, true);
             });
-        }
+        });
 
-        if (snap.docs.length < 10 && loadMoreBtn) loadMoreBtn.style.display = "none";
-        else if (loadMoreBtn) loadMoreBtn.style.display = "block";
+        // 顯示按鈕
+        if (loadMoreBtn) {
+            loadMoreBtn.style.display = (snap.docs.length < 10) ? "none" : "block";
+        }
 
     } catch (err) {
         console.error("載入失敗：", err);
+        showToast("系統載入異常，請重新整理", "danger");
     }
 }
-
 function renderSingleComment(d, containerId, isReply = false) {
     const container = document.getElementById(containerId);
     if(!container) return;
