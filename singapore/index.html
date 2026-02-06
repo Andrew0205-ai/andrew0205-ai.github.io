@@ -18,122 +18,62 @@
     /* ===== 全螢幕動畫容器 ===== */
     #effect-container {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 9999;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: hidden; z-index: 9999;
     }
 
-    /* ===== 雪花 ===== */
-    .snowflake {
-      position: absolute;
-      top: -20px;
-      user-select: none;
-      animation: snowFall linear infinite;
-    }
+    /* ===== 雪花與熱帶動畫樣式 ===== */
+    .snowflake { position: absolute; top: -20px; user-select: none; animation: snowFall linear infinite; }
+    @keyframes snowFall { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); } }
+    .cloud { position: absolute; opacity: 0.8; animation: cloudMove linear infinite; font-size: 48px; }
+    @keyframes cloudMove { 0% { transform: translateX(-20%); } 100% { transform: translateX(120vw); } }
+    .plane { position: absolute; top: 20%; animation: planeFly linear infinite; font-size: 32px; }
+    @keyframes planeFly { 0% { transform: translateX(-10vw) translateY(0); } 100% { transform: translateX(110vw) translateY(-10vh); } }
 
-    @keyframes snowFall {
-      0%   { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(110vh) rotate(360deg); }
-    }
-
-    /* ===== 雲 ===== */
-    .cloud {
-      position: absolute;
-      top: 10%;
-      opacity: 0.8;
-      animation: cloudMove linear infinite;
-      font-size: 48px;
-    }
-
-    @keyframes cloudMove {
-      0%   { transform: translateX(-20%); }
-      100% { transform: translateX(120vw); }
-    }
-
-    /* ===== 飛機 ===== */
-    .plane {
-      position: absolute;
-      top: 20%;
-      animation: planeFly linear infinite;
-      font-size: 32px;
-    }
-
-    @keyframes planeFly {
-      0%   { transform: translateX(-10vw) translateY(0); }
-      100% { transform: translateX(110vw) translateY(-10vh); }
-    }
-
+    /* ===== 日記圖卡樣式 ===== */
     .day-card {
-      position: relative;
-      overflow: hidden;
-      border-radius: 16px;
+      position: relative; overflow: hidden; border-radius: 16px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      transition: transform 0.3s ease;
     }
-
-    .day-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-    }
-
+    .day-card:hover { transform: translateY(-5px); }
+    .day-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
     .day-card .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.45));
     }
-
-    .day-card .overlay .date {
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
-    }
-
-    .day-card .overlay .label {
-      font-size: 1.5rem;
-    }
+    .day-card .overlay .date { font-size: 1.1rem; letter-spacing: 0.5px; }
+    .day-card .overlay .label { font-size: 1.5rem; }
   </style>
 </head>
 <body>
 
 <div id="effect-container"></div>
 
-<!-- 導覽列 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-bold" href="../index.html">小宏的部落格</a>
   </div>
 </nav>
 
-<!-- 主要內容 -->
 <div class="container my-5" style="max-width: 900px;">
-
   <h1 class="fw-bold mb-3">🇸🇬 新加坡專區</h1>
-
   <p class="text-muted fs-5 mb-4">
-    從台中出發，第一次踏上獅城。  
-    這個專區將記錄我出發前的準備、旅途中的點滴，以及回來後的整理與回顧。
+    從台中出發，第一次踏上獅城。這是我 2026 寒假的旅行回憶。
   </p>
 
-  <!-- 旅程狀態 -->
-  <div id="trip-status" class="alert rounded-4"></div>
+  <div id="trip-status" class="alert alert-success rounded-4 shadow-sm mb-4">
+    🏠 已平安返回台中，正在努力整理新加坡的照片與日記！
+  </div>
 
-  <!-- 每日專屬頁面 -->
-  <div class="row g-4 mt-2">
+  <h3 class="fw-bold mb-3">📅 每日行程日記</h3>
+  <div class="row g-4 mt-1">
     <div class="col-12 col-md-6 col-lg-3">
       <a class="text-decoration-none" href="day-1/">
         <div class="day-card">
-          <img src="https://i.ibb.co/CpdBFQbk/100-2811.jpg" alt="2026-01-29 新加坡第 1 天">
+          <img src="https://i.ibb.co/CpdBFQbk/100-2811.jpg" alt="2026-01-29 Day 1">
           <div class="overlay">
             <div class="date">2026-01-29</div>
             <div class="label">Day-1</div>
@@ -144,7 +84,7 @@
     <div class="col-12 col-md-6 col-lg-3">
       <a class="text-decoration-none" href="day-2/">
         <div class="day-card">
-          <img src="https://i.ibb.co/CpdBFQbk/100-2811.jpg" alt="2026-01-30 新加坡第 2 天">
+          <img src="https://i.ibb.co/CpdBFQbk/100-2811.jpg" alt="2026-01-30 Day 2">
           <div class="overlay">
             <div class="date">2026-01-30</div>
             <div class="label">Day-2</div>
@@ -155,7 +95,7 @@
     <div class="col-12 col-md-6 col-lg-3">
       <a class="text-decoration-none" href="day-3/">
         <div class="day-card">
-          <img src="https://i.ibb.co/W4vzVD93/100-2821.jpg" alt="2026-01-31 新加坡第 3 天">
+          <img src="https://i.ibb.co/W4vzVD93/100-2821.jpg" alt="2026-01-31 Day 3">
           <div class="overlay">
             <div class="date">2026-01-31</div>
             <div class="label">Day-3</div>
@@ -164,9 +104,9 @@
       </a>
     </div>
     <div class="col-12 col-md-6 col-lg-3">
-      <a class="text-decoration-none" href="day-4/">
+      <a class="text-decoration-none" href="day-4/"> 
         <div class="day-card">
-          <img src="https://i.ibb.co/BHXDZWBD/100-2823.jpg" alt="2026-02-01 新加坡第 4 天">
+          <img src="https://i.ibb.co/BHXDZWBD/100-2823.jpg" alt="2026-02-01 Day 4">
           <div class="overlay">
             <div class="date">2026-02-01</div>
             <div class="label">Day-4</div>
@@ -176,28 +116,18 @@
     </div>
   </div>
 
-  
+  <div id="daily-pages" class="mt-4"></div>
 </div>
+
 <footer class="bg-success text-white text-center py-3">
   © 2026 小宏工作室
 </footer>
 
 <script>
-  // ===============================
-  // 自動判斷是否在新加坡
-  // ===============================
   const today = new Date();
-  const startDate = new Date(2026, 0, 29); // 1/29
-  const endDate   = new Date(2026, 1, 1);  // 2/1
-  const IN_SINGAPORE = today >= startDate && today <= endDate;
-
-  // ===============================
-  // 雪花與熱帶動畫
-  // ===============================
   const effectContainer = document.getElementById("effect-container");
-  const month = today.getMonth() + 1;
-  const isWinter = [12, 1, 2].includes(month);
 
+  // 小技巧：既然已經回來了，我們可以讓網頁隨機出現雪花或飛機
   function startSnow(count) {
     for (let i = 0; i < count; i++) {
       const snow = document.createElement("div");
@@ -216,10 +146,10 @@
       cloud.className = "cloud";
       cloud.textContent = "☁️";
       cloud.style.top = 10 + i * 15 + "%";
+      cloud.style.left = "-10%";
       cloud.style.animationDuration = 30 + i * 10 + "s";
       effectContainer.appendChild(cloud);
     }
-
     const plane = document.createElement("div");
     plane.className = "plane";
     plane.textContent = "✈️";
@@ -227,22 +157,9 @@
     effectContainer.appendChild(plane);
   }
 
-  if (isWinter && !IN_SINGAPORE) {
-    startSnow(30);
-  } else {
-    startTropical();
-  }
-
-  // ===============================
-  // 旅程狀態文字切換
-  // ===============================
-  const statusBox = document.getElementById("trip-status");
-
-    statusBox.classList.add("alert-success");
-    statusBox.textContent = "😀已平安返回台灣，將發布日記及照片。";
- 
-  
-
+  // 判斷：2月在台中是冬天，所以飄雪；但也加一點飛機來紀念旅行
+  startSnow(20);
+  setTimeout(startTropical, 2000);
 </script>
 
 <script src="../js/bootstrap.bundle.min.js"></script>

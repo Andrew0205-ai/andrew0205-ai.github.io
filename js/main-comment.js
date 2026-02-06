@@ -5,7 +5,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 let currentUser = null;
 const ADMIN_UID = "mKU5cngfmNXyXupfM9XAc8MqgNU2";
-const FORBIDDEN_WORDS = ["白痴","垃圾","靠","死","fuck","shit","北七","笨蛋"];
+const FORBIDDEN_WORDS = ["白痴","垃圾","死","fuck","shit","北七","笨蛋"];
 let myTempId = localStorage.getItem('myTempId') || 'temp_' + Math.random().toString(36).substr(2,9);
 localStorage.setItem('myTempId', myTempId);
 let lastVisible = null;
@@ -393,6 +393,32 @@ document.addEventListener("DOMContentLoaded",()=>{
 // ==========================================
 // 9. Auth 監聽 & UI 更新
 // ==========================================
+// ==========================================
+// Google 登入功能
+// ==========================================
+async function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        
+        // 檢查使用者是否已存在於資料庫，若無則建立
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        if (!userDoc.exists) {
+            await db.collection("users").doc(user.uid).set({
+                name: user.displayName || "新朋友",
+                avatar: user.photoURL || "images/andrew.png",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        showToast(`歡迎回來，${user.displayName}！✨`);
+    } catch (error) {
+        console.error("Google 登入失敗:", error);
+        showToast("登入失敗，請稍後再試。", "danger");
+    }
+}
+
 function updateUI(){
     const loginArea=document.getElementById("loginArea");
     const userArea=document.getElementById("userArea");
@@ -426,4 +452,3 @@ async function logout(){
         console.error(err);
         showToast("登出失敗","danger");
     }
-}
