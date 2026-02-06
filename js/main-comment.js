@@ -212,7 +212,7 @@ function renderSingleComment(d, containerId, isReply = false) {
                 <strong>${d.name} ${d.uid===ADMIN_UID?'<span class="badge bg-danger badge-red">板主</span>':''}</strong>
                 <small class="text-muted">${d.timestamp ? new Date(d.timestamp.toDate()).toLocaleString() : '剛剛'}</small>
             </div>
-            <div class="mt-2 text-dark">${safeHtml}</div>
+            <div class="mt-2 ">${safeHtml}</div>
             <div class="mt-2 small">
                 ${!isReply ? `<span role="button" class="text-primary cursor-pointer me-2" onclick="prepareReply('${d.id}', '${d.name}')">回覆</span>` : ''}
                 ${canManage ? `
@@ -485,5 +485,118 @@ async function saveProfileChanges() {
         showToast("儲存失敗，請再試一次。", "danger");
     } finally {
         progress.classList.add("d-none"); // 隱藏進度條
+    }
+}
+/**
+ * 切換 Email 登入視窗的顯示模式 (login / signup / reset)
+ * @param {string} mode 
+ */
+function openEmailModal(mode = 'login') {
+    // 取得元件
+    const emailModalTitle = document.getElementById("emailModalTitle");
+    const nameRow = document.getElementById("nameRow");
+    const avatarRow = document.getElementById("avatarRow");
+    const passwordRow = document.getElementById("passwordRow");
+    const emailError = document.getElementById("emailError");
+
+    // 清除錯誤訊息
+    if (emailError) {
+        emailError.classList.add("d-none");
+        emailError.innerText = "";
+    }
+
+    // 根據模式調整 UI
+    if (mode === 'signup') {
+        emailModalTitle.innerText = "註冊新帳號";
+        nameRow.style.display = "block";
+        avatarRow.style.display = "block";
+        passwordRow.style.display = "block";
+    } else if (mode === 'reset') {
+        emailModalTitle.innerText = "重設密碼";
+        nameRow.style.display = "none";
+        avatarRow.style.display = "none";
+        passwordRow.style.display = "none"; // 忘記密碼只需要 Email
+    } else {
+        // 預設為 login
+        emailModalTitle.innerText = "Email 登入";
+        nameRow.style.display = "none";
+        avatarRow.style.display = "none";
+        passwordRow.style.display = "block";
+    }
+
+    // 顯示 Modal (使用 Bootstrap 5 語法)
+    const myModal = new bootstrap.Modal(document.getElementById('emailModal'));
+    myModal.show();
+}
+/**
+ * 處理 Email 認證提交 (登入 / 註冊 / 重設密碼)
+ */
+async function submitEmailAuth() {
+    const modeTitle = document.getElementById("emailModalTitle").innerText;
+    const email = document.getElementById("emailInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+    const name = document.getElementById("nameInput").value.trim();
+    const errorEl = document.getElementById("emailError");
+
+    // 簡易前端驗證
+    if (!email) return showEmailError("請輸入 Email");
+    errorEl.classList.add("d-none"); // 清除舊錯誤
+
+    try {
+        if (modeTitle === "註冊新帳號") {
+            if (!password || !name) return showEmailError("請填寫完整註冊資訊");
+            
+            // 1. Firebase 註冊
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+
+            // 2. 更新使用者名稱與頭像 (如果有實作頭像上傳，這裡要再調整)
+            await user.updateProfile({ displayName: name });
+            
+            showToast("註冊成功！歡迎加入 " + name, "success");
+
+        } else if (modeTitle === "重設密碼") {
+            // Firebase 重設密碼郵件
+            await auth.sendPasswordResetEmail(email);
+            showToast("重設郵件已發送，請檢查信箱", "info");
+
+        } else {
+            // 預設為：Email 登入
+            if (!password) return showEmailError("請輸入密碼");
+            await auth.signInWithEmailAndPassword(email, password);
+            showToast("歡迎回來！", "success");
+        }
+
+        // 成功後關閉 Modal (使用 Bootstrap 5 實體)
+        const modalEl = document.getElementById('emailModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+
+    } catch (error) {
+        console.error("Auth Error:", error);
+        showEmailError(getFirebaseErrorMessage(error.code));
+    }
+}
+
+/**
+ * 輔助函數：在 Modal 內顯示錯誤
+ */
+function showEmailError(msg) {
+    const errorEl = document.getElementById("emailError");
+    errorEl.innerText = msg;
+    errorEl.classList.remove("d-none");
+}
+
+/**
+ * 將 Firebase 錯誤代碼轉為中文
+ */
+function getFirebaseErrorMessage(code) {
+    switch (code) {
+        case 'auth/user-not-found': return '找不到此帳號，請先註冊';
+        case 'auth/wrong-password': return '密碼輸入錯誤';
+        case 'auth/email-already-in-use': return '此 Email 已被註冊';
+        case 'auth/weak-password': return '密碼強度不足 (需至少 6 位數)';
+        case 'auth/invalid-email': return 'Email 格式不正確';
+        default: return '發生錯誤：' + code;
     }
 }
