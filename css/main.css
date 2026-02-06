@@ -305,3 +305,82 @@ a.sing:focus {
       color: #0d47a1;
       text-decoration: underline;
     }
+/* ==========================================
+   🌙 深色模式自定義補丁 (Bootstrap 5.3)
+   ========================================== */
+[data-bs-theme="dark"] {
+  /* 1. 背景微調 */
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+
+  /* 2. 留言板顏色調整 (原本是淺綠色，深色模式改為深灰綠) */
+  .comment-card {
+    background: #1a2a1a; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .comment-text {
+    background: #252525;
+    color: #e0e0e0;
+    border-left: 4px solid #2e7d32;
+  }
+
+  .comment-card .user-name-title {
+    color: #85d19a;
+  }
+
+  .comment-footer {
+    color: #aaa;
+  }
+
+  /* 3. 跑馬燈與橫幅 (稍微降低亮度，避免太刺眼) */
+  #christmasBanner, .marquee-wrapper {
+    background: linear-gradient(90deg, #145524, #0f5132) !important;
+  }
+
+  /* 4. 連結顏色 (原本的高對比綠色在深色下太暗，改淺一點) */
+  .link-strong {
+    color: #81c784;
+  }
+
+  .action-edit {
+    color: #64b5f6;
+  }
+
+  .action-delete {
+    color: #e57373;
+  }
+
+  /* 5. 打字機游標顏色 */
+  .cursor {
+    background-color: #e0e0e0;
+  }
+}
+/* --------------------------------------
+   🌓 導覽列切換按鈕微調
+   -------------------------------------- */
+#themeToggle {
+  transition: all 0.3s ease;
+  border-width: 1.5px;
+}
+
+#themeToggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+/* 當在深色模式時，按鈕的懸停效果稍微改變 */
+[data-bs-theme="dark"] #themeToggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(129, 199, 132, 0.5); /* 淡淡的綠光 */
+}
+[data-bs-theme="dark"] .travel-img {
+  filter: brightness(0.8); /* 深色模式下讓照片亮一點點 */
+}
+/* 加入這段到 [data-bs-theme="dark"] 補丁內 */
+[data-bs-theme="dark"] .travel-card {
+  border: 1px solid #333; /* 在黑底增加一點邊界感，讓卡片不消失 */
+  background-color: #1e1e1e;
+}
