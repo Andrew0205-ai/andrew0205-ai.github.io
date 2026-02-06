@@ -104,9 +104,36 @@ body {
 /* --------------------------------------
    🌓 其他組件 (跑馬燈、Steam 提示、按鈕)
    -------------------------------------- */
-.marquee-wrapper { width: 100%; background-color: green; color: white; padding: 10px 0; overflow: hidden; }
-.marquee { display: inline-block; white-space: nowrap; animation: marquee-animation 15s linear infinite; }
-@keyframes marquee-animation { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+.marquee-wrapper {
+  width: 100%;
+  background-color: #2e7d32; /* 稍微深一點的綠色，質感較佳 */
+  color: white;
+  padding: 10px 0;
+  overflow: hidden;
+  position: relative; /* 確保內容定位穩定 */
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%; /* 讓第一則訊息從右側邊界開始 */
+  animation: marquee-animation 20s linear infinite; /* 稍微放慢一點，比較好閱讀 */
+}
+
+@keyframes marquee-animation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* 滑鼠懸停時暫停，方便讀者閱讀重要公告 */
+.marquee-wrapper:hover .marquee {
+  animation-play-state: paused;
+  cursor: pointer;
+}
 
 #achievementToast {
   position: fixed; bottom: 30px; right: -350px; width: 300px; padding: 15px;
