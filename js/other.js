@@ -138,35 +138,39 @@ updateFestival();
 //======================================
 document.getElementById("footerText").textContent =
   `© ${new Date().getFullYear()} 小宏工作室`;
-// 1. 完全比對你擁有的這 7 個徽章
-const finalBadges = [
-    "板南線數據大師", 
-    "海中尋船徽章", 
-    "尋寶徽章", 
-    "射手座徽章", 
-    "摩羯座徽章", 
-    "水瓶座徽章", 
-    "天空尋星徽章"
-];
-
+// 1. 檢查徽章
+const finalBadges = ["板南線數據大師", "海中尋船徽章", "尋寶徽章", "射手座徽章", "摩羯座徽章", "水瓶座徽章", "天空尋星徽章"];
 const userEarned = JSON.parse(localStorage.getItem("badges") || "[]");
-
-// 檢查是否每個徽章都在你的 localStorage 裡
 const isMaster = finalBadges.every(badge => userEarned.includes(badge));
 
-// 測試用：如果想要強制看煙火，可以把下面這行改成 if(true)
 if (isMaster) {
-    console.log("偵測到所有徽章！煙火啟動！");
     startFireworks();
     
-    // 在畫面上方顯示大師稱號
+    // 建立文字標籤
     const trophy = document.createElement("div");
-    trophy.innerHTML = "🏆 恭喜達成全成就大師！ 🏆";
-    trophy.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:linear-gradient(to right, #bf953f, #fcf6ba, #b38728); color:#5d4037; padding:15px 30px; border-radius:30px; font-weight:bold; z-index:1000000; font-size:20px; box-shadow: 0 0 20px rgba(255,215,0,0.8); border: 2px solid #fff;";
+    trophy.id = "master-trophy"; // 給它一個 ID 方便後面刪除
+    trophy.innerHTML = "🏆 恭喜小宏達成全成就大師！ 🏆";
+    trophy.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:linear-gradient(to right, #bf953f, #fcf6ba, #b38728); color:#5d4037; padding:15px 30px; border-radius:30px; font-weight:bold; z-index:1000000; font-size:20px; box-shadow: 0 0 20px rgba(255,215,0,0.8); border: 2px solid #fff; transition: opacity 2s;";
     document.body.appendChild(trophy);
+
+    // --- 🕒 重點：設定 10 秒後消失 ---
+    setTimeout(() => {
+        // 讓文字淡出
+        trophy.style.opacity = "0";
+        
+        // 停止煙火產生的邏輯
+        stopFireworks = true; 
+        
+        // 2 秒後（等文字淡出完畢）徹底移除元素
+        setTimeout(() => {
+            trophy.remove();
+            document.getElementById('fireworksCanvas').remove();
+        }, 2000);
+    }, 10000); // 10000 毫秒 = 10 秒
 }
 
-// 2. 煙火渲染引擎
+let stopFireworks = false;
+
 function startFireworks() {
     const canvas = document.getElementById('fireworksCanvas');
     const ctx = canvas.getContext('2d');
@@ -204,6 +208,7 @@ function startFireworks() {
     }
 
     function createFirework() {
+        if (stopFireworks) return; // 如果時間到了，就不再產生新煙火
         const x = Math.random() * canvas.width;
         const y = Math.random() * (canvas.height * 0.6);
         const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
@@ -211,6 +216,7 @@ function startFireworks() {
     }
 
     function animate() {
+        if (!document.getElementById('fireworksCanvas')) return; // 畫布被移除就停止
         requestAnimationFrame(animate);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach((p, i) => {
