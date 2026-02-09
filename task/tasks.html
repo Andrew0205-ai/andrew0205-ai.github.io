@@ -1,87 +1,130 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<title>🏅 小宏的任務挑戰</title>
-<style>
-  body {
-    font-family: "Segoe UI", sans-serif;
-    background: linear-gradient(120deg, #6a5acd, #ffda6a);
-    padding: 20px;
-  }
-  h1, h2 { text-align: center; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏅 小宏的任務挑戰總部</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(120deg, #6a5acd, #ffda6a);
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        h1, h2 { text-align: center; color: #fff; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+        
+        .task-container { display: flex; flex-direction: column; align-items: center; }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.2);
+            transition: 0.3s;
+        }
+        .card.completed { border-left: 10px solid #2ecc71; }
+        
+        .card-title { font-size: 1.2rem; font-weight: bold; color: #333; }
+        .card-desc { color: #666; font-size: 0.9rem; margin: 10px 0; }
+        
+        .btn {
+            display: inline-block; background: #6a4dff; color: #fff;
+            padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: bold;
+        }
+        .btn-done {
+            background: #2ecc71; color: white; padding: 8px 18px;
+            border-radius: 8px; display: inline-block; font-weight: bold;
+        }
 
-  .card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 12px;
-    margin: 15px auto;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0,0,0,.2);
-  }
+        /* 徽章牆樣式 */
+        #badgeWall {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px; border-radius: 20px;
+            max-width: 600px; margin: 20px auto;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+        .badge-item {
+            background: #fff; padding: 10px 15px; margin: 8px;
+            border-radius: 50px; display: inline-block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-weight: bold; color: #444;
+        }
 
-  .badge {
-    background: #eee;
-    padding: 8px;
-    margin: 6px;
-    border-radius: 8px;
-    display: inline-block;
-  }
-
-  a {
-    display: inline-block;
-    margin-top: 10px;
-    background: #6a4dff;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 8px;
-    text-decoration: none;
-  }
-</style>
+        .back-home { text-align: center; margin-top: 40px; }
+        .back-home a { color: #fff; font-weight: bold; text-decoration: none; }
+    </style>
 </head>
 <body>
 
 <h1>🏅 小宏的任務挑戰</h1>
 
-<h2>📋 任務列表</h2>
-<div id="taskList"></div>
+<h2>📋 調查任務列表</h2>
+<div class="task-container" id="taskList"></div>
 
-<h2>🎖️ 已獲得徽章</h2>
-<div id="badgeWall" style="text-align:center;"></div>
+<hr style="width: 50%; border: 1px solid rgba(255,255,255,0.3); margin: 40px auto;">
+
+<h2>🎖️ 榮譽徽章牆</h2>
+<div id="badgeWall"></div>
+
+<div class="back-home">
+    <a href="https://andrew0205-ai.github.io/">← 返回小宏的個人首頁</a>
+</div>
 
 <script>
+  // 任務資料：星座探索現在需要檢查三個徽章
   const tasks = [
-    { title: "海中尋船", desc: "在海面上找出神秘的小船", link: "task.html", badge: "海中尋船徽章" },
-    { title: "海底寶藏", desc: "在深海中找到寶箱", link: "treasure.html", badge: "海底寶藏徽章" },
-    { title: "天空尋星", desc: "點擊天空中的星星", link: "star.html", badge: "天空尋星徽章" },
-    { title: "星座探索", desc: "找出指定星座", link: "xinzou.html", badge: "星座探索徽章" }
+    { title: "🚇 板南線之謎", desc: "結合 Scratch 與捷運大數據的終極挑戰！", link: "mrt-task.html", badge: "板南線數據大師" },
+    { title: "🚢 海中尋船", desc: "在海面上找出神秘的小船", link: "task.html", badge: "海中尋船徽章" },
+    { title: "🌌 星座探索", desc: "找出射手、摩羯、水瓶座（共3個徽章）", link: "xinzou.html", multi: ["射手座徽章", "摩羯座徽章", "水瓶座徽章"] },
+    { title: "💰 海底寶藏", desc: "潛入深海尋找失落的寶箱", link: "treasure.html", badge: "海底寶藏徽章" },
+    { title: "⭐ 天空尋星", desc: "點擊夜空中閃爍的特定星辰", link: "star.html", badge: "天空尋星徽章" }
   ];
 
   const earned = JSON.parse(localStorage.getItem("badges") || "[]");
-
   const taskList = document.getElementById("taskList");
   const badgeWall = document.getElementById("badgeWall");
 
-  // 任務列表
   tasks.forEach(t => {
-    const done = earned.includes(t.badge);
+    let isDone = false;
+    let progressText = "";
+
+    // 判斷是否完成
+    if (t.multi) {
+        // 如果是星座任務，計算拿到了幾個
+        const count = t.multi.filter(b => earned.includes(b)).length;
+        isDone = count === t.multi.length;
+        progressText = ` (${count}/${t.multi.length})`;
+    } else {
+        isDone = earned.includes(t.badge);
+    }
+
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = `card ${isDone ? 'completed' : ''}`;
+    
+    const actionBtn = isDone 
+        ? `<span class="btn-done">✅ 任務已全部完成</span>` 
+        : `<a href="${t.link}" class="btn">開始挑戰${progressText}</a>`;
+
     div.innerHTML = `
-      <strong>${t.title} ${done ? "" : ""}</strong>
-      <p>${t.desc}</p>
-      <a href="${t.link}">開始任務</a>
+      <div class="card-title">${t.title} ${isDone ? "✔️" : ""}</div>
+      <p class="card-desc">${t.desc}</p>
+      ${actionBtn}
     `;
     taskList.appendChild(div);
   });
 
-  // 徽章牆
+  // 生成徽章牆
   if (earned.length === 0) {
-    badgeWall.innerHTML = "目前還沒有徽章";
+    badgeWall.innerHTML = "<p style='color: white;'>目前還沒有徽章，加油！</p>";
   } else {
     earned.forEach(b => {
       const span = document.createElement("span");
-      span.className = "badge";
+      span.className = "badge-item";
       span.textContent = "🏅 " + b;
       badgeWall.appendChild(span);
     });
