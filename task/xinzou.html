@@ -1,112 +1,122 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<title>天空觀測任務 - 星座任務</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?fit=crop&w=1950&q=80") no-repeat center center;
-    background-size: cover;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    color: white;
-  }
+  <meta charset="UTF-8">
+  <title>天空觀測任務 - 星座解密</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?fit=crop&w=1950&q=80") no-repeat center center;
+      background-size: cover; height: 100vh; font-family: "Microsoft JhengHei", Arial, sans-serif;
+      overflow: hidden; color: white;
+    }
+    
+    /* 星座框樣式 */
+    .constellation {
+      width: 120px; height: 120px; position: absolute;
+      cursor: pointer; border: 3px solid rgba(255,255,255,0.5);
+      border-radius: 12px; background-size: cover; background-position: center;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .constellation:hover { transform: scale(1.1); border-color: #ffda6a; box-shadow: 0 0 20px #ffda6a; }
 
-  .constellation {
-    width: 120px;
-    height: 120px;
-    position: absolute;
-    cursor: pointer;
-    border: 3px solid #fff;
-    border-radius: 12px;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
+    /* 彈窗樣式 */
+    .modal {
+      display: none; position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85); border: 2px solid #ffda6a;
+      padding: 25px; border-radius: 15px; text-align: center; z-index: 1000; width: 320px;
+    }
+    
+    /* 偵探筆記本按鈕 */
+    #notebook-btn {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #ffda6a; color: #1b2735; border: none;
+      padding: 15px; border-radius: 50%; cursor: pointer;
+      font-size: 24px; z-index: 1001; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
 
-  .constellation:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 15px #fff;
-  }
-
-  #success {
-    display: none;
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.7);
-    padding: 20px 30px;
-    border-radius: 10px;
-    font-size: 20px;
-    text-align: center;
-  }
-
-  #success button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    background: #6a4dff;
-    color: #fff;
-    cursor: pointer;
-  }
-</style>
+    button {
+      margin-top: 15px; padding: 10px 20px; border: none;
+      border-radius: 8px; background: #6a4dff; color: #fff; cursor: pointer;
+    }
+    input {
+      padding: 10px; width: 80%; margin: 10px 0;
+      border-radius: 5px; border: none; text-align: center;
+    }
+  </style>
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3NGHCWH7TP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3NGHCWH7TP');
-</script>
 <body>
 
-<!-- 星座框 -->
-<div id="sagittarius" class="constellation" style="top: 100px; left: 100px; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx42EwdXkwld_5eV2DNG88Wgqgj8X3VUNZfA&s');"></div>
-<div id="capricorn" class="constellation" style="top: 200px; left: 400px; background-image: url('https://www.star-registration.com/cdn/shop/articles/02_10_Capricorn_1200x1200.png?v=1677858672');"></div>
-<div id="aquarius" class="constellation" style="top: 300px; left: 700px; background-image: url('https://www.star-registration.com/cdn/shop/articles/02_11_Aquarius_1200x1200.png?v=1677860826');"></div>
+<div id="sagittarius" class="constellation" style="top: 15%; left: 10%; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx42EwdXkwld_5eV2DNG88Wgqgj8X3VUNZfA&s');" title="這是什麼星座？"></div>
+<div id="capricorn" class="constellation" style="top: 40%; left: 40%; background-image: url('https://www.star-registration.com/cdn/shop/articles/02_10_Capricorn_1200x1200.png?v=1677858672');" title="這是什麼星座？"></div>
+<div id="aquarius" class="constellation" style="top: 65%; left: 70%; background-image: url('https://www.star-registration.com/cdn/shop/articles/02_11_Aquarius_1200x1200.png?v=1677860826');" title="這是什麼星座？"></div>
 
-<!-- 成功訊息 -->
-<div id="success">
-  🎉 恭喜你獲得徽章！
-  <div id="badge-name" style="margin-top: 10px; font-weight: bold;"></div>
+<button id="notebook-btn" onclick="openModal('quest-modal')">📔</button>
+
+<div id="quest-modal" class="modal" style="display: block;">
+  <h3>🔭 星空偵探任務</h3>
+  <p>天空中出現了三個神祕星座！</p>
+  <p style="font-size: 14px; color: #ffda6a;">請點擊星圖，並輸入正確的「星座名稱」來解鎖徽章。</p>
+  <button onclick="closeModal('quest-modal')">開始觀測</button>
+</div>
+
+<div id="input-modal" class="modal">
+  <h3 id="target-title">解密星座</h3>
+  <p>請輸入這個星座的名稱：</p>
+  <input type="text" id="ansInput" placeholder="填寫中文名稱...">
+  <br>
+  <button onclick="verifyAnswer()">提交鑑定</button>
+  <button onclick="closeModal('input-modal')" style="background:#555;">取消</button>
+</div>
+
+<div id="success" class="modal">
+  <h2 style="color: #ffda6a;">✨ 鑑定成功！</h2>
+  <p id="badge-display"></p>
   <button onclick="window.location.href='tasks.html'">回任務列表</button>
 </div>
 
 <script>
-  const badges = {
-    sagittarius: "射手座徽章",
-    capricorn: "摩羯座徽章",
-    aquarius: "水瓶座徽章"
+  const badgeData = {
+    sagittarius: { name: "射手座", badge: "射手座徽章" },
+    capricorn: { name: "摩羯座", badge: "摩羯座徽章" },
+    aquarius: { name: "水瓶座", badge: "水瓶座徽章" }
   };
 
-  const successBox = document.getElementById("success");
-  const badgeName = document.getElementById("badge-name");
+  let currentId = "";
 
-  Object.keys(badges).forEach(id => {
-    const element = document.getElementById(id);
-    element.addEventListener("click", () => {
-      const name = badges[id];
-      
-      // 存徽章到 localStorage
-      let userBadges = JSON.parse(localStorage.getItem("badges") || "[]");
-      if (!userBadges.includes(name)) {
-        userBadges.push(name);
-        localStorage.setItem("badges", JSON.stringify(userBadges));
-      }
+  function openModal(id) { document.getElementById(id).style.display = "block"; }
+  function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
-      // 顯示成功訊息
-      badgeName.innerText = name;
-      successBox.style.display = "block";
+  // 為每個星座加上點擊事件
+  Object.keys(badgeData).forEach(id => {
+    document.getElementById(id).addEventListener("click", () => {
+      currentId = id;
+      document.getElementById('target-title').innerText = "🔭 觀測中...";
+      openModal('input-modal');
     });
   });
-</script>
 
+  function verifyAnswer() {
+    const input = document.getElementById("ansInput").value.trim();
+    const correctName = badgeData[currentId].name;
+    const badgeName = badgeData[currentId].badge;
+
+    if (input === correctName) {
+      // 存徽章
+      let userBadges = JSON.parse(localStorage.getItem("badges") || "[]");
+      if (!userBadges.includes(badgeName)) {
+        userBadges.push(badgeName);
+        localStorage.setItem("badges", JSON.stringify(userBadges));
+      }
+      
+      closeModal('input-modal');
+      document.getElementById('badge-display').innerText = "獲得了「" + badgeName + "」";
+      openModal('success');
+    } else {
+      alert("❌ 觀測錯誤！這不是 " + input + "，再查查資料吧！");
+    }
+  }
+</script>
 </body>
 </html>
