@@ -138,4 +138,81 @@ updateFestival();
 //======================================
 document.getElementById("footerText").textContent =
   `© ${new Date().getFullYear()} 小宏工作室`;
+// 1. 檢查是否達成全成就
+const finalBadges = ["板南線數據大師", "海中尋船徽章", "尋寶徽章", "射手座徽章", "摩羯座徽章", "水瓶座徽章", "天空尋星徽章"];
+const userEarned = JSON.parse(localStorage.getItem("badges") || "[]");
+const isMaster = finalBadges.every(badge => userEarned.includes(badge));
 
+if (isMaster) {
+    startFireworks();
+    console.log("全成就達成！啟動慶祝煙火！");
+}
+
+// 2. 煙火動畫邏輯
+function startFireworks() {
+    const canvas = document.getElementById('fireworksCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.velocity = {
+                x: (Math.random() - 0.5) * 8,
+                y: (Math.random() - 0.5) * 8
+            };
+            this.alpha = 1;
+            this.friction = 0.95;
+        }
+
+        draw() {
+            ctx.globalAlpha = this.alpha;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+
+        update() {
+            this.velocity.x *= this.friction;
+            this.velocity.y *= this.friction;
+            this.y += 0.05; // 重力
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            this.alpha -= 0.01;
+        }
+    }
+
+    function createFirework() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * (canvas.height / 2);
+        const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+        for (let i = 0; i < 30; i++) {
+            particles.push(new Particle(x, y, color));
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+            if (p.alpha > 0) {
+                p.update();
+                p.draw();
+            } else {
+                particles.splice(i, 1);
+            }
+        });
+
+        if (Math.random() < 0.05) createFirework(); // 控制煙火密度
+    }
+
+    animate();
+}
