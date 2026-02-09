@@ -149,7 +149,7 @@ if (isMaster) {
     // 建立文字標籤
     const trophy = document.createElement("div");
     trophy.id = "master-trophy"; // 給它一個 ID 方便後面刪除
-    trophy.innerHTML = "🏆 恭喜小宏達成全成就大師！ 🏆";
+    trophy.innerHTML = "🏆 恭喜達成全成就大師！ 🏆";
     trophy.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:linear-gradient(to right, #bf953f, #fcf6ba, #b38728); color:#5d4037; padding:15px 30px; border-radius:30px; font-weight:bold; z-index:1000000; font-size:20px; box-shadow: 0 0 20px rgba(255,215,0,0.8); border: 2px solid #fff; transition: opacity 2s;";
     document.body.appendChild(trophy);
 
