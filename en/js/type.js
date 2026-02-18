@@ -10,7 +10,7 @@ const output = document.getElementById("typing-text");
 const cursor = document.getElementById("cursor");
 
 let i = 0;
-const totalTypingTime = 17000; // 17秒
+const totalTypingTime = 34000; // 17秒
 const interval = totalTypingTime / text.length;
 
 function typeEffect() {
