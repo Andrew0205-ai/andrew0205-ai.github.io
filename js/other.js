@@ -25,18 +25,20 @@ if (lastUpdateEl) {
 // 3. 回到頂部按鈕
 // ===============================
 const backToTopButton = document.getElementById("backToTop");
-window.addEventListener("scroll", () => {
-    if (document.documentElement.scrollTop > 200) {
-        backToTopButton.style.opacity = "1";
-        backToTopButton.style.display = "block";
-    } else {
-        backToTopButton.style.display = "none";
-    }
-});
+if (backToTopButton) {
+    window.addEventListener("scroll", () => {
+        if (document.documentElement.scrollTop > 200) {
+            backToTopButton.style.opacity = "1";
+            backToTopButton.style.display = "block";
+        } else {
+            backToTopButton.style.display = "none";
+        }
+    });
 
-backToTopButton.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-});
+    backToTopButton.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+}
 
 // ===============================
 // 4. 複製遊戲 ID
@@ -46,23 +48,21 @@ function copyGameID() {
     if (!gameID) return;
     const idText = gameID.textContent;
     navigator.clipboard.writeText(idText).then(() => {
-            showToast("已複製ID:K3Q92B，快來夢想小鎮來和我玩！");
+        showToast("已複製ID:K3Q92B，快來夢想小鎮來和我玩！");
     });
 }
 
 // ===============================
-// 5. 跑馬燈邏輯 (優化版)
+// 5. 跑馬燈邏輯 (修正逗號與優化版)
 // ===============================
 const marqueeMessages = [
   "慶賀三鶯線通車!!!🎉🎉",
-  "恭喜北捷新車CR381A抵台!🚇"
-  "賀!高鐵N700ST出廠!!!🚄🚄"
+  "恭喜北捷新車CR381A抵台!🚇",
+  "賀!高鐵N700ST出廠!!!🚄🚄",
   "📢公告:由於系統更新，之前的留言都被刪光了😭😭😭敬請見諒!!!",
   "🎹 最近在練：庫勞Op.20 No.1",
   "🛠️ 歡迎大家到留言板跟我交流",
   "📢 最新公告：節慶版面已上線！"
-  
-    
 ];
 
 let marqueeIndex = 0;
@@ -82,6 +82,7 @@ if (marqueeElement) {
   // 初始化第一則訊息
   updateMarquee();
 }
+
 // ===============================
 // 6. 節慶與雪花特效
 // ===============================
@@ -135,47 +136,50 @@ function updateFestival() {
     }
 }
 
-
 // 啟動節慶判定
 updateFestival();
-//======================================
-document.getElementById("footerText").textContent =
-  `© ${new Date().getFullYear()} 小宏工作室`;
-// 1. 檢查徽章
+
+// 頁尾宣告
+const footerEl = document.getElementById("footerText");
+if (footerEl) {
+    footerEl.textContent = `© ${new Date().getFullYear()} 小宏工作室`;
+}
+
+// ===============================
+// 7. 全成就大師煙火特效
+// ===============================
 const finalBadges = ["板南線數據大師", "海中尋船徽章", "尋寶徽章", "射手座徽章", "摩羯座徽章", "水瓶座徽章", "天空尋星徽章"];
 const userEarned = JSON.parse(localStorage.getItem("badges") || "[]");
 const isMaster = finalBadges.every(badge => userEarned.includes(badge));
+
+let stopFireworks = false;
 
 if (isMaster) {
     startFireworks();
     
     // 建立文字標籤
     const trophy = document.createElement("div");
-    trophy.id = "master-trophy"; // 給它一個 ID 方便後面刪除
+    trophy.id = "master-trophy";
     trophy.innerHTML = "🏆 恭喜達成全成就大師！ 🏆";
     trophy.style = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:linear-gradient(to right, #bf953f, #fcf6ba, #b38728); color:#5d4037; padding:15px 30px; border-radius:30px; font-weight:bold; z-index:1000000; font-size:20px; box-shadow: 0 0 20px rgba(255,215,0,0.8); border: 2px solid #fff; transition: opacity 2s;";
     document.body.appendChild(trophy);
 
-    // --- 🕒 重點：設定 10 秒後消失 ---
+    // --- 設定 10 秒後淡出並移除 ---
     setTimeout(() => {
-        // 讓文字淡出
         trophy.style.opacity = "0";
-        
-        // 停止煙火產生的邏輯
         stopFireworks = true; 
         
-        // 2 秒後（等文字淡出完畢）徹底移除元素
         setTimeout(() => {
             trophy.remove();
-            document.getElementById('fireworksCanvas').remove();
+            const canvas = document.getElementById('fireworksCanvas');
+            if (canvas) canvas.remove();
         }, 2000);
-    }, 10000); // 10000 毫秒 = 10 秒
+    }, 10000);
 }
-
-let stopFireworks = false;
 
 function startFireworks() {
     const canvas = document.getElementById('fireworksCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     function resize() {
@@ -211,7 +215,7 @@ function startFireworks() {
     }
 
     function createFirework() {
-        if (stopFireworks) return; // 如果時間到了，就不再產生新煙火
+        if (stopFireworks) return;
         const x = Math.random() * canvas.width;
         const y = Math.random() * (canvas.height * 0.6);
         const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
@@ -219,7 +223,7 @@ function startFireworks() {
     }
 
     function animate() {
-        if (!document.getElementById('fireworksCanvas')) return; // 畫布被移除就停止
+        if (!document.getElementById('fireworksCanvas')) return;
         requestAnimationFrame(animate);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach((p, i) => {
