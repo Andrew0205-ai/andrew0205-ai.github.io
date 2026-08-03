@@ -54,13 +54,16 @@ function copyGameID() {
 // 5. 跑馬燈邏輯 (優化版)
 // ===============================
 const marqueeMessages = [
+    "慶賀三鶯線通車!!!🎉🎉",
+    "恭喜北捷新車CR381A抵台!🚇"
+    "賀!高鐵N700ST出廠!!!🚄🚄"
   "📢公告:由於系統更新，之前的留言都被刪光了😭😭😭敬請見諒!!!",
   "🎹 最近在練：庫勞Op.20 No.1",
   "🇸🇬 新加坡之旅圓滿結束！整理照片中...", // 更新旅遊狀態
   "🛠️ 歡迎大家到留言板跟我交流",
   "📢 最新公告：節慶版面已上線！",
-  "🌍 本月金句：Never put off what you can do today until tomorrow.",
-    "慶賀三鶯線通車!!!🎉🎉"
+  "🌍 本月金句：Never put off what you can do today until tomorrow."
+    
 ];
 
 let marqueeIndex = 0;
