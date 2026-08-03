@@ -55,11 +55,12 @@ function copyGameID() {
 // ===============================
 const marqueeMessages = [
   "📢公告:由於系統更新，之前的留言都被刪光了😭😭😭敬請見諒!!!",
-  "🎹 最近在練：Clementi Op.36 No.1",
+  "🎹 最近在練：庫勞Op.20 No.1",
   "🇸🇬 新加坡之旅圓滿結束！整理照片中...", // 更新旅遊狀態
   "🛠️ 歡迎大家到留言板跟我交流",
   "📢 最新公告：節慶版面已上線！",
-  "🌍 本月金句：Never put off what you can do today until tomorrow."
+  "🌍 本月金句：Never put off what you can do today until tomorrow.",
+    "慶賀三鶯線通車!!!🎉🎉"
 ];
 
 let marqueeIndex = 0;
