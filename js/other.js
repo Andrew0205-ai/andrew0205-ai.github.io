@@ -83,7 +83,7 @@ if (marqueeElement) {
 }
 
 // ===============================
-// 6. 節慶與雪花特效
+// 6. 全年節慶與特效
 // ===============================
 function showSnowflakes(count) {
     if (!snowContainer) return;
@@ -109,40 +109,70 @@ function showSnowflakes(count) {
 }
 
 function updateFestival() {
-    // 12月聖誕季
-    if (month === 12) {
-        if (bannerText) bannerText.textContent = "🎄 聖誕快樂！願這個季節充滿平安與喜樂 ✨";
-        if (footerText) footerText.textContent = `© ${year} 小宏工作室 · Merry Christmas 🎄`;
-        showSnowflakes(30);
-    } 
-    // 1-2月新年與寒假出國季
-    else if (month === 1 || month === 2) {
+    const currentYear = new Date().getFullYear();
+    
+    // 先預設顯示橫幅容器（如果有特定節日會覆蓋樣式）
+    if (bannerContainer) bannerContainer.style.display = "block";
+    if (snowContainer) snowContainer.innerHTML = "";
+
+    // 1. 1-2月：新年與寒假出國季
+    if (month === 1 || month === 2) {
         if (bannerText) {
             bannerText.textContent = (month === 1 && day < 28) 
-                ? `🧧 ${year} 新年快樂！準備出發去新加坡囉 ✈️` 
+                ? `🧧 ${currentYear} 新年快樂！準備出發去新加坡囉 ✈️` 
                 : `🦁 已平安抵台!🇸🇬`;
         }
         if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #d4a017, #b8860b)";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室`;
         
-        // 1/1~1/5 不下雪，之後模擬冬季氛圍
         if (!(month === 1 && day <= 5)) {
             showSnowflakes(35);
         }
-    } else {
-        // 平時狀態
+    } 
+    // 2. 4月：兒童節連假 (4/1 ~ 4/7)
+    else if (month === 4 && day <= 7) {
+        if (bannerText) bannerText.textContent = "🎉 兒童節快樂！童心未泯，探索無限可能！🎈";
+        if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #ff7b93, #ffb347)";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室`;
+    } 
+    // 3. 5月：母親節 (5月第二個週日附近，約 5/1 ~ 5/14)
+    else if (month === 5 && day <= 14) {
+        if (bannerText) bannerText.textContent = "💐 母親節快樂！感謝媽媽一路相伴與支持 💕";
+        if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #ff9a9e, #fecfef)";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室`;
+    } 
+    // 4. 6月：端午節 / 畢業季 (6/1 ~ 6/15)
+    else if (month === 6 && day <= 15) {
+        if (bannerText) bannerText.textContent = "🛶 端午節安康！祝大家佳節愉快、事事順心 🌿";
+        if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #43e97b, #38f9d7)";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室`;
+    } 
+    // 5. 9月底 - 10月初：中秋節與國慶日 (9/20 ~ 10/12 左右可依農曆彈性，這裡用國曆日期區間)
+    else if ((month === 9 && day >= 20) || (month === 10 && day <= 12)) {
+        if (bannerText) {
+            bannerText.textContent = (month === 10 && day <= 10) 
+                ? `🇹🇼 雙十國慶快樂！普天同慶，祝台灣生日快樂 🎉` 
+                : `🥮 中秋節快樂！花好月圓人團圓 ✨`;
+        }
+        if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #fa709a, #fee140)";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室`;
+    } 
+    // 6. 12月：聖誕季
+    else if (month === 12) {
+        if (bannerText) bannerText.textContent = "🎄 聖誕快樂！願這個季節充滿平安與喜樂 ✨";
+        if (bannerContainer) bannerContainer.style.background = "linear-gradient(90deg, #1b5e20, #2e7d32)";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室 · Merry Christmas 🎄`;
+        showSnowflakes(30);
+    } 
+    // 7. 平時狀態（沒有特別節日時隱藏上方橫幅）
+    else {
         if (bannerContainer) bannerContainer.style.display = "none";
-        if (snowContainer) snowContainer.innerHTML = "";
+        if (footerText) footerText.textContent = `© ${currentYear} 小宏工作室`;
     }
 }
 
 // 啟動節慶判定
 updateFestival();
-
-// 頁尾宣告
-const footerEl = document.getElementById("footerText");
-if (footerEl) {
-    footerEl.textContent = `© ${new Date().getFullYear()} 小宏工作室`;
-}
 
 // ===============================
 // 7. 全成就大師煙火特效
