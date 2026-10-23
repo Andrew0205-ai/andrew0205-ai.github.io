@@ -33,7 +33,8 @@
 body {
   background-color: var(--app-bg) !important;
   color: var(--text-main);
-  font-family: "Noto Sans TC", sans-serif;
+  /* 使用 Bootstrap 原生跨平台系統字型，如果裝置有 Noto Sans TC 會優先使用 */
+  font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   margin: 0;
 }
