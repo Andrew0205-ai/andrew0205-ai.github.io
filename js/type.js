@@ -5,9 +5,9 @@
 除了對交通充滿熱情，我也喜歡自己動手做網站、畫畫，還會彈鋼琴。
 偶爾我會寫一些簡單的網頁程式，把我的小作品分享在網路上。
 
-這個網站是我親手建立的，裡面記錄了我的想法和創意。
-如果你也喜歡交通、音樂，或對做網站有興趣，歡迎一起來交流！
-你也可以去看看[我的日記](https://andrew0205blogs.blogspot.com/)，了解我的生活喔！`;
+如果你也喜歡交通、音樂，或對寫程式有興趣，歡迎一起來交流！
+你也可以去看看[我的日記](https://andrew0205blogs.blogspot.com/)，了解我的生活喔！
+彩蛋:對下面的圖片(我的背影)快速連點三下，會有意想不到的事發生唷!`;
 
 const output = document.getElementById("typing-text");
 const cursor = document.getElementById("cursor");
